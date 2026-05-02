@@ -1,5 +1,7 @@
 package com.nextbuy.demo.service;
 
+import java.time.LocalDate;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,6 +84,9 @@ public class AuthService {
         
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        user.setLastLogin(LocalDate.now());
+        userRepository.save(user);
 
         return new AuthResponse(token, "Bearer", userDetails.getUsername(), user.getRole().name());
     }
