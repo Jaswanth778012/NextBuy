@@ -1,12 +1,12 @@
-package com.nextbuy.service;
+package com.nextbuy.demo.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.nextbuy.entity.User;
-import com.nextbuy.repository.UserRepository;
+import com.nextbuy.demo.entity.User;
+import com.nextbuy.demo.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUserName())
+                .username(user.getUsername())
                 .password(user.getPassword())
                 .authorities("ROLE_" + user.getRole())
                 .build();

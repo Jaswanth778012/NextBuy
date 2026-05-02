@@ -1,4 +1,4 @@
-package com.nextbuy.configuration;
+package com.nextbuy.demo.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

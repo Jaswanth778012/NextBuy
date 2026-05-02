@@ -1,14 +1,12 @@
-package com.nextbuy.dto;
+package com.nextbuy.demo.dto;
 
 import java.time.LocalDate;
 
-import org.antlr.v4.runtime.misc.NotNull;
-
-import com.nextbuy.enums.Gender;
+import com.nextbuy.demo.enums.Gender;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Size;	
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

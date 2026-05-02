@@ -1,4 +1,4 @@
-package com.nextbuy.service;
+package com.nextbuy.demo.service;
 
 import java.util.Date;
 
