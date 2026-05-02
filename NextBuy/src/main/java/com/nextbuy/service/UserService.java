@@ -1,5 +1,5 @@
 package com.nextbuy.service;
 
-public class Service {
+public class UserService {
 
 }
