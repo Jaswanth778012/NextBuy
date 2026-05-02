@@ -1,4 +1,4 @@
-package com.nextbuy.controller;
+package com.nextbuy.demo.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

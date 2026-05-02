@@ -1,4 +1,4 @@
-package com.nextbuy.dto;
+package com.nextbuy.demo.dto;
 
 public class UserRegisterRequestDto {
 

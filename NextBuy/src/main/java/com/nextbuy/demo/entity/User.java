@@ -1,9 +1,9 @@
-package com.nextbuy.entity;
+package com.nextbuy.demo.entity;
 
 import java.time.LocalDate;
 
-import com.nextbuy.enums.Gender;
-import com.nextbuy.enums.Role;
+import com.nextbuy.demo.enums.Gender;
+import com.nextbuy.demo.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
