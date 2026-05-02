@@ -29,7 +29,7 @@ public class User {
 	private Long id;
 	
 	@Column(nullable = false, unique = true, length = 50)
-	private String userNAme;
+	private String userName;
 	
 	@Column(nullable = false)
 	private String firstName;
