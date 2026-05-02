@@ -56,7 +56,14 @@ public class User {
 	@Column
 	private String addressLine1;
 	
+	@Column
+	private String city;
 	
+	@Column
+	private String state;
+	
+	@Column
+	private String country;
 	
 	@Column
 	private String dpUrl;
