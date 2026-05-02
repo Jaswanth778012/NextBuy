@@ -1,10 +1,10 @@
-package com.nextbuy.repository;
+package com.nextbuy.demo.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.nextbuy.entity.User;
+import com.nextbuy.demo.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Optional<User> findByUsername(String username);

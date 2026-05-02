@@ -1,4 +1,4 @@
-package com.nextbuy.filter;
+package com.nextbuy.demo.filter;
 
 import java.io.IOException;
 
@@ -11,8 +11,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.nextbuy.service.CustomUserDetailsService;
-import com.nextbuy.service.JwtService;
+import com.nextbuy.demo.service.CustomUserDetailsService;
+import com.nextbuy.demo.service.JwtService;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;

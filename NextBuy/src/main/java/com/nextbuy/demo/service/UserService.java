@@ -1,9 +1,9 @@
-package com.nextbuy.service;
+package com.nextbuy.demo.service;
 
 
 import org.springframework.stereotype.Service;
 
-import com.nextbuy.repository.UserRepository;
+import com.nextbuy.demo.repository.UserRepository;
 
 @Service
 public class UserService {
