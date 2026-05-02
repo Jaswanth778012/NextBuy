@@ -21,6 +21,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
+	
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomUserDetailsService customUserDetailsService) {
@@ -38,7 +39,7 @@ public class SecurityConfig {
 
 						.requestMatchers("/auth/**").permitAll()
 						
-						.requestMatchers("/admin/**").hasRole("ADMIN")
+						.requestMatchers("/Admin/**").hasRole("ADMIN")
 
 			            .requestMatchers("/user/**").hasRole("USER")
 
