@@ -1,4 +1,4 @@
-package com.nextbuy.configuration;
+package com.nextbuy.demo.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.nextbuy.filter.JwtAuthenticationFilter;
-import com.nextbuy.service.CustomUserDetailsService;
+import com.nextbuy.demo.filter.JwtAuthenticationFilter;
+import com.nextbuy.demo.service.CustomUserDetailsService;
 
 @Configuration
 public class SecurityConfig {
@@ -36,13 +36,17 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 
-						.requestMatchers("/")
-						.permitAll()
+						.requestMatchers("/auth/**").permitAll()
+						
+						.requestMatchers("/admin/**").hasRole("ADMIN")
 
-						.anyRequest().permitAll())
+			            .requestMatchers("/user/**").hasRole("USER")
+
+						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider)
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-				.formLogin(form -> form.disable()).httpBasic(basic -> basic.disable());
+				.formLogin(form -> form.disable())
+				.httpBasic(httpBasic -> httpBasic.disable());
 
 		return http.build();
 	}
