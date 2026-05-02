@@ -56,6 +56,8 @@ public class User {
 	@Column
 	private String addressLine1;
 	
+	
+	
 	@Column
 	private String dpUrl;
 	
