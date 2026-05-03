@@ -1,5 +1,6 @@
 package com.nextbuy.demo.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.nextbuy.demo.dto.AdminUserResponceDto;
 
 import com.nextbuy.demo.entity.User;
+import com.nextbuy.demo.enums.Role;
 import com.nextbuy.demo.repository.UserRepository;
 
 
@@ -91,6 +93,34 @@ public class AdminService {
 	 
 	 
 	 
+	 public String adminUpdate(String username,String pass, String newPass) {
+		User user = userRepo.findByUsername(username).get();
+		if( userRepo.existsByUsername(username)) {
+			 throw new RuntimeException("Admin is not found");
+		}
+		if(user.getPassword().equals(pass)) {
+			return "Please Enter Old Password !";
+		}
+		user.setPassword(newPass);
+		userRepo.save(user);
+		 return "Successfully Updated";
+	 }
+	 
+	 
+	 public String addAdmin(String mail ,String username,String password) {
+		   User user = userRepo.findByEmail(mail).get();
+		   Optional<User> use = userRepo.findByEmail(mail);
+		   if(!use.isPresent()) {
+			   return "Person is not found !";
+		   }
+		
+         user.setRole(Role.ADMIN);
+         user.setUsername(username);
+         user.setPassword(passwordEncoder.encode(password));
+         userRepo.save(user);
+		 return " ADDED NEW ADDMIN !"; 
+	 }
+
 	
 	 public AdminUserResponceDto mapToResponseDto(User user) {
 		  AdminUserResponceDto AdminURD = new AdminUserResponceDto();
