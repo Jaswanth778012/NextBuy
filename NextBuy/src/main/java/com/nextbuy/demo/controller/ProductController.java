@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextbuy.demo.dto.ProductDTO;
 
-import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.service.ProductService;
 
 @RestController
@@ -20,8 +20,9 @@ public class ProductController {
 		this.productService = productService;
 	}
     @PostMapping("/addProduct")
-	public String addProduct(@RequestBody  Product product) {
-		return productService.addProduct(product);
+	public String addProduct(@RequestBody  ProductDTO Pdto) {
+    	
+		return productService.addProduct(Pdto);
 	}
     
 
