@@ -53,20 +53,24 @@ public class AdminController {
   public String deleteUser(@RequestParam String username) {
 	  return adminService.deleteUser(username);
 	  
-	  
+	 
   }
   
-  @PatchMapping("/updateAdmin/{username}")
-  public String updateAdmin(@PathVariable String username,@RequestParam String oldPass,@RequestParam String newPass){
-	  return adminService.adminUpdate(username, oldPass, newPass);
+  @PatchMapping("/adminUpdate/{username}/{password}")
+  public String updateAdmin(@PathVariable String username,@PathVariable String password,@RequestParam String newPass){
+	  return adminService.adminUpdate(username, password, newPass);
 	  
   }
  
- @GetMapping("/addAdmin/{email}")
+ @PatchMapping("/addAdmin/{email}")
  public String addAdmin(@PathVariable String email,@RequestParam String username,@RequestParam String password) {
 	 return adminService.addAdmin(email, username, password);
 	 
  }
-
+ 
+ @DeleteMapping("/deleteAdmin/{username}/{password}")
+ public String deleteAdmin(@PathVariable String username, @PathVariable String password) {
+	 return adminService.deleteAdmin(username, password);
+ }
 
 }
