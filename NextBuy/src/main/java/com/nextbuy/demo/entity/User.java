@@ -1,6 +1,7 @@
 package com.nextbuy.demo.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.nextbuy.demo.enums.Gender;
 import com.nextbuy.demo.enums.Role;
@@ -76,7 +77,7 @@ public class User {
 	private LocalDate createdAt;
 	
 	@Column
-	private LocalDate lastLogin;
+	private LocalDateTime lastLogin;
 	
 	@PrePersist
 	protected void onCreate() {

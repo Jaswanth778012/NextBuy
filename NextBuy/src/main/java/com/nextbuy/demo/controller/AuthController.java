@@ -15,6 +15,7 @@ import com.nextbuy.demo.dto.AuthResponse;
 import com.nextbuy.demo.dto.UserLoginRequestDTO;
 import com.nextbuy.demo.dto.UserRegisterRequestDto;
 import com.nextbuy.demo.service.AuthService;
+import com.nextbuy.demo.service.PasswordResetService;
 
 import jakarta.validation.Valid;
 
@@ -23,9 +24,11 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordResetService service;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, PasswordResetService service) {
         this.authService = authService;
+        this.service = service;
     }
 
     @PostMapping("/register")
@@ -42,5 +45,30 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody UserLoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+    
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgot(@RequestBody Map<String, String> req) {
+        return ResponseEntity.ok(service.sendOtp(req.get("email")));
+    }
+
+    // STEP 2
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verify(@RequestBody Map<String, String> req) {
+        return ResponseEntity.ok(
+                service.verifyOtp(req.get("email"), req.get("otp"))
+        );
+    }
+
+    // STEP 3
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> reset(@RequestBody Map<String, String> req) {
+        return ResponseEntity.ok(
+                service.resetPassword(
+                        req.get("email"),
+                        req.get("newPassword"),
+                        req.get("confirmPassword")
+                )
+        );
     }
 }
