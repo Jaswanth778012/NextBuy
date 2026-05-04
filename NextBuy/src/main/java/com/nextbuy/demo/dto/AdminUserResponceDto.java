@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class AdminUserResponceDto {
 	
 		
@@ -21,7 +20,6 @@ public class AdminUserResponceDto {
 	    private Long mobileNumber;
 	    
 	    private String name;
-
 	    
 	    private String email;
 
