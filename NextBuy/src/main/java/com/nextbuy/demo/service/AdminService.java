@@ -1,5 +1,6 @@
 package com.nextbuy.demo.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.nextbuy.demo.dto.AdminUserResponceDto;
 
 import com.nextbuy.demo.entity.User;
+import com.nextbuy.demo.enums.Role;
 import com.nextbuy.demo.repository.UserRepository;
 
 
@@ -91,7 +93,40 @@ public class AdminService {
 	 
 	 
 	 
+	 public String adminUpdate(String username,String password, String newPass) {
+		 User userex = userRepo.findByUsername(username).get();
+		 if(!userex.getPassword() .equals(password) && !userex.getUsername().equals(username) ) {
+			 return "Admin not found!";
+		 }
+		 userex.setPassword(passwordEncoder.encode(newPass));
+		 userRepo.save(userex);
+		 return "Successfully updated!";
+	 }
+
+	 public String addAdmin(String email ,String username,String password) {
+		   User user = userRepo.findByEmail(email).get();
+		   Optional<User> use = userRepo.findByEmail(email);
+		   if(!use.isPresent()) {
+			   return "Person is not found !";
+		   }
 	
+         user.setRole(Role.ADMIN);
+         user.setUsername(username);
+         user.setPassword(passwordEncoder.encode(password));
+         userRepo.save(user);
+		 return " ADDED NEW ADDMIN !"; 
+	 }
+
+	public String deleteAdmin(String username, String password) {
+		User admin = userRepo.findByUsername(username).get();
+		if(admin.getUsername().equals(username)&& admin.getPassword().equals(password)) {
+			userRepo.deleteById(admin.getId());
+			return "Deleted successfully!";
+		}
+		return "worng admin details !";
+	}
+	 
+	 
 	 public AdminUserResponceDto mapToResponseDto(User user) {
 		  AdminUserResponceDto AdminURD = new AdminUserResponceDto();
 		  AdminURD.setUsername(user.getUsername());
@@ -105,5 +140,6 @@ public class AdminService {
 	     
 	      
 	  }
+	 
 
 }
