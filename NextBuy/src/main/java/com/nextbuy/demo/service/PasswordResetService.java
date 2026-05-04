@@ -30,13 +30,13 @@ public class PasswordResetService {
         this.emailService = emailService;
     }
 
-    // STEP 1: Send OTP
+    
     public String sendOtp(String email) {
 
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // ✅ DELETE OLD OTP FIRST
+       
         otpRepo.deleteByEmail(email);
 
         String otp = String.valueOf((int)(Math.random() * 900000) + 100000);
@@ -47,12 +47,24 @@ public class PasswordResetService {
         resetOtp.setExpiryTime(LocalDateTime.now().plusMinutes(5));
 
         otpRepo.save(resetOtp);
+        
+        String emailBody = "NEXTBUY: PASSWORD RESET\n" +
+                "==========================\n\n" +
+                "Hi there,\n\n" +
+                "We received a request to reset your password. " +
+                "Please use the verification code below:\n\n" +
+                "OTP CODE: " + otp + "\n\n" +
+                "This code is valid for 5 minutes.\n\n" +
+                "If you did not request this, please ignore this email.\n\n" +
+                "Best regards,\n" +
+                "The NextBuy Team\n" +
+                "Bengaluru, India";
 
-        emailService.sendEmail(email, "Your OTP", "OTP: " + otp);
+        emailService.sendEmail(email, "NextBuy Password Reset: "+ otp, emailBody);
 
         return "OTP sent successfully";
     }
-    // STEP 2: Verify OTP
+    
     public String verifyOtp(String email, String otp) {
         PasswordResetOtp resetOtp = otpRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("OTP not found"));
@@ -68,7 +80,6 @@ public class PasswordResetService {
         return "OTP verified";
     }
 
-    // STEP 3: Reset Password
     public String resetPassword(String email, String newPassword, String confirmPassword) {
 
         if (!newPassword.equals(confirmPassword)) {
