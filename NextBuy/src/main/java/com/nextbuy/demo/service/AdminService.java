@@ -119,7 +119,7 @@ public class AdminService {
 
 	public String deleteAdmin(String username, String password) {
 		User admin = userRepo.findByUsername(username).get();
-		if(admin.getUsername().equals(username)||admin.getPassword().equals(password)) {
+		if(admin.getUsername().equals(username)&& admin.getPassword().equals(password)) {
 			userRepo.deleteById(admin.getId());
 			return "Deleted successfully!";
 		}
