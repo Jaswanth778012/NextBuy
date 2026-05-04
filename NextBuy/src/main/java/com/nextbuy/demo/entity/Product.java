@@ -56,9 +56,7 @@ public class Product {
 	
 	@Enumerated(EnumType.STRING)
 	private AvailabilityStockStatus stockStatus;
-	
-	private String imgUrl;
-	
+
 	private Double totalRating;
 	
 	private Double averageRating;

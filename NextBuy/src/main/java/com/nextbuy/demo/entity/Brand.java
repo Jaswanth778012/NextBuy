@@ -1,11 +1,13 @@
 package com.nextbuy.demo.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +31,13 @@ public class Brand {
     private String logoUrl;
 
     private String country;
-
-    private LocalDateTime createdAt;
+    
+    @Column(updatable= false)
+    private LocalDate createdAt;
 	
+    @PrePersist
+    public void onCreate()
+    {
+    	createdAt = LocalDate.now();
+    }
 }
