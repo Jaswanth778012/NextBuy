@@ -1,5 +1,7 @@
 package com.nextbuy.demo.controller;
 
+
+
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.entity.Product;
+import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -49,5 +52,17 @@ public class ProductController {
     @PatchMapping("/updateProductStockQality/{id}/{stock}")
     public String updateProductStockQality(@PathVariable Long id, @PathVariable int stock) {
     	return productService.updateProductStockQantity(id, stock);
+    }
+    @GetMapping("/searchById/{id}")
+    public Product searchById(@PathVariable Long id) {
+    	return productService.SerachID(id);
+    }
+    @GetMapping("/searchCategory/{category}")
+    public List<Product> searchCategory(@PathVariable String category){
+    	return productService.searchCategory(category);
+    }
+    @PatchMapping("/updateProductStatus/{id}/{status}")
+    public String updateProductStatus(@PathVariable Long id, @PathVariable ProductStatus satus) {
+    	return productService.updateProductStatus(id, satus);
     }
 }

@@ -1,5 +1,6 @@
 package com.nextbuy.demo.service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class ProductService {
 		this.brandRepo = brandRepo;
 		this.cloudinaryService = cloudinaryService;
 	}
+	//ADDPRODUCT
 	public String addProduct(ProductDTO Pdto, MultipartFile imageFile) {
 		Product p = new Product();
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
@@ -64,7 +66,7 @@ public class ProductService {
 		return "Successfully Addad";
 	}
 	
-
+  //DELETEPRODDUCT
 	public String deleteproduct(String name, Long Brand_id) {
 		  
 		  Optional<Product> pr = productRepo.findByName(name);
@@ -81,14 +83,15 @@ public class ProductService {
 		  return "Product Deleted !!";
 		
 	}
+	//VIEW_ALL_PRODUCTS
 	public List<Product> viewAllProducts() {
 		 List<Product> allproducts = productRepo.findAll();
 		 if(allproducts.isEmpty()) {
-			 throw new RuntimeException("Username is required");
+			  
 		 }
 		return allproducts;
 	}
-	
+	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
 		
 		    Optional<Product> pr = productRepo.findById(id) ;
@@ -137,6 +140,7 @@ public class ProductService {
 		return "Successfully updated";
 		
 	}
+	//UPDATE-PRODUCT-STOCKQANTITY
 	public String updateProductStockQantity(Long id,int stock) {
 		   Optional<Product> pr = productRepo.findById(id);
 		  if(pr.isEmpty()) {
@@ -160,6 +164,36 @@ public class ProductService {
 	    	}
 		  productRepo.save(p);
 		  return "Successfully updated";
+	}
+	//SERACH-BY-ID
+	public  Product SerachID(Long id) {
+		Optional<Product> p = productRepo.findById(id);
+		if(p.isEmpty()) {
+			throw new RuntimeException("Product not Found");
+		}
+		    Product product = productRepo.findById(id).get();
+		    return product;
+	}
+	//SerachByCategory
+	public  List<Product> searchCategory(String category) {
+		return productRepo.findAll()
+			   .stream()
+			   .filter(p->p.getCategory().equalsIgnoreCase(category))
+			   .distinct()
+			   .sorted()
+			   .toList();
+			  
+	}
+	//updateProductStatus
+	public String updateProductStatus(Long id,ProductStatus status) {
+		  Optional<Product> p = productRepo.findById(id);
+		  if(p.isEmpty()) {
+			  return "Product not found";
+		  }
+		 Product pr = productRepo.findById(id).get();
+		 pr.setProductStatus(status);
+		 productRepo.save(pr);
+		 return "Product Satus Updated !! ";
 	}
 	
 }
