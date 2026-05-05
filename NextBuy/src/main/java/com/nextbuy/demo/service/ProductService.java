@@ -69,22 +69,22 @@ public class ProductService {
 		  
 		  Optional<Product> pr = productRepo.findByName(name);
 		  if(pr.isEmpty()) {
-			  return "Something went worng";
+			  return "Product not Found";
 		  }
-		  Product product = productRepo.findByName(name).get();
+		  Product product = pr.get();
 		  if(!product.getName().equals(name) && !product.getBrand().equals(Brand_id)) {
 			 
 			  return "something went Worng";
 		  }
 		 
 		  productRepo.deleteById(product.getId());
-		  return "Product Deleted !!";
+		  return "Product Deleted Successfully!!";
 		
 	}
 	public List<Product> viewAllProducts() {
 		 List<Product> allproducts = productRepo.findAll();
 		 if(allproducts.isEmpty()) {
-			 throw new RuntimeException("Username is required");
+			 throw new RuntimeException("No products found");
 		 }
 		return allproducts;
 	}
@@ -95,7 +95,7 @@ public class ProductService {
 		    if(pr.isEmpty()) {
 		    	return "Product not found";
 		    }
-		     Product p = productRepo.findById(id).get();
+		     Product p = pr.get();
 		     
 		p.setName(product.getName());
     	p.setDescription(product.getDescription());
@@ -126,7 +126,6 @@ public class ProductService {
     	}
     	
     	
-    	
     	p.setCreatedAt(product.getCreatedAt());
     	p.setUpdatedAt(product.getUpdatedAt());
     	p.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
@@ -142,7 +141,7 @@ public class ProductService {
 		  if(pr.isEmpty()) {
 			  return "Product not Found";
 		  }
-		  Product p = productRepo.findById(id).get();
+		  Product p =pr.get();
 		  p.setStockQuantity(stock);
 		  if(p.getStockQuantity() <= 0) {
 	    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
