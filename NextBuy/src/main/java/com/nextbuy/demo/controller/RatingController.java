@@ -1,5 +1,6 @@
 package com.nextbuy.demo.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,15 +27,15 @@ public class RatingController {
 	
 	
 	@PostMapping("/addRating")
-	public String rateProductRating(@RequestParam Long prodId, @RequestParam Long userId, @RequestParam int rating)
+	public String rateProductRating(@RequestParam Long prodId, @RequestParam int rating, Principal principal)
 	{
-		return ratingService.RateProduct(prodId, userId, rating);
+		return ratingService.RateProduct(prodId, principal.getName(), rating);
 	}
 	
 	@DeleteMapping("/deleteRating")
-	public String deleteProductRating(@RequestParam Long prodId, @RequestParam Long userId)
+	public String deleteProductRating(@RequestParam Long prodId, Principal principal)
 	{
-		return ratingService.deleteRating(prodId, userId);
+		return ratingService.deleteRating(prodId, principal.getName());
 	}
 	
 	@GetMapping("/product/{prodId}")
@@ -43,9 +44,15 @@ public class RatingController {
 		return ratingService.getRatingsByProduct(prodId);
 	}
 	
-	@GetMapping("/user")
-	public Rating getUserRating(  @RequestParam Long productId, @RequestParam Long userId) 
-	{
-	    return ratingService.getUserRating(productId, userId);
+//	@GetMapping("/user")
+//	public Rating getUserRating(  @RequestParam Long productId, @RequestParam Long userId) 
+//	{
+//	    return ratingService.getUserRating(productId, userId);
+//	}
+	
+	@GetMapping("/my-ratings")
+	public List<Rating> getMyRatings(Principal principal) {
+
+	    return ratingService.getRatingsByUser(principal.getName());
 	}
 }

@@ -27,7 +27,7 @@ public class RatingService {
 		this.prodRepo = prodRepo;
 	}
 	
-	public String RateProduct(Long productId, Long userId, int rating)
+	public String RateProduct(Long productId, String username, int rating)
 	{
 		if(rating < 1 || rating > 5) 
 		{
@@ -36,7 +36,7 @@ public class RatingService {
 		
 		Product product = prodRepo.findById(productId).orElseThrow(() -> new RuntimeException("Product Not Found"));
 		
-		User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+		User user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
 		
 		Rating existingRating = ratingRepo.findByProductAndUser(product, user).orElse(null);
 		
@@ -66,11 +66,11 @@ public class RatingService {
 	}
 	
 	
-	public String deleteRating(Long productId, Long userId)
+	public String deleteRating(Long productId, String username)
 	{
 		Product product = prodRepo.findById(productId).orElseThrow(() -> new RuntimeException("Product Not Found"));
 		
-		User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+		User user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
 		
 		Rating existingRating = ratingRepo.findByProductAndUser(product, user).orElseThrow(() -> new RuntimeException("Rating already Exists by user"));
 		
@@ -139,15 +139,23 @@ public class RatingService {
 	    return ratingRepo.findByProduct(product);
 	}
 	
-	public Rating getUserRating(Long productId, Long userId) {
+//	public Rating getUserRating(Long productId, Long userId) {
+//
+//	    Product product = prodRepo.findById(productId)
+//	            .orElseThrow(() -> new RuntimeException("Product not found"));
+//
+//	    User user = userRepo.findById(userId)
+//	            .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//	    return ratingRepo.findByProductAndUser(product, user)
+//	            .orElseThrow(() -> new RuntimeException("Rating not found"));
+//	}
+	
+	public List<Rating> getRatingsByUser(String username) {
 
-	    Product product = prodRepo.findById(productId)
-	            .orElseThrow(() -> new RuntimeException("Product not found"));
-
-	    User user = userRepo.findById(userId)
+	    User user = userRepo.findByUsername(username)
 	            .orElseThrow(() -> new RuntimeException("User not found"));
 
-	    return ratingRepo.findByProductAndUser(product, user)
-	            .orElseThrow(() -> new RuntimeException("Rating not found"));
+	    return ratingRepo.findByUser(user);
 	}
 }
