@@ -1,5 +1,7 @@
 package com.nextbuy.demo.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,17 +55,18 @@ public class ProductService {
 			p.setImageUrl(imageUrl);
 		}
     	
-    	p.setAverageRating(Pdto.getAverageRating());
-    	p.setTotalRating(Pdto.getTotalRating());
+    	p.setAverageRating(0.0);
+    	p.setTotalRating(0.0);
+    	p.setRatingsCount(0);
     	p.setProductStatus(Pdto.getProductStatus());
-    	p.setCreatedAt(Pdto.getCreatedAt());
-    	p.setUpdatedAt(Pdto.getUpdatedAt());
+    	p.setCreatedAt(LocalDate.now());
+    	p.setUpdatedAt(LocalDateTime.now());
     	p.setDeliveryTimeInDays(Pdto.getDeliveryTimeInDays());
     	p.setAttributes(Pdto.getAttributes());
 		p.setBrand(Pdto.getBrand());
 		
 		productRepo.save(p);
-		return "Successfully Addad";
+		return "Product Added Successfully";
 	}
 	
   //DELETEPRODDUCT
@@ -71,23 +74,23 @@ public class ProductService {
 		  
 		  Optional<Product> pr = productRepo.findByName(name);
 		  if(pr.isEmpty()) {
-			  return "Something went worng";
+			  return "Product not Found";
 		  }
-		  Product product = productRepo.findByName(name).get();
+		  Product product = pr.get();
 		  if(!product.getName().equals(name) && !product.getBrand().equals(Brand_id)) {
 			 
 			  return "something went Worng";
 		  }
 		 
 		  productRepo.deleteById(product.getId());
-		  return "Product Deleted !!";
+		  return "Product Deleted Successfully!!";
 		
 	}
 	//VIEW_ALL_PRODUCTS
 	public List<Product> viewAllProducts() {
 		 List<Product> allproducts = productRepo.findAll();
 		 if(allproducts.isEmpty()) {
-			  
+			 throw new RuntimeException("No products found");
 		 }
 		return allproducts;
 	}
@@ -98,7 +101,7 @@ public class ProductService {
 		    if(pr.isEmpty()) {
 		    	return "Product not found";
 		    }
-		     Product p = productRepo.findById(id).get();
+		     Product p = pr.get();
 		     
 		p.setName(product.getName());
     	p.setDescription(product.getDescription());
@@ -118,8 +121,6 @@ public class ProductService {
     		String imageUrl = cloudinaryService.uploadProductImage(imageFile);
     		p.setImageUrl(imageUrl);
     	}
-    	p.setAverageRating(product.getAverageRating());
-    	p.setTotalRating(product.getTotalRating());
     	
     	if(p.getStockQuantity() <= 0) {
     		p.setProductStatus(ProductStatus.INACTIVE);
@@ -129,15 +130,13 @@ public class ProductService {
     	}
     	
     	
-    	
-    	p.setCreatedAt(product.getCreatedAt());
-    	p.setUpdatedAt(product.getUpdatedAt());
+    	p.setUpdatedAt(LocalDateTime.now());
     	p.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
     	p.setAttributes(product.getAttributes());
 		p.setBrand(product.getBrand());
 		
 		productRepo.save(p);
-		return "Successfully updated";
+		return "Product Updated Successfully";
 		
 	}
 	//UPDATE-PRODUCT-STOCKQANTITY
@@ -146,7 +145,7 @@ public class ProductService {
 		  if(pr.isEmpty()) {
 			  return "Product not Found";
 		  }
-		  Product p = productRepo.findById(id).get();
+		  Product p =pr.get();
 		  p.setStockQuantity(stock);
 		  if(p.getStockQuantity() <= 0) {
 	    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
@@ -163,7 +162,7 @@ public class ProductService {
 	    		p.setProductStatus(ProductStatus.ACTIVE);
 	    	}
 		  productRepo.save(p);
-		  return "Successfully updated";
+		  return "Stock Quantity Updated Successfully!!";
 	}
 	//SERACH-BY-ID
 	public  Product SerachID(Long id) {
