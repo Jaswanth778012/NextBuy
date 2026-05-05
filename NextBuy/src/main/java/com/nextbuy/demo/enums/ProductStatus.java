@@ -1,5 +1,7 @@
 package com.nextbuy.demo.enums;
 
 public enum ProductStatus {
-	ACTIVE, INACTIVE, DISCONTINUED
+	 AVAILABLE,
+	    OUT_OF_STOCK,
+	    SOLD
 }

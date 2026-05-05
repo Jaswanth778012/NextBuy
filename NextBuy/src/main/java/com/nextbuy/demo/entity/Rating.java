@@ -1,44 +1,39 @@
 package com.nextbuy.demo.entity;
 
-import java.time.LocalDate;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "ratings", uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "user_id"}))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Brand {
+public class Rating {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false , unique = true)
-	private String name;
-
-    private String description;
-
-    private String logoUrl;
-
-    private String country;
-    
-    @Column(updatable= false)
-    private LocalDate createdAt;
+	private int rating; 
 	
-    @PrePersist
-    public void onCreate()
-    {
-    	createdAt = LocalDate.now();
-    }
+	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
+
+	
 }

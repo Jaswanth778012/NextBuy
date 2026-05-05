@@ -50,6 +50,7 @@ public class Product {
 	
 	private Double dis_count; 
 	
+	
 	@ManyToOne
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
@@ -57,11 +58,11 @@ public class Product {
 	@Enumerated(EnumType.STRING)
 	private AvailabilityStockStatus stockStatus;
 	
-	private String imgUrl;
+	private Integer ratingsCount = 0;
 	
-	private Double totalRating;
+	private Double totalRating = 0.0;
 	
-	private Double averageRating;
+	private Double averageRating = 0.0;
 	
 	@Enumerated(EnumType.STRING)
 	private ProductStatus productStatus;
