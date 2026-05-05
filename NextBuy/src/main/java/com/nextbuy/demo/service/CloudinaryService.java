@@ -34,6 +34,28 @@ public class CloudinaryService {
             throw new RuntimeException("Failed to upload image to Cloudinary", e);
         }
     }
+    
+    public String uploadBrandLogo(MultipartFile file) {
+    	try {
+    		Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "logo_pictures"));
+    		
+    		return uploadResult.get("secure_url").toString();
+    	}
+    	catch(IOException e) {
+    		throw new RuntimeException("Failed to upload brand logo to Cloudinary", e);
+    	}
+    }
+    
+    public String uploadProductImage(MultipartFile file) {
+		try {
+			Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "product_pictures"));
+			
+			return uploadResult.get("secure_url").toString();
+		}
+		catch(IOException e) {
+			throw new RuntimeException("Failed to upload product image to Cloudinary", e);
+		}
+	}
 
     
     public void deleteFile(String publicId) {

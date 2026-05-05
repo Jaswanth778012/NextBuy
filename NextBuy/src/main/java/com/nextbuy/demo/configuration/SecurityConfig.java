@@ -39,10 +39,12 @@ public class SecurityConfig {
 
 						.requestMatchers("/auth/**").permitAll()
 						
-						.requestMatchers("/Admin/**").hasRole("ADMIN")
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**").hasRole("ADMIN")
 
-			            .requestMatchers("/user/**").hasRole("USER")
-
+			            .requestMatchers("/User/**", "/Rating/**").hasRole("USER")
+			            
+			            .requestMatchers("/notifications").hasAnyRole("USER","ADMIN")
+			            
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider)
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
