@@ -38,7 +38,7 @@ public class RatingService {
 		
 		User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
 		
-		Rating existingRating = ratingRepo.findByProductAndUser(product, user).orElseThrow(() -> new RuntimeException("Rating already Exists by user"));
+		Rating existingRating = ratingRepo.findByProductAndUser(product, user).orElse(null);
 		
 		if(existingRating != null)
 		{
