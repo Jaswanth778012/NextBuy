@@ -56,10 +56,12 @@ public class Product {
 	
 	@Enumerated(EnumType.STRING)
 	private AvailabilityStockStatus stockStatus;
-
-	private Double totalRating;
 	
-	private Double averageRating;
+	private Integer ratingsCount = 0;
+	
+	private Double totalRating = 0.0;
+	
+	private Double averageRating = 0.0;
 	
 	@Enumerated(EnumType.STRING)
 	private ProductStatus productStatus;
