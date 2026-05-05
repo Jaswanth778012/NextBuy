@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.service.ProductService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/Product")
@@ -26,9 +30,9 @@ public class ProductController {
 		this.productService = productService;
 	}
     @PostMapping("/addProduct")
-	public String addProduct(@RequestBody  ProductDTO Pdto) {
+	public String addProduct(@RequestPart("product") @Valid ProductDTO Pdto, @RequestPart(value = "image", required = false)  MultipartFile image) {
     	
-		return productService.addProduct(Pdto);
+		return productService.addProduct(Pdto, image);
 	}
     @DeleteMapping("/deleteProduct/{name}/{id}")
     public String deleteProduct(@PathVariable String name, @PathVariable Long id) {
@@ -39,8 +43,8 @@ public class ProductController {
     	return productService.viewAllProducts();
     }
     @PatchMapping("/updateProduct/{id}")
-    public String updateProduct(@PathVariable Long id , @RequestBody ProductDTO productDto) {
-    	return productService.updateProduct(id,productDto);
+    public String updateProduct(@PathVariable Long id , @RequestPart("product") ProductDTO productDto, @RequestPart(value = "image", required = false) MultipartFile image) {
+    	return productService.updateProduct(id,productDto, image);
     }
     @PatchMapping("/updateProductStockQality/{id}/{stock}")
     public String updateProductStockQality(@PathVariable Long id, @PathVariable int stock) {

@@ -2,7 +2,10 @@ package com.nextbuy.demo.service;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
@@ -15,13 +18,15 @@ public class ProductService {
 	
 	ProductRepository  productRepo;
 	BrandRepository brandRepo;
+	CloudinaryService cloudinaryService;
 	
-	public ProductService(ProductRepository productRepo, BrandRepository brandRepo) {
+	public ProductService(ProductRepository productRepo, BrandRepository brandRepo, CloudinaryService cloudinaryService) {
 		super();
 		this.productRepo = productRepo;
 		this.brandRepo = brandRepo;
+		this.cloudinaryService = cloudinaryService;
 	}
-	public String addProduct(ProductDTO Pdto) {
+	public String addProduct(ProductDTO Pdto, MultipartFile imageFile) {
 		Product p = new Product();
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
 			return "Product alredy existed !!!";
@@ -41,7 +46,11 @@ public class ProductService {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
     	}
     	
-    	p.setImageUrl(null);
+    	if(imageFile != null && !imageFile.isEmpty()) {
+			String imageUrl = cloudinaryService.uploadProductImage(imageFile);
+			p.setImageUrl(imageUrl);
+		}
+    	
     	p.setAverageRating(Pdto.getAverageRating());
     	p.setTotalRating(Pdto.getTotalRating());
     	p.setProductStatus(Pdto.getProductStatus());
@@ -80,7 +89,7 @@ public class ProductService {
 		return allproducts;
 	}
 	
-	public String updateProduct(Long id ,ProductDTO product ) {
+	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
 		
 		    Optional<Product> pr = productRepo.findById(id) ;
 		    if(pr.isEmpty()) {
@@ -102,7 +111,10 @@ public class ProductService {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
     	}
     	
-    	p.setImageUrl(null);
+    	if(imageFile != null && !imageFile.isEmpty()) {
+    		String imageUrl = cloudinaryService.uploadProductImage(imageFile);
+    		p.setImageUrl(imageUrl);
+    	}
     	p.setAverageRating(product.getAverageRating());
     	p.setTotalRating(product.getTotalRating());
     	
