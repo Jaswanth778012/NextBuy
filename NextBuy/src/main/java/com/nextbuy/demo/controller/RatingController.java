@@ -44,11 +44,6 @@ public class RatingController {
 		return ratingService.getRatingsByProduct(prodId);
 	}
 	
-//	@GetMapping("/user")
-//	public Rating getUserRating(  @RequestParam Long productId, @RequestParam Long userId) 
-//	{
-//	    return ratingService.getUserRating(productId, userId);
-//	}
 	
 	@GetMapping("/my-ratings")
 	public List<Rating> getMyRatings(Principal principal) {

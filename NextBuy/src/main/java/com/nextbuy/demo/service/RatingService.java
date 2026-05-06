@@ -139,17 +139,6 @@ public class RatingService {
 	    return ratingRepo.findByProduct(product);
 	}
 	
-//	public Rating getUserRating(Long productId, Long userId) {
-//
-//	    Product product = prodRepo.findById(productId)
-//	            .orElseThrow(() -> new RuntimeException("Product not found"));
-//
-//	    User user = userRepo.findById(userId)
-//	            .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//	    return ratingRepo.findByProductAndUser(product, user)
-//	            .orElseThrow(() -> new RuntimeException("Rating not found"));
-//	}
 	
 	public List<Rating> getRatingsByUser(String username) {
 

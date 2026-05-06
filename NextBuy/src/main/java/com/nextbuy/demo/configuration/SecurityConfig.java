@@ -41,9 +41,9 @@ public class SecurityConfig {
 						
 						.requestMatchers("/Admin/**","/Product/**","/Brands/**").hasRole("ADMIN")
 
-			            .requestMatchers("/User/**", "/Rating/**").hasRole("USER")
+			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**").hasRole("USER")
 			            
-			            .requestMatchers("/notifications").hasAnyRole("USER","ADMIN")
+			            .requestMatchers("/notifications","/Common/**").hasAnyRole("USER","ADMIN")
 			            
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider)

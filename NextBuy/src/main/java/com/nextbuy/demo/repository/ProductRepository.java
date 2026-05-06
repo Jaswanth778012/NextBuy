@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 import com.nextbuy.demo.entity.Brand;
 import com.nextbuy.demo.entity.Product;
@@ -15,5 +16,7 @@ public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpe
 	boolean existsByNameAndBrand(String name, Brand brand);
 	Optional<Product> findByName(String name);
 	List<Product> findByCategory(String category);
+	 @Query("SELECT DISTINCT p.category FROM Product p")
+	List<String> findAllProductCategory();
 
 }
