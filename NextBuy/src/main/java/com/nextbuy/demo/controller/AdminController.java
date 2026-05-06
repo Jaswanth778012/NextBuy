@@ -86,11 +86,6 @@ public class AdminController {
       return ResponseEntity.ok("Email sent to all registered users");
   }
 
-  // ----- Any Authenticated User: Get All Notifications -----
-  @GetMapping("/notifications")
-  public ResponseEntity<List<SystemNotificationResponse>> getNotifications() {
-      return ResponseEntity.ok(broadcastService.getAllNotifications());
-  }
  
  @PatchMapping("/addAdmin/{email}")
  public String addAdmin(@PathVariable String email,@RequestParam String username,@RequestParam String password) {

@@ -28,9 +28,6 @@ public class UserController {
 		this.broadcastService = broadcastService;
 		this.jwtservice = jwtservice;
 	}
-	@GetMapping("/notifications")
-	  public ResponseEntity<List<SystemNotificationResponse>> getNotifications() {
-	      return ResponseEntity.ok(broadcastService.getAllNotifications());
-	  }
+	
 	
 }
