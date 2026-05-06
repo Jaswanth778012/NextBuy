@@ -1,8 +1,12 @@
 package com.nextbuy.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 
@@ -10,6 +14,8 @@ import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.Product;
 
 import com.nextbuy.demo.repository.ProductRepository;
+
+import jakarta.persistence.criteria.Predicate;
 
 @Service
 public class CommonService {
@@ -62,5 +68,46 @@ public class CommonService {
 	            .toList();
 	
 	  
+   }
+   
+   public Page<Product> getProductsWithFilters(String search, String category,
+           Double minPrice, Double maxPrice,
+           String stockStatus, Long brandId,
+           Pageable pageable) {
+Specification<Product> spec = (root, query, cb) -> {
+List<Predicate> predicates = new ArrayList<>();
+if (search != null && !search.isEmpty()) {
+String pattern = "%" + search.toLowerCase() + "%";
+predicates.add(cb.or(
+cb.like(cb.lower(root.get("name")), pattern),
+cb.like(cb.lower(root.get("description")), pattern)
+));
+}
+if (category != null && !category.isEmpty()) {
+predicates.add(cb.equal(root.get("category"), category));
+}
+if (minPrice != null) {
+predicates.add(cb.greaterThanOrEqualTo(root.get("price"), minPrice));
+}
+if (maxPrice != null) {
+predicates.add(cb.lessThanOrEqualTo(root.get("price"), maxPrice));
+}
+if (stockStatus != null && !stockStatus.isEmpty()) {
+predicates.add(cb.equal(root.get("stockStatus").as(String.class), stockStatus));
+}
+if (brandId != null) {
+predicates.add(cb.equal(root.get("brand").get("id"), brandId));
+}
+return cb.and(predicates.toArray(new Predicate[0]));
+};
+return productRepo.findAll(spec, pageable);
+}
+   
+   public List<String> getAllCategorys(){
+	    List<String> category = productRepo.findAllProductCategory().stream().distinct().sorted().toList();
+	    if(category.isEmpty()) {
+	     throw new RuntimeException("Category Empty!!");
+	    }
+	    return category;
    }
 }

@@ -28,6 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .authorities("ROLE_" + user.getRole())
                 .build();
     }
+    
 }
-
 
