@@ -58,7 +58,7 @@ public class ProductController {
     	return productService.SerachID(id);
     }
     @PatchMapping("/updateProductStatus/{id}/{status}")
-    public String updateProductStatus(@PathVariable Long id, @PathVariable ProductStatus satus) {
-    	return productService.updateProductStatus(id, satus);
+    public String updateProductStatus(@PathVariable Long id, @PathVariable ProductStatus status) {
+    	return productService.updateProductStatus(id, status);
     }
 }

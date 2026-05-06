@@ -2,7 +2,6 @@ package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -123,10 +122,10 @@ public class ProductService {
     	}
     	
     	if(p.getStockQuantity() <= 0) {
-    		p.setProductStatus(ProductStatus.INACTIVE);
+    		p.setProductStatus(ProductStatus.OUT_OF_STOCK);
     	
     	}else {
-    		p.setProductStatus(ProductStatus.ACTIVE);
+    		p.setProductStatus(ProductStatus.AVAILABLE);
     	}
     	
     	
@@ -156,10 +155,10 @@ public class ProductService {
 	    	}
 
 	    	if(p.getStockQuantity() <= 0) {
-	    		p.setProductStatus(ProductStatus.INACTIVE);
+	    		p.setProductStatus(ProductStatus.OUT_OF_STOCK);
 	    	
 	    	}else {
-	    		p.setProductStatus(ProductStatus.ACTIVE);
+	    		p.setProductStatus(ProductStatus.AVAILABLE);
 	    	}
 		  productRepo.save(p);
 		  return "Stock Quantity Updated Successfully!!";
@@ -189,7 +188,7 @@ public class ProductService {
 		  if(p.isEmpty()) {
 			  return "Product not found";
 		  }
-		 Product pr = productRepo.findById(id).get();
+		 Product pr = p.get();
 		 pr.setProductStatus(status);
 		 productRepo.save(pr);
 		 return "Product Satus Updated !! ";
