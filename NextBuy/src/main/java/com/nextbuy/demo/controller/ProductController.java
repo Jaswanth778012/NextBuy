@@ -57,10 +57,6 @@ public class ProductController {
     public Product searchById(@PathVariable Long id) {
     	return productService.SerachID(id);
     }
-    @GetMapping("/searchCategory/{category}")
-    public List<Product> searchCategory(@PathVariable String category){
-    	return productService.searchCategory(category);
-    }
     @PatchMapping("/updateProductStatus/{id}/{status}")
     public String updateProductStatus(@PathVariable Long id, @PathVariable ProductStatus satus) {
     	return productService.updateProductStatus(id, satus);
