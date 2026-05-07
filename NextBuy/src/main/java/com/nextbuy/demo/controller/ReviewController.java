@@ -24,7 +24,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    // ✅ Add Review
+
     @PostMapping(value = "/add", consumes = "multipart/form-data")
     public String addReview(
             @RequestParam Long productId,
@@ -35,31 +35,30 @@ public class ReviewController {
         return reviewService.addReview(productId, principal.getName(), comment, images);
     }
 
-    // ✅ Like
+
     @PostMapping("/{id}/like")
     public String like(@PathVariable Long id, Principal principal) {
         return reviewService.reactToReview(id, principal.getName(), true);
     }
 
-    // ✅ Dislike
+
     @PostMapping("/{id}/dislike")
     public String dislike(@PathVariable Long id, Principal principal) {
         return reviewService.reactToReview(id, principal.getName(), false);
     }
 
-    // ✅ Get all reviews of product
+
     @GetMapping("/product/{productId}")
     public List<Review> getReviews(@PathVariable Long productId) {
         return reviewService.getReviewsByProduct(productId);
     }
 
-    // ✅ Like count
+
     @GetMapping("/{id}/likes")
     public long likes(@PathVariable Long id) {
         return reviewService.getLikes(id);
     }
 
-    // ✅ Dislike count
     @GetMapping("/{id}/dislikes")
     public long dislikes(@PathVariable Long id) {
         return reviewService.getDislikes(id);

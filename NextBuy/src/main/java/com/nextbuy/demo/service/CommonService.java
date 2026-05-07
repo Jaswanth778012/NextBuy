@@ -110,4 +110,12 @@ return productRepo.findAll(spec, pageable);
 	    }
 	    return category;
    }
+   public  Product findProductById(Long id) {
+		Optional<Product> p = productRepo.findById(id);
+		if(p.isEmpty()) {
+			throw new RuntimeException("Product not Found");
+		}
+		    Product product = productRepo.findById(id).get();
+		    return product;
+	}
 }

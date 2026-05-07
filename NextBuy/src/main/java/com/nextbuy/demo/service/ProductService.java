@@ -163,15 +163,7 @@ public class ProductService {
 		  productRepo.save(p);
 		  return "Stock Quantity Updated Successfully!!";
 	}
-	//SERACH-BY-ID
-	public  Product SerachID(Long id) {
-		Optional<Product> p = productRepo.findById(id);
-		if(p.isEmpty()) {
-			throw new RuntimeException("Product not Found");
-		}
-		    Product product = productRepo.findById(id).get();
-		    return product;
-	}
+	
 	//SerachByCategory
 	public  List<Product> searchCategory(String category) {
 		return productRepo.findAll()
