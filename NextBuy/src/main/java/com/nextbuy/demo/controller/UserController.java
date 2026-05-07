@@ -1,7 +1,6 @@
 package com.nextbuy.demo.controller;
 
 import java.security.Principal;
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,17 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nextbuy.demo.dto.SystemNotificationResponse;
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.service.BroadcastService;
 import com.nextbuy.demo.service.JwtService;
 import com.nextbuy.demo.service.UserService;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.websocket.server.PathParam;
-
 @RestController
 @RequestMapping("User")
 public class UserController {
@@ -33,13 +28,10 @@ public class UserController {
 	JwtService jwtService;
 	UserService userService;
 
-
-
-
-	
 	public UserController(BroadcastService broadcastService, JwtService jwtService, UserService userService) {
 		super();
 		this.broadcastService = broadcastService;
+
 		this.jwtService = jwtService;
 		this.userService = userService;
 	}

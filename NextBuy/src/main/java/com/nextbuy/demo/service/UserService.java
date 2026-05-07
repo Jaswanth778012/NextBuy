@@ -1,6 +1,7 @@
 package com.nextbuy.demo.service;
 
 
+
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +28,8 @@ public class UserService {
 		this.userRepo = userRepo;
 		this.productRepo = productRepo;
 		this.passwordEncoder = passwordEncoder;
-	}
+	 }
+
 	//getProfile
 	public Optional<User> getProfileByUsername(String username) {
         return userRepo.findByUsername(username);
@@ -85,6 +87,5 @@ public class UserService {
 		 
 		   return matches+ " Enter oldPassword!!";
 	}
-	
 }
     
