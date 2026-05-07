@@ -56,7 +56,6 @@ public class Product {
 	
 	private Double actual;
 	
-	
 	@ManyToOne
 	@JoinColumn(name = "brand_id")
 	private Brand brand;

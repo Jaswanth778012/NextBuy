@@ -43,10 +43,7 @@ public class UserController {
 		this.jwtService = jwtService;
 		this.userService = userService;
 	}
-	@GetMapping("/notifications")
-	  public ResponseEntity<List<SystemNotificationResponse>> getNotifications() {
-	      return ResponseEntity.ok(broadcastService.getAllNotifications());
-	  }
+	
 	
 	@GetMapping("/profile")
 	 public ResponseEntity<User> getProfile(Principal principal) {
