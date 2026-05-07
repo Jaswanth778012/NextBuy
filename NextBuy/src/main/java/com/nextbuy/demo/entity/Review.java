@@ -1,42 +1,45 @@
 package com.nextbuy.demo.entity;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ratings", uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "user_id"}))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rating {
+public class Review {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private int rating; 
+	@Column(length = 1000)
+	private String comment;
 	
-	@ManyToOne
-	@JoinColumn(name = "product_id")
-	private Product product;
+	@ElementCollection
+	private List<String> imageUrls;
 	
+	@OneToOne
+	@JoinColumn(name = "rating_id")
+	private Rating rating;
 	
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
-
-	@OneToOne(mappedBy = "rating", cascade = CascadeType.ALL)
-	private Review review;
+	@OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
+	private List<ReviewReaction> reactions;
 	
 }

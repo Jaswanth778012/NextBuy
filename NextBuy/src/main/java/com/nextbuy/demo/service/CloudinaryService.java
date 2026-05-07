@@ -2,6 +2,7 @@ package com.nextbuy.demo.service;
 
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -64,5 +65,25 @@ public class CloudinaryService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete image from Cloudinary", e);
         }
+    }
+    
+    public String uploadImage(MultipartFile file) {
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.emptyMap()
+            );
+            return uploadResult.get("secure_url").toString();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Image upload failed");
+        }
+    }
+    
+    public List<String> uploadImagesReview(List<MultipartFile> files) {
+
+        return files.stream()
+                .map(this::uploadImage)
+                .toList();
     }
 }
