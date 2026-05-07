@@ -69,5 +69,9 @@ public class CommonController {
     public List<String> getAllCategory(){
     	return commonService.getAllCategorys();
     }
+    @GetMapping("/findProductById/{id}")
+    public Product searchById(@PathVariable Long id) {
+    	return commonService.findProductById(id);
+    }
 }
 

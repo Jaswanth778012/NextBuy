@@ -54,6 +54,8 @@ public class Product {
 	
 	private Double dis_count; 
 	
+	private Double actual;
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "brand_id")

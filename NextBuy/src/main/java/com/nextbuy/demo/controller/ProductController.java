@@ -53,10 +53,7 @@ public class ProductController {
     public String updateProductStockQality(@PathVariable Long id, @PathVariable int stock) {
     	return productService.updateProductStockQantity(id, stock);
     }
-    @GetMapping("/searchById/{id}")
-    public Product searchById(@PathVariable Long id) {
-    	return productService.SerachID(id);
-    }
+
     @PatchMapping("/updateProductStatus/{id}/{status}")
     public String updateProductStatus(@PathVariable Long id, @PathVariable ProductStatus status) {
     	return productService.updateProductStatus(id, status);
