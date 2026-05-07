@@ -1,8 +1,13 @@
 package com.nextbuy.demo.service;
 
 
+
+import java.util.Optional;
+
+
 import org.springframework.stereotype.Service;
 
+import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.repository.UserRepository;
 
 @Service
@@ -14,9 +19,5 @@ public class UserService {
 		super();
 		this.userRepo = userRepo;
 	 }
-	 
-	 
-	 
-	
 
 }
