@@ -41,7 +41,7 @@ public class SecurityConfig {
 						
 						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create").hasRole("ADMIN")
 
-			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply","/Cupon/remove").hasRole("USER")
+			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply","/Cupon/remove","/SaveForLater/**","/Wishlist/**").hasRole("USER")
 			            
 			            .requestMatchers("/notifications","/Common/**").hasAnyRole("USER","ADMIN")
 			            
