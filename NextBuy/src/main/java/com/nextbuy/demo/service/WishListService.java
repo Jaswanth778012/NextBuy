@@ -50,7 +50,7 @@ public class WishListService {
 	}
 	
 	
-	public String addProductToWishList(String username, Long productId, Long wishListId)
+	public String addProductToWishList(String username,  Long wishListId,Long productId)
 	{
 		User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 		
