@@ -13,9 +13,15 @@ import com.nextbuy.demo.service.CuponService;
 
 @RestController
 @RequestMapping("/Cupon")
+
 public class CuponController {
 	
 	private CuponService cuponService;
+	
+	CuponController(CuponService cuponService)
+	{
+		this.cuponService = cuponService;
+	}
 	
 	@PostMapping("/create")
 	public String cuponCreate(@RequestBody CuponRequestDto requestDto)

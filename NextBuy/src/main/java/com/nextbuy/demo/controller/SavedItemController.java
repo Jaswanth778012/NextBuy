@@ -19,6 +19,10 @@ public class SavedItemController {
 	
 	private SavedItemService savedService;
 	
+	public SavedItemController(SavedItemService savedService) {
+		this.savedService = savedService;
+	}
+	
 	@PostMapping("/saveForItem/{prodId}")
 	public String saveForLater(Principal principal, @PathVariable Long prodId)
 	{

@@ -1,6 +1,6 @@
 package com.nextbuy.demo.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +28,7 @@ public class Cupon {
 
     private Double minimumAmount;
 
-    private LocalDate expiryDate;
+    private LocalDateTime expiryDate;
 
     private boolean active;
 }

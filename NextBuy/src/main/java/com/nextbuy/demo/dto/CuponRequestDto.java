@@ -1,6 +1,6 @@
 package com.nextbuy.demo.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -13,7 +13,7 @@ public class CuponRequestDto {
 
 	    private Double minimumAmount;
 
-	    private LocalDate expiryDate;
+	    private LocalDateTime expiryDate;
 
 	    private boolean active;
 }

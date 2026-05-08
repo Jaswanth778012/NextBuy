@@ -1,7 +1,6 @@
 package com.nextbuy.demo.service;
 
-import java.security.Principal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,7 @@ import com.nextbuy.demo.repository.UserRepository;
 
 @Service
 public class CuponService {
+	
 	private  CartRepository cartRepository;
 	
 	private UserRepository userRepository;
@@ -65,7 +65,7 @@ public class CuponService {
 			throw new RuntimeException("Cupon is not active");
 		}
 		
-		if(cupon.getExpiryDate().isBefore(LocalDate.now()))
+		if(cupon.getExpiryDate().isBefore(LocalDateTime.now()))
 		{
 			throw new RuntimeException("Cupon is Expired");
 		}
