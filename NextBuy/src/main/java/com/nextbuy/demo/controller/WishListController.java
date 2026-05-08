@@ -32,9 +32,9 @@ public class WishListController {
 	
 	@PostMapping("/addProduct/{wishListId}/{productId}")
 	public String addProductToWishList(Principal principal, @PathVariable Long wishListId, @PathVariable Long productId) {
-		return wishListService.addProductToWishList(principal.getName(), wishListId, productId);
+		return wishListService.addProductToWishList(principal.getName(),wishListId ,wishListId);
 	}
-	
+
 	@GetMapping("/getWishList")
 	public List<WishList> getWishList(Principal principal) {
 		return wishListService.getWishlists(principal.getName());

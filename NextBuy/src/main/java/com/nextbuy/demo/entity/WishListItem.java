@@ -1,6 +1,7 @@
 package com.nextbuy.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class WishListItem {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    
     private Product product;
 	
 
