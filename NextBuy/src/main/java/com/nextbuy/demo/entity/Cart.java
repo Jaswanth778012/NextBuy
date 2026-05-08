@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
@@ -50,6 +51,10 @@ public class Cart {
 	@JoinColumn(name = "user_id")
 	 @JsonIgnore
 	private User user;
+	 
+	 @ManyToOne
+	 @JoinColumn(name = "cupon_id")
+	 private Cupon appliedCupon;
 	
 	 @PrePersist
 	    public void prePersist() {

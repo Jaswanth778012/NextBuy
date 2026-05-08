@@ -3,7 +3,9 @@ package com.nextbuy.demo.controller;
 import java.security.Principal;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,10 +31,17 @@ public class CuponController {
 		return cuponService.createCupon(requestDto);
 	}
 	
-	@PostMapping("/apply")
-	public String applyCupon(Principal principal, String code)
+	@PostMapping("/apply/{code}")
+	public String applyCupon(Principal principal, @PathVariable String code)
 	{
 		return cuponService.applyCoupon(principal.getName(), code);
+	}
+	
+	@PutMapping("/update/{code}")
+	public String updateCupon(@PathVariable String code,
+	                          @RequestBody CuponRequestDto requestDto)
+	{
+	    return cuponService.updateCupon(code, requestDto);
 	}
 	
 	@DeleteMapping("/remove")

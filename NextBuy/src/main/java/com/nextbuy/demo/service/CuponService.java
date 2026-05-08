@@ -34,13 +34,17 @@ public class CuponService {
 			throw new RuntimeException("Cupon code already exists");
 		}
 		
+		if(cuponRequest.getDiscountPercentage() <= 0 ||cuponRequest.getDiscountPercentage() > 100)
+		{
+			throw new RuntimeException("Invalid discount percentage");
+		}
 		Cupon cupon = new Cupon();
 		
 		cupon.setCode(cuponRequest.getCode().toUpperCase());
 		
 		cupon.setDiscountPercentage(cuponRequest.getDiscountPercentage());
 		
-		cupon.setActive(cuponRequest.isActive());
+		cupon.setActive(false);
 		
 		cupon.setExpiryDate(cuponRequest.getExpiryDate());
 		
@@ -60,6 +64,11 @@ public class CuponService {
 		
 		Cupon cupon = cuponRepository.findByCode(Code.toUpperCase()).orElseThrow(() -> new RuntimeException("Cupon code not found"));
 		
+		if(cart.getAppliedCupon() != null)
+	    {
+	        throw new RuntimeException("Coupon already applied");
+	    }
+
 		if(!cupon.isActive())
 		{
 			throw new RuntimeException("Cupon is not active");
@@ -75,17 +84,53 @@ public class CuponService {
 			throw new RuntimeException("Minimun Amount is not reached");
 		}
 		
-		double discount = cart.getDiscount()* cupon.getDiscountPercentage()/100;
+		double discount = cart.getTotalPrice()* cupon.getDiscountPercentage()/100;
 		
 		cart.setDiscount(discount);
 		
-		cart.setFinalPrice(cart.getTotalPrice() - discount + cart.getShipingCharges());
+		cart.setAppliedCupon(cupon);
+		
+		double finalPrice = cart.getTotalPrice() - discount + cart.getShipingCharges();
+		
+		if(finalPrice < 0)
+		{
+		    finalPrice = 0;
+		}
+		
+		cart.setFinalPrice(finalPrice);
 		
 		cartRepository.save(cart);
 		
 		return "Cupon Applied Successfully";
 	}
 	
+	public String updateCupon(String code, CuponRequestDto requestDto)
+	{
+	    Cupon cupon = cuponRepository.findByCode(code.toUpperCase())
+	            .orElseThrow(() -> new RuntimeException("Cupon not found"));
+	    
+	    if(requestDto.getExpiryDate().isBefore(LocalDateTime.now()))
+	    {
+	        throw new RuntimeException("Invalid expiry date");
+	    }
+	    
+	    if(requestDto.getDiscountPercentage() <= 0 ||requestDto.getDiscountPercentage() > 100)
+		{
+			throw new RuntimeException("Invalid discount percentage");
+		}
+
+	    cupon.setDiscountPercentage(requestDto.getDiscountPercentage());
+
+	    cupon.setMinimumAmount(requestDto.getMinimumAmount());
+
+	    cupon.setExpiryDate(requestDto.getExpiryDate());
+
+	    cupon.setActive(requestDto.isActive());
+
+	    cuponRepository.save(cupon);
+
+	    return "Cupon updated successfully";
+	}
 	
 	public String removeCupon(String username)
 	{
@@ -94,6 +139,8 @@ public class CuponService {
 		Cart cart = cartRepository.findByUserAndActiveTrue(user).orElseThrow(() -> new RuntimeException("Cart not found"));
 		
 		cart.setDiscount(0.0);
+		
+		cart.setAppliedCupon(null);
 		
 		cart.setFinalPrice(cart.getTotalPrice() + cart.getShipingCharges());
 		
