@@ -3,12 +3,15 @@ package com.nextbuy.demo.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -34,16 +37,18 @@ public class Cart {
 	
 	private Double shipingCharges= 0.0;
 	
-	private boolean isActive= true;
+	 private Boolean active = true; 
+	 
 	
 	private LocalDateTime createdAt;
 	
 	private LocalDateTime updatedAt;
 	
-	@OneToOne(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CartItem> cartItems;
-	
+	 @OneToOne
 	@JoinColumn(name = "user_id")
+	 @JsonIgnore
 	private User user;
 	
 	 @PrePersist

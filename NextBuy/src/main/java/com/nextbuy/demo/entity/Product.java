@@ -52,9 +52,10 @@ public class Product {
 	
 	private Integer stockQuantity;
 	
-	private Double dis_count; 
+	private Double discountPercentage; 
 	
-	private Double actual;
+	private Double finalPrice;
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "brand_id")
