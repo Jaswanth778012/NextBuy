@@ -61,15 +61,19 @@ public class CartService {
 		            .stream()
 		            .filter(item -> item.getProduct().getId().equals(product.getId()))
 		            .findFirst();
-
+		    int qty = (cartDTO.getQuantity() == null || cartDTO.getQuantity() <= 0)
+	                ? 1
+	                : cartDTO.getQuantity();
 		    if (existingItemOpt.isPresent()) {
 
 		        // UPDATE EXISTING ITEM
 		        CartItem item = existingItemOpt.get();
-
-		        item.setQuantity(item.getQuantity() + cartDTO.getQuantity());
+		        
+		       
+		        item.setQuantity(item.getQuantity() + qty);
 		        item.setSubtotal(item.getQuantity() * product.getPrice());
-
+		        
+            
 		        cartItemrepo.save(item);
 
 		    } else {
@@ -78,9 +82,9 @@ public class CartService {
 		        CartItem item = new CartItem();
 		        item.setCart(cart);
 		        item.setProduct(product);
-		        item.setQuantity(cartDTO.getQuantity());
-		        item.setSubtotal(product.getPrice() * cartDTO.getQuantity());
-
+		        
+		        item.setSubtotal(product.getPrice() * qty);
+		       
 		        cartItemrepo.save(item);
 		    }
 
@@ -101,14 +105,14 @@ public class CartService {
 		    double discount = 0;
 
 		    if (totalAmount > 100000) {
-		        discount = totalAmount * 0.20;   // 20%
+		        discount = 20;   // 20%
 		    } else if (totalAmount > 10000) {
-		        discount = totalAmount * 0.10;   // 10%
+		        discount = 10;   // 10%
 		    }
 
 		    cart.setDiscount(discount);
 
-		    double finalPrice = totalAmount + shipping - discount;
+		    double finalPrice = totalAmount - totalAmount*discount/100;
 		    cart.setFinalPrice(finalPrice);
 
 		    cartRepo.save(cart);
@@ -160,15 +164,15 @@ public class CartService {
 	    double discount = 0;
 
 	    if (total > 100000) {
-	        discount = total * 0.20;
+	        discount = 20;
 	    } else if (total > 50000) {
-	        discount = total * 0.10;
+	        discount = 10;
 	    }
 
 	    cart.setDiscount(discount);
 
 	    // 10. Final price
-	    cart.setFinalPrice(total + shipping - discount);
+	    cart.setFinalPrice(shipping+total -(total*discount/100));
 
 	    // 11. Save cart
 	    cartRepo.save(cart);
@@ -253,14 +257,14 @@ public class CartService {
 	    double discount = 0;
 
 	    if (total > 100000) {
-	        discount = total * 0.20;
+	        discount = 20;
 	    } else if (total > 50000) {
-	        discount = total * 0.10;
+	        discount =10;
 	    }
 
 	    cart.setDiscount(discount);
 
-	    cart.setFinalPrice(total + shipping - discount);
+	    cart.setFinalPrice(total-(total*discount/100)+shipping);
 
 	    cartRepo.save(cart);
 
