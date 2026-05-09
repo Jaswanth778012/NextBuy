@@ -84,13 +84,15 @@ public class CuponService {
 			throw new RuntimeException("Minimun Amount is not reached");
 		}
 		
-		double discount = cart.getTotalPrice()* cupon.getDiscountPercentage()/100;
+		double discount =  cupon.getDiscountPercentage();
 		
-		cart.setDiscount(discount);
+		double maxDiscount = cart.getTotalPrice()* discount/100;
+		
+		cart.setCuponDiscount(discount);
 		
 		cart.setAppliedCupon(cupon);
 		
-		double finalPrice = cart.getTotalPrice() - discount + cart.getShipingCharges();
+		double finalPrice = cart.getTotalPrice() - maxDiscount + cart.getShipingCharges();
 		
 		if(finalPrice < 0)
 		{
@@ -138,11 +140,11 @@ public class CuponService {
 		
 		Cart cart = cartRepository.findByUserAndActiveTrue(user).orElseThrow(() -> new RuntimeException("Cart not found"));
 		
-		cart.setDiscount(0.0);
+		cart.setCuponDiscount(0.0);
 		
 		cart.setAppliedCupon(null);
 		
-		cart.setFinalPrice(cart.getTotalPrice() + cart.getShipingCharges());
+		cart.setFinalPrice(  cart.getShipingCharges()+cart.getTotalPrice() - cart.getTotalPrice()*cart.getDiscount()/100);
 		
 		cartRepository.save(cart);
 		

@@ -38,6 +38,7 @@ public class WishListService {
 		 
 		 WishList wishList = new WishList();
 		 
+		 
 		 wishList.setWishListName(request.getWishListName());
 		 
 		 wishList.setPublic(request.isPublic());
@@ -66,6 +67,11 @@ public class WishListService {
                     "Product already in wishlist");
         }
 		
+		if (!wishList.getUser().getId().equals(user.getId())) {
+		    throw new RuntimeException("Unauthorized access to wishlist");
+		}
+	 
+		
 		WishListItem wishListItem = new WishListItem();
 		
 		wishListItem.setProduct(product);
@@ -87,6 +93,11 @@ public class WishListService {
 		
 		WishListItem wishListItem = wishListItemRepository.findByWishlistAndProduct(wishList, product).orElseThrow(() -> new RuntimeException("Product not found in wishlist"));
 		
+		if (!wishList.getUser().getId().equals(user.getId())) {
+		    throw new RuntimeException("Unauthorized access to wishlist");
+		}
+	 
+		
 		wishList.getWishlistItems().remove(wishListItem);
 		
 		wishListItemRepository.delete(wishListItem);
@@ -99,6 +110,11 @@ public class WishListService {
 		User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 		
 		WishList wishList = wishListRepository.findById(wishListId).orElseThrow(() -> new RuntimeException("WishList not found"));
+		
+		if (!wishList.getUser().getId().equals(user.getId())) {
+		    throw new RuntimeException("Unauthorized access to wishlist");
+		}
+	 
 		
 		wishListRepository.delete(wishList);
 		
@@ -113,4 +129,25 @@ public class WishListService {
 
         return wishListRepository.findByUser(user);
     }
+	
+	public List<String> getWishListById(String username, Long wishListId) {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() ->
+						new RuntimeException("User not found"));
+
+		WishList wishList = wishListRepository.findById(wishListId)
+				.orElseThrow(() ->
+						new RuntimeException("Wishlist not found"));
+		
+
+		if (!wishList.isPublic() &&
+			    !wishList.getUser().getId().equals(user.getId())) {
+
+			    throw new RuntimeException("Unauthorized access to wishlist");
+			}
+	 
+		return wishList.getWishlistItems().stream()
+				.map(item -> item.getProduct().getName())
+				.toList();
+	}
 }

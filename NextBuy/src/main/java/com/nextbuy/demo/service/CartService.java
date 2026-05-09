@@ -111,8 +111,10 @@ public class CartService {
 		    }
 
 		    cart.setDiscount(discount);
+		    
+		    cart.setCuponDiscount(null);
 
-		    double finalPrice = shipping+totalAmount - totalAmount*discount/100;
+		    double finalPrice = shipping + totalAmount - totalAmount*discount/100;
 		    cart.setFinalPrice(finalPrice);
 
 		    cartRepo.save(cart);

@@ -39,6 +39,7 @@ public class Cart {
 	private Double shipingCharges= 0.0;
 	
 	 private Boolean active = true; 
+	 
 	 private Double cuponDiscount;
 	
 	private LocalDateTime createdAt;

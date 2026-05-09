@@ -32,7 +32,7 @@ public class WishListController {
 	
 	@PostMapping("/addProduct/{wishListId}/{productId}")
 	public String addProductToWishList(Principal principal, @PathVariable Long wishListId, @PathVariable Long productId) {
-		return wishListService.addProductToWishList(principal.getName(),wishListId ,wishListId);
+		return wishListService.addProductToWishList(principal.getName(),wishListId ,productId);
 	}
 
 	@GetMapping("/getWishList")
@@ -43,6 +43,11 @@ public class WishListController {
 	@DeleteMapping("/removeWishlist/{wishListId}")
 	public String removeWishList(Principal principal, @PathVariable Long wishListId) {
 		return wishListService.deleteWishList(principal.getName(), wishListId);
+	}
+	
+	@GetMapping("/getWishListProducts/{wishListId}")
+	public List<String> getWishListProducts(Principal principal, @PathVariable Long wishListId) {
+		return wishListService.getWishListById(principal.getName(), wishListId);
 	}
 	
 	@DeleteMapping("/removeProduct/{wishListId}/{productId}")
