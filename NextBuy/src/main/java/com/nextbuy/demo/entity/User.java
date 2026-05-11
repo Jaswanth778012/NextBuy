@@ -2,6 +2,7 @@ package com.nextbuy.demo.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.nextbuy.demo.enums.Gender;
 import com.nextbuy.demo.enums.Role;
@@ -14,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -83,6 +85,12 @@ public class User {
 	
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	private Cart cart;
+	
+	@OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval=true)
+	private List<Address> addresses;
+	
+	@OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval=true)
+	private List<Order> orders;
 	
 	@PrePersist
 	protected void onCreate() {
