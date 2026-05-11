@@ -26,11 +26,12 @@ public class UserResponceDTO {
 	
 	private String imageUrl;
 	
-	private Double dis_count; 
+	private Double discountPercentage; 
 	
 	private Brand brand;
 	
 	private Double averageRating;
+	private Double finalPrice;
 	
 	private Map<String, String> attributes;
 	

@@ -58,4 +58,10 @@ public class ProductController {
     public String updateProductStatus(@PathVariable Long id, @PathVariable ProductStatus status) {
     	return productService.updateProductStatus(id, status);
     }
+    
+    @PatchMapping("/updateDisCount/{id}/{discount}")
+    	public String updateDisCount(@PathVariable Long id, @PathVariable Double discount) {
+    		return productService.updateDisCount(id, discount);
+    	}
+    
 }

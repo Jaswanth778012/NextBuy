@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.nextbuy.demo.entity.SavedItem;
 import com.nextbuy.demo.entity.User;
+import com.nextbuy.demo.entity.WishList;
 
-public interface SavedItemRepository extends JpaRepository<SavedItem, Long> {
-	List<SavedItem> findByUser(User user);
+public interface WishListRepository extends JpaRepository<WishList, Long> {
+		List<WishList> findByUser(User user);
 }

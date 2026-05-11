@@ -39,9 +39,9 @@ public class SecurityConfig {
 
 						.requestMatchers("/auth/**").permitAll()
 						
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**").hasRole("ADMIN")
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create").hasRole("ADMIN")
 
-			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**").hasRole("USER")
+			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**").hasRole("USER")
 			            
 			            .requestMatchers("/notifications","/Common/**").hasAnyRole("USER","ADMIN")
 			            

@@ -1,6 +1,6 @@
 package com.nextbuy.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,24 +14,23 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CartItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Integer quantity =1;
-
-    private Double subtotal;
-
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    @JsonIgnore
-    private Cart cart;
+@NoArgsConstructor
+public class WishListItem {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@ManyToOne
+    @JoinColumn(name = "wishlist_id")
+    @JsonBackReference
+    private WishList wishlist;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    
     private Product product;
+	
+
 }
