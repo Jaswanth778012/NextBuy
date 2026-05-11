@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.nextbuy.demo.dto.WishListRequestDto;
+import com.nextbuy.demo.entity.Cart;
+import com.nextbuy.demo.entity.CartItem;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.entity.WishList;
 import com.nextbuy.demo.entity.WishListItem;
+import com.nextbuy.demo.repository.CartItemRepository;
+import com.nextbuy.demo.repository.CartRepository;
 import com.nextbuy.demo.repository.ProductRepository;
 import com.nextbuy.demo.repository.UserRepository;
 import com.nextbuy.demo.repository.WishListItemRepository;
@@ -25,11 +29,17 @@ public class WishListService {
 	
 	private UserRepository userRepository;
 	
-	public WishListService(WishListRepository wishListRepository, WishListItemRepository wishListItemRepository, ProductRepository productRepository, UserRepository userRepository) {
+	private CartRepository cartRepository;
+	
+	private CartItemRepository cartItemRepository;
+	
+	public WishListService(WishListRepository wishListRepository, WishListItemRepository wishListItemRepository, ProductRepository productRepository, UserRepository userRepository, CartRepository cartRepository, CartItemRepository cartItemRepository) {
 		this.wishListRepository = wishListRepository;
 		this.wishListItemRepository = wishListItemRepository;
 		this.productRepository = productRepository;
 		this.userRepository = userRepository;
+		this.cartRepository = cartRepository;
+		this.cartItemRepository = cartItemRepository;
 	}
 	
 	public  String createWishList(String username, WishListRequestDto request) {
@@ -149,5 +159,51 @@ public class WishListService {
 		return wishList.getWishlistItems().stream()
 				.map(item -> item.getProduct().getName())
 				.toList();
+	}
+	
+	
+	public String addWishListItemToCart(String username, Long wishListId)
+	{
+		User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+		
+		WishList wishList = wishListRepository.findById(wishListId).orElseThrow(() -> new RuntimeException("WishList not found"));
+		
+		if (!wishList.getUser().getId().equals(user.getId())) {
+		    throw new RuntimeException("Unauthorized access to wishlist");
+		}
+		
+		Cart cart = cartRepository.findByUser(user).orElseGet(() -> {
+		    Cart newCart = new Cart();
+		    newCart.setUser(user);
+		    return cartRepository.save(newCart);
+		});
+		
+		for(WishListItem WishListitem : wishList.getWishlistItems())
+		{
+			Product product = WishListitem.getProduct();
+			
+			CartItem exisitingCartItem = cart.getCartItems().stream()
+					.filter(item -> item.getProduct().getId().equals(product.getId()))
+					.findFirst()
+					.orElse(null);
+			
+			if(exisitingCartItem != null)
+			{
+				exisitingCartItem.setQuantity(exisitingCartItem.getQuantity() + 1);
+				cartItemRepository.save(exisitingCartItem);
+			}
+			else
+			{
+				CartItem cartItem = new CartItem();
+				cartItem.setProduct(product);
+				cartItem.setQuantity(1);
+				cartItem.setCart(cart);
+				cart.getCartItems().add(cartItem);
+				cartItemRepository.save(cartItem);
+			}
+			
+		}
+		
+		return "All items from wishlist added to cart successfully";
 	}
 }

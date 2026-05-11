@@ -53,31 +53,31 @@ public class CartController {
                cartService.deleteItem(username, cartItemId)
        );
    }
-  @GetMapping("/viewCart")
-  public ResponseEntity<Cart> viewCart( Authentication authentication){
-	  String username = authentication.getName();
-	  return ResponseEntity.ok(cartService.viewCart(username));
-  }
-  @GetMapping("/viewItems")
-  public List<CartItem> viewItems(Authentication authentication){
-	  String username = authentication.getName();
-	  return cartService.viewItems(username);
-  }
-  @DeleteMapping("/deleteCart")
-  public String deleteCart(Authentication authentication) {
-	  String username = authentication.getName();
-	  return cartService.deleteCart(username);
-  }
-  @PutMapping("/cart/{id}/{quantity}")
-  public ResponseEntity<String> updateQty(
+   @GetMapping("/viewCart")
+   public ResponseEntity<Cart> viewCart( Authentication authentication){
+	   String username = authentication.getName();
+	   return ResponseEntity.ok(cartService.viewCart(username));
+   }
+   @GetMapping("/viewItems")
+   public List<CartItem> viewItems(Authentication authentication){
+	   String username = authentication.getName();
+	   return cartService.viewItems(username);
+   }
+   @DeleteMapping("/deleteCart")
+   public String deleteCart(Authentication authentication) {
+	   String username = authentication.getName();
+	   return cartService.deleteCart(username);
+   }
+   @PutMapping("/cart/{id}/{quantity}")
+   public ResponseEntity<String> updateQty(
           @RequestHeader("Authorization") String token,
           @PathVariable Long id,
           @PathVariable int quantity) {
 
-      String username = jwtService.extractUsername(token.substring(7));
+	   String username = jwtService.extractUsername(token.substring(7));
 
-      return ResponseEntity.ok(
+	   return ResponseEntity.ok(
               cartService.updateQuantity(username, id, quantity)
-      );
-  }
+			);
+   }
 }
