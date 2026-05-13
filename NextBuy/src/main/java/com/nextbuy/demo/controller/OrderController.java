@@ -47,6 +47,18 @@ public class OrderController {
 		return ResponseEntity.ok(orderService.getOrderById(principal.getName(), id));
 	}
 	
+	@GetMapping("/getAllReturnedOrders")
+	public ResponseEntity<List<Order>> getAllReturnedOrders(Principal principal)
+	{
+		return ResponseEntity.ok(orderService.getReturnedOrders(principal.getName()));
+	}
+	
+	@PostMapping("/return/{orderId}")
+	public String returnOrder( Principal principal, @PathVariable Long orderId)
+	{
+	    return orderService.returnOrder(principal.getName(), orderId);
+	}
+	
 	@PutMapping("/cancelOrder/{id}")
 	public ResponseEntity<String> cancelOrder(Principal principal, @PathVariable Long id)
 	{

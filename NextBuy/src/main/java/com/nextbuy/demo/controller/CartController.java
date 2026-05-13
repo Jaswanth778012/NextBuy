@@ -63,10 +63,10 @@ public class CartController {
 	   String username = authentication.getName();
 	   return cartService.viewItems(username);
    }
-   @DeleteMapping("/deleteCart")
-   public String deleteCart(Authentication authentication) {
+   @DeleteMapping("/clearCart")
+   public String ClearCart(Authentication authentication) {
 	   String username = authentication.getName();
-	   return cartService.deleteCart(username);
+	   return cartService.clearCart(username);
    }
    @PutMapping("/cart/{id}/{quantity}")
    public ResponseEntity<String> updateQty(

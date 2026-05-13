@@ -99,6 +99,8 @@ public class CuponService {
 		    finalPrice = 0;
 		}
 		
+//		cart.setDiscount(0.0);
+		
 		cart.setFinalPrice(finalPrice);
 		
 		cartRepository.save(cart);

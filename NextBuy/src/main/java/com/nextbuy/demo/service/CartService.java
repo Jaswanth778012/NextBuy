@@ -204,7 +204,7 @@ public class CartService {
 		
 	}
 	//DELETECART
-	public String deleteCart(String username) {
+	public String clearCart(String username) {
 		User user = userRepo.findByUsername(username)
 				.orElseThrow(()->new RuntimeException("User not found"));
 		Cart cart = cartRepo.findByUser(user)
@@ -217,7 +217,7 @@ public class CartService {
 		    cart.setFinalPrice(0.0);
 
 		    cartRepo.save(cart);
-		return "cart deleted !!!";
+		return "cart items cleared !!!";
 	}
 	//UPDATEQUANTITY
 	public String updateQuantity(String username, Long cartItemId, int quantity) {

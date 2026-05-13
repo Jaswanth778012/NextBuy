@@ -152,6 +152,39 @@ public class OrderService {
 		return orderRepo.findByIdAndUser(orderId, user).orElseThrow(()-> new RuntimeException("Order Not Found"));
 	}
 	
+	
+	public List<Order> getReturnedOrders(String username)
+	{
+		User user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
+		
+		return orderRepo.findByUserAndStatusOrderByOrderedAtDesc(user, OrderStatus.RETURNED);
+	}
+	
+	public String returnOrder(String username, Long orderId)
+	{
+	    Order order = getOrderById(username, orderId);
+
+	    if(order.getStatus() != OrderStatus.DELIVERED)
+	    {
+	        throw new RuntimeException(
+	                "Only delivered orders can be returned"
+	        );
+	    }
+
+	    order.setStatus(OrderStatus.RETURNED);
+
+	    if(order.getPayment() != null &&
+	       order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS)
+	    {
+	        order.getPayment()
+	             .setPaymentStatus(PaymentStatus.REFUNDED);
+	    }
+
+	    orderRepo.save(order);
+
+	    return "Order returned successfully";
+	}
+	
 	public String cancelOrder(String username, Long orderId)
 	{
 		Order order = getOrderById(username, orderId);
