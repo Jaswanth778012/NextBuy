@@ -47,12 +47,10 @@ public class PaymentService {
             throw new RuntimeException("Payment record not found");
         }
 
-        // 3. Prevent duplicate verification
         if (payment.getPaymentStatus() == PaymentStatus.SUCCESS) {
             return "Payment already verified";
         }
 
-        // 4. Verify Razorpay signature
         try {
             JSONObject options = new JSONObject();
             options.put("razorpay_order_id", dto.getRazorpayOrderId());
@@ -83,7 +81,7 @@ public class PaymentService {
             throw new RuntimeException("Razorpay order ID mismatch");
         }
 
-        // 6. Update payment details
+       
         payment.setTransactionId(dto.getRazorpayPaymentId());
         payment.setRazorpayOrderId(dto.getRazorpayOrderId());
         payment.setRazorpayPaymentId(dto.getRazorpayPaymentId());
@@ -91,7 +89,7 @@ public class PaymentService {
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
         payment.setPaidAt(LocalDateTime.now());
 
-        // 7. Confirm order
+        
         order.setStatus(OrderStatus.CONFIRMED);
 
         // 8. Save changes
