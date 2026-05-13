@@ -71,7 +71,7 @@ public class CartService {
 		        
 		       
 		        item.setQuantity(item.getQuantity() + qty);
-		        item.setSubtotal(item.getQuantity() * product.getPrice());
+		        item.setSubtotal(item.getQuantity() * product.getFinalPrice());
 		        
             
 		        cartItemrepo.save(item);
@@ -83,7 +83,7 @@ public class CartService {
 		        item.setCart(cart);
 		        item.setProduct(product);
 		        
-		        item.setSubtotal(product.getPrice() * qty);
+		        item.setSubtotal(product.getFinalPrice() * qty);
 		       
 		        cartItemrepo.save(item);
 		    }
@@ -240,7 +240,7 @@ public class CartService {
 	    }
 	    item.setQuantity(quantity);
 
-	    double subtotal = quantity * item.getProduct().getPrice();
+	    double subtotal = quantity * item.getProduct().getFinalPrice();
 	    item.setSubtotal(subtotal);
 
 	    cartItemrepo.save(item);
