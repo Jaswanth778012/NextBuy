@@ -89,10 +89,6 @@ public class AdminService {
 	    }
 	 
 	 
-	 
-	 
-	 
-	 
 	 public String adminUpdate(String username,String password, String newPass) {
 		 User userex = userRepo.findByUsername(username).get();
 		 if(!userex.getPassword() .equals(password) && !userex.getUsername().equals(username) ) {

@@ -1,0 +1,33 @@
+package com.nextbuy.demo.controller;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.nextbuy.demo.dto.PaymentVerificationDto;
+import com.nextbuy.demo.service.PaymentService;
+
+@RestController
+@RequestMapping("/Payments")
+public class PaymentController {
+	
+	private PaymentService paymentService;
+	
+	PaymentController(PaymentService paymentService){
+		this.paymentService = paymentService;
+	}
+	
+	
+	@PostMapping("/verifyPayment")
+	public String verifyPayment(@RequestBody PaymentVerificationDto request) {
+		return paymentService.verifyPayment(request);
+	}
+	
+	 @PostMapping("/refund/{orderId}")
+	 public String refundPayment(@PathVariable Long orderId)
+	 {
+	    return paymentService.refundPayment(orderId);
+	 }
+}

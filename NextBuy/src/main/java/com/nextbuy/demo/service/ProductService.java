@@ -39,7 +39,7 @@ public class ProductService {
     	p.setDescription(Pdto.getDescription());
     	p.setCategory(Pdto.getCategory());
     	p.setPrice(Pdto.getPrice());
-    	p.setDis_count(Pdto.getDis_count());
+    	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
     		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
@@ -63,9 +63,21 @@ public class ProductService {
     	p.setDeliveryTimeInDays(Pdto.getDeliveryTimeInDays());
     	p.setAttributes(Pdto.getAttributes());
 		p.setBrand(Pdto.getBrand());
+		if(Pdto.getPrice() > 1000) {
+			p.setDiscountPercentage(Pdto.getDiscountPercentage());
+			p.setFinalPrice(Pdto.getPrice()-Pdto.getPrice()*Pdto.getDiscountPercentage().doubleValue()/100);
+		}
 		
 		productRepo.save(p);
 		return "Product Added Successfully";
+	}
+	//UPDATEDIS-COUNT
+	public String updateDisCount(Long id ,Double disCount) {
+		 Product product = productRepo.findById(id).get();
+		 product.setDiscountPercentage(disCount);
+		 product.setFinalPrice(product.getPrice()-product.getPrice()*disCount/100);
+		 productRepo.save(product);
+		 return "updated DiscountPercentage";
 	}
 	
   //DELETEPRODDUCT
@@ -106,7 +118,7 @@ public class ProductService {
     	p.setDescription(product.getDescription());
     	p.setCategory(product.getCategory());
     	p.setPrice(product.getPrice());
-    	p.setDis_count(product.getDis_count());
+    	p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
     	p.setStockQuantity(product.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
     		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
@@ -127,8 +139,13 @@ public class ProductService {
     	}else {
     		p.setProductStatus(ProductStatus.AVAILABLE);
     	}
-    	
-    	
+    	if(product.getPrice() > 1000) {
+    		p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
+			p.setFinalPrice(product.getPrice()-product.getPrice()*product.getDiscountPercentage().doubleValue()/100);
+			
+		}
+		
+    
     	p.setUpdatedAt(LocalDateTime.now());
     	p.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
     	p.setAttributes(product.getAttributes());

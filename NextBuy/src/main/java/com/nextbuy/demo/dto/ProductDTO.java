@@ -34,7 +34,7 @@ private Long id;
 	
 	private Integer stockQuantity;
 	
-	private Double dis_count; 
+	private Double discountPercentage=0.0; 
 	
 	
 	private Brand brand;
