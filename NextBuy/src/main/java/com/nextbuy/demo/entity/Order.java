@@ -3,6 +3,8 @@ package com.nextbuy.demo.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nextbuy.demo.enums.OrderStatus;
 
 import jakarta.persistence.CascadeType;
@@ -38,6 +40,7 @@ public class Order {
 
 	    @ManyToOne
 	    @JoinColumn(name = "user_id")
+	    @JsonBackReference
 	    private User user;
 
 	    @ManyToOne
@@ -49,10 +52,12 @@ public class Order {
 	    private Cupon appliedCupon;
 
 	    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	    @JsonManagedReference
 	    private List<OrderItem> orderItems;
 
 
 	    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+	    @JsonManagedReference
 	    private Payment payment;
 
 
