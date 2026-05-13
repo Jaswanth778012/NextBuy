@@ -16,6 +16,7 @@ import com.nextbuy.demo.enums.OrderStatus;
 import com.nextbuy.demo.enums.PaymentStatus;
 import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.PaymentRepository;
+import com.razorpay.RazorpayClient;
 import com.razorpay.Utils;
 
 @Service
@@ -24,7 +25,10 @@ public class PaymentService {
 
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
-
+    
+    @Value("${razorpay.key.id}")
+    private String razorpayKeyId;
+    
     @Value("${razorpay.key.secret}")
     private String razorpayKeySecret;
 
@@ -34,25 +38,67 @@ public class PaymentService {
         this.orderRepository = orderRepository;
         this.paymentRepository = paymentRepository;
     }
+    
+    public String refundPayment(Long orderId)
+    {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        Payment payment = order.getPayment();
+
+        if(payment == null)
+        {
+            throw new RuntimeException("Payment not found");
+        }
+
+        if(payment.getPaymentStatus() != PaymentStatus.SUCCESS)
+        {
+            throw new RuntimeException("Payment not completed");
+        }
+
+        try {
+
+            RazorpayClient razorpayClient =
+                    new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+
+            JSONObject refundRequest = new JSONObject();
+
+            refundRequest.put(
+                    "amount",
+                    (int)(payment.getAmount() * 100)
+            );
+
+            razorpayClient.payments
+                    .refund(payment.getRazorpayPaymentId(), refundRequest);
+
+            payment.setPaymentStatus(PaymentStatus.REFUNDED);
+
+            paymentRepository.save(payment);
+
+            return "Refund processed successfully";
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Refund failed: " + e.getMessage()
+            );
+        }
+    }
 
     public String verifyPayment(PaymentVerificationDto dto) {
 
-        // 1. Fetch order
         Order order = orderRepository.findById(dto.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        // 2. Fetch payment
         Payment payment = order.getPayment();
         if (payment == null) {
             throw new RuntimeException("Payment record not found");
         }
 
-        // 3. Prevent duplicate verification
         if (payment.getPaymentStatus() == PaymentStatus.SUCCESS) {
             return "Payment already verified";
         }
 
-        // 4. Verify Razorpay signature
         try {
             JSONObject options = new JSONObject();
             options.put("razorpay_order_id", dto.getRazorpayOrderId());
@@ -75,7 +121,6 @@ public class PaymentService {
                     "Payment verification failed: " + e.getMessage());
         }
 
-        // 5. Ensure Razorpay order ID matches what was created during checkout
         if (payment.getRazorpayOrderId() != null &&
             !payment.getRazorpayOrderId().equals(dto.getRazorpayOrderId())) {
             payment.setPaymentStatus(PaymentStatus.FAILED);
@@ -83,7 +128,7 @@ public class PaymentService {
             throw new RuntimeException("Razorpay order ID mismatch");
         }
 
-        // 6. Update payment details
+       
         payment.setTransactionId(dto.getRazorpayPaymentId());
         payment.setRazorpayOrderId(dto.getRazorpayOrderId());
         payment.setRazorpayPaymentId(dto.getRazorpayPaymentId());
@@ -91,10 +136,9 @@ public class PaymentService {
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
         payment.setPaidAt(LocalDateTime.now());
 
-        // 7. Confirm order
+        
         order.setStatus(OrderStatus.CONFIRMED);
 
-        // 8. Save changes
         paymentRepository.save(payment);
         orderRepository.save(order);
 

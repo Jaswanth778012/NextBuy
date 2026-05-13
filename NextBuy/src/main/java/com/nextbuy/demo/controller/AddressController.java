@@ -22,6 +22,10 @@ public class AddressController {
 	
 	private AddressService addressService;
 	
+	public AddressController(AddressService addressService) {
+		this.addressService = addressService;
+	}
+	
 	@PostMapping("/createAddress")
 	public ResponseEntity<Address> createAddress(Principal principal,@RequestBody Address address)
 	{
