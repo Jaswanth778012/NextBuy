@@ -59,6 +59,11 @@ public class OrderController {
 	    return orderService.returnOrder(principal.getName(), orderId);
 	}
 	
+	@PutMapping("/{orderId}/return-item/{orderItemId}")
+	public String returnOrderItem(Principal principal, @PathVariable Long orderId, @PathVariable Long orderItemId) {
+		return orderService.returnOrderItem(principal.getName(), orderId, orderItemId);
+	}
+	
 	@PutMapping("/cancelOrder/{id}")
 	public ResponseEntity<String> cancelOrder(Principal principal, @PathVariable Long id)
 	{
