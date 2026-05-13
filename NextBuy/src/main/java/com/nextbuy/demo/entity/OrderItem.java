@@ -1,6 +1,10 @@
 package com.nextbuy.demo.entity;
 
+import com.nextbuy.demo.enums.OrderItemStatus;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,5 +37,8 @@ public class OrderItem {
     private Double price;
 
     private Double subtotal;
+    
+    @Enumerated(EnumType.STRING)
+    private OrderItemStatus status;
 	
 }
