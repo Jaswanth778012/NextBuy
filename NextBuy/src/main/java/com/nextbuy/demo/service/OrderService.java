@@ -68,8 +68,8 @@ public class OrderService {
 		Address address = addressRepo.findByIdAndUser(dto.getAddressId(), user)
 				.orElseThrow(() -> new RuntimeException("Address Not Found"));
 
+		
 		Order order = new Order();
-
 		order.setUser(user);
 		order.setShippingAddress(address);
 		order.setAppliedCupon(cart.getAppliedCupon());
@@ -120,40 +120,19 @@ public class OrderService {
 		payment.setOrder(order);
 		payment.setPaymentMethod(dto.getPaymentMethod());
 		payment.setAmount(order.getFinalPrice());
-
-		if (dto.getPaymentMethod() == PaymentMethod.COD) {
-			payment.setPaymentStatus(PaymentStatus.PENDING);
-		} else {
-			payment.setPaymentStatus(PaymentStatus.PENDING);
-		}
-
-		if (dto.getPaymentMethod() == PaymentMethod.RAZORPAY) {
-			try {
-
-				RazorpayClient razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
-
-				JSONObject options = new JSONObject();
-
-				options.put("amount", (int) (order.getFinalPrice() * 100));
-
-				options.put("currency", "INR");
-
-				options.put("receipt", "order_" + System.currentTimeMillis());
-
-				com.razorpay.Order razorpayOrder = razorpayClient.orders.create(options);
-
-				payment.setRazorpayOrderId(razorpayOrder.get("id"));
-
-			} catch (Exception e) {
-
-				throw new RuntimeException("Failed to create Razorpay order: " + e.getMessage());
-			}
-		}
-
+		payment.setPaymentStatus(PaymentStatus.PENDING);
+		
 		order.setPayment(payment);
-
+		
 		Order savedOrder = orderRepo.save(order);
 
+		if (dto.getPaymentMethod() == PaymentMethod.RAZORPAY) {
+			 paymentService.createRazorpayOrder(savedOrder.getId());
+
+			    savedOrder = orderRepo.findById(savedOrder.getId())
+			            .orElseThrow(() -> new RuntimeException("Order not found"));   
+		}
+		
 		// clear cart
 		cart.getCartItems().clear();
 		cart.setTotalPrice(0.0);
@@ -168,7 +147,7 @@ public class OrderService {
 
 		return new CheckOutResponseDto(savedOrder.getId(), savedOrder.getOrderNumber(),
 				savedOrder.getPayment() != null ? savedOrder.getPayment().getRazorpayOrderId() : null,
-				savedOrder.getFinalPrice(), null, "INR");
+				savedOrder.getFinalPrice(), razorpayKeyId, "INR");
 	}
 
 	public List<Order> getMyOrders(String username) {

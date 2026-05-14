@@ -38,6 +38,44 @@ public class PaymentService {
 		this.orderRepository = orderRepository;
 		this.paymentRepository = paymentRepository;
 	}
+	
+	public JSONObject createRazorpayOrder(Long orderId) {
+	    Order order = orderRepository.findById(orderId)
+	            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+	    Payment payment = order.getPayment();
+
+	    if (payment == null) {
+	        throw new RuntimeException("Payment record not found");
+	    }
+
+	    try {
+	        RazorpayClient razorpayClient =
+	                new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+
+	        long amountInPaise = Math.round(payment.getAmount() * 100);
+
+	        JSONObject options = new JSONObject();
+	        options.put("amount", amountInPaise);
+	        options.put("currency", "INR");
+	        options.put("receipt", "order_" + order.getOrderNumber());
+
+	        com.razorpay.Order razorpayOrder =
+	                razorpayClient.orders.create(options);
+
+	        payment.setRazorpayOrderId(razorpayOrder.get("id").toString());
+	        payment.setPaymentStatus(PaymentStatus.PENDING);
+
+	        paymentRepository.save(payment);
+
+	        return razorpayOrder.toJson();
+
+	    } catch (Exception e) {
+	        throw new RuntimeException(
+	                "Failed to create Razorpay order: " + e.getMessage()
+	        );
+	    }
+	}
 
 	public String refundPayment(Long orderId) {
 		Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
