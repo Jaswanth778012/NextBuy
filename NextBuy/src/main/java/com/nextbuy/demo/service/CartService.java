@@ -1,8 +1,12 @@
 package com.nextbuy.demo.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.nextbuy.demo.dto.CartRequestDTO;
@@ -24,16 +28,19 @@ public class CartService {
 	ProductRepository productRepo;
 	CartRepository  cartRepo;
 	CartItemRepository cartItemrepo;
+	JavaMailSender mailSender;
 	
 	
 	public CartService(UserRepository userRepo, ProductRepository productRepo, CartRepository cartRepo,
-			CartItemRepository cartItemrepo) {
+			CartItemRepository cartItemrepo, JavaMailSender mailSender) {
 		super();
 		this.userRepo = userRepo;
 		this.productRepo = productRepo;
 		this.cartRepo = cartRepo;
 		this.cartItemrepo = cartItemrepo;
+		this.mailSender = mailSender;
 	}
+
 	//add-to-cart
 	public String addCart(String username,CartRequestDTO cartDTO) {
 		  
@@ -273,4 +280,44 @@ public class CartService {
 	    return "Quantity updated successfully";
 	}
 	
+	public  String ToRemindCart (String username, String subject, String body) {
+		User user = userRepo.findByUsername(username).get();
+		  Optional<Cart> cart = cartRepo.findByUserId(user.getId());
+		  if(cart.isEmpty()) {
+			  return "cart is empty";
+		  }
+		  
+		    Cart cartt = cart.get();
+		    LocalDateTime now = LocalDateTime.now();
+		    DateTimeFormatter formatter =
+		            DateTimeFormatter.ofPattern("hh:mm:ss a");
+		    String time = now.format(formatter);
+		    String cartTime = cartt.getCreatedAt().format(formatter);
+		   
+		 if(time.equals(cartTime) ) {
+		 List<CartItem> cartitems = cartItemrepo.findByCartId(cartt.getId());
+		 if(cartitems.isEmpty()) {
+			 return "cart is empty";
+		 }
+		
+		String toEmail = user.getEmail();
+		try {
+		SimpleMailMessage message = new SimpleMailMessage();
+		
+		message.setTo(toEmail);
+		message.setSubject(subject);
+		message.setText(body);
+		mailSender.send(message);
+		
+		return "User Got tha mail";
+		
+		}catch(Exception e) {
+			return "message Faild "+e ;
+		}
+		 }
+		 return "message did't send" +time +" " + cartTime ;
+	}
+	
+	
+
 }
