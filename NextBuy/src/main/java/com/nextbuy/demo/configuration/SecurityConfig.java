@@ -43,7 +43,7 @@ public class SecurityConfig {
 
 			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**").hasRole("USER")
 			            
-			            .requestMatchers("/notifications","/Common/**").hasAnyRole("USER","ADMIN")
+			            .requestMatchers("/Common/**").hasAnyRole("USER","ADMIN")
 			            
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider)

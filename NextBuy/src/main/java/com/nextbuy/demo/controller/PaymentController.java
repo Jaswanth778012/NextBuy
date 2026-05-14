@@ -1,5 +1,7 @@
 package com.nextbuy.demo.controller;
 
+
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,5 +31,10 @@ public class PaymentController {
 	 public String refundPayment(@PathVariable Long orderId)
 	 {
 	    return paymentService.refundPayment(orderId);
+	 }
+	 
+	 @PostMapping("/orders/{orderId}/retry-payment")
+	 public JSONObject retryPayment(@PathVariable Long orderId) {
+	     return paymentService.createRazorpayOrder(orderId);
 	 }
 }
