@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
+import com.nextbuy.demo.enums.ProductCondition;
 import com.nextbuy.demo.enums.ProductStatus;
 
 import jakarta.persistence.CascadeType;
@@ -72,6 +73,10 @@ public class Product {
 	
 	@Enumerated(EnumType.STRING)
 	private ProductStatus productStatus;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private ProductCondition productCondition;
 	
 	@Column(updatable = false)
 	private LocalDate createdAt;
