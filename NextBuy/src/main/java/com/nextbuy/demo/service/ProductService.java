@@ -55,7 +55,7 @@ public class ProductService {
 			String imageUrl = cloudinaryService.uploadProductImage(imageFile);
 			p.setImageUrl(imageUrl);
 		}
-    	
+    
     	p.setAverageRating(0.0);
     	p.setTotalRating(0.0);
     	p.setRatingsCount(0);
