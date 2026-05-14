@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
+import com.nextbuy.demo.enums.ProductCondition;
 import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.BrandRepository;
 import com.nextbuy.demo.repository.ProductRepository;
@@ -34,6 +35,7 @@ public class ProductService {
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
 			return "Product alredy existed !!!";
 		}
+		 
 		
     	p.setName(Pdto.getName());
     	p.setDescription(Pdto.getDescription());
@@ -42,13 +44,13 @@ public class ProductService {
     	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
-    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
-    	}else if(p.getStockQuantity() >= 50) {
+    		p.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
+    	}else if(p.getStockQuantity() >= 100) {
     		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
     	}else {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
     	}
-    	
+    	p.setProductCondition(Pdto.getProductCondition());
     	if(imageFile != null && !imageFile.isEmpty()) {
 			String imageUrl = cloudinaryService.uploadProductImage(imageFile);
 			p.setImageUrl(imageUrl);
@@ -65,7 +67,13 @@ public class ProductService {
 		p.setBrand(Pdto.getBrand());
 		if(Pdto.getPrice() > 1000) {
 			p.setDiscountPercentage(Pdto.getDiscountPercentage());
-			p.setFinalPrice(Pdto.getPrice()-Pdto.getPrice()*Pdto.getDiscountPercentage().doubleValue()/100);
+			double finale = Pdto.getPrice()-Pdto.getPrice()*Pdto.getDiscountPercentage().doubleValue()/100;
+			finale = Double.parseDouble(
+			       String.format("%.2f", finale)
+			);
+
+			p.setFinalPrice(finale);
+			
 		}
 		
 		productRepo.save(p);
@@ -75,7 +83,11 @@ public class ProductService {
 	public String updateDisCount(Long id ,Double disCount) {
 		 Product product = productRepo.findById(id).get();
 		 product.setDiscountPercentage(disCount);
-		 product.setFinalPrice(product.getPrice()-product.getPrice()*disCount/100);
+		 double finale =product.getPrice()-product.getPrice()*disCount/100;
+		 finale = Double.parseDouble(
+			       String.format("%.2f", finale)
+			);
+		 product.setFinalPrice(finale);
 		 productRepo.save(product);
 		 return "updated DiscountPercentage";
 	}
@@ -103,7 +115,10 @@ public class ProductService {
 		 if(allproducts.isEmpty()) {
 			 throw new RuntimeException("No products found");
 		 }
-		return allproducts;
+		return allproducts.stream()
+				   .filter(p->p.getProductStatus()==ProductStatus.Active)
+				   .sorted()
+				   .toList();
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
@@ -121,8 +136,8 @@ public class ProductService {
     	p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
     	p.setStockQuantity(product.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
-    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
-    	}else if(p.getStockQuantity() >= 50) {
+    		p.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
+    	}else if(p.getStockQuantity() >= 100) {
     		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
     	}else {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
@@ -133,19 +148,17 @@ public class ProductService {
     		p.setImageUrl(imageUrl);
     	}
     	
-    	if(p.getStockQuantity() <= 0) {
-    		p.setProductStatus(ProductStatus.OUT_OF_STOCK);
     	
-    	}else {
-    		p.setProductStatus(ProductStatus.AVAILABLE);
-    	}
     	if(product.getPrice() > 1000) {
     		p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
-			p.setFinalPrice(product.getPrice()-product.getPrice()*product.getDiscountPercentage().doubleValue()/100);
+    		 double finale =product.getPrice()-product.getPrice()*p.getDiscountPercentage()/100;
+    		 finale = Double.parseDouble(
+    			       String.format("%.2f", finale)
+    			);
+    		 p.setFinalPrice(finale);
 			
 		}
 		
-    
     	p.setUpdatedAt(LocalDateTime.now());
     	p.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
     	p.setAttributes(product.getAttributes());
@@ -164,19 +177,16 @@ public class ProductService {
 		  Product p =pr.get();
 		  p.setStockQuantity(stock);
 		  if(p.getStockQuantity() <= 0) {
-	    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
+	    		p.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
 	    	}else if(p.getStockQuantity() >= 50) {
 	    		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
 	    	}else {
 	    		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
 	    	}
 
-	    	if(p.getStockQuantity() <= 0) {
-	    		p.setProductStatus(ProductStatus.OUT_OF_STOCK);
+	    		
 	    	
-	    	}else {
-	    		p.setProductStatus(ProductStatus.AVAILABLE);
-	    	}
+	    	
 		  productRepo.save(p);
 		  return "Stock Quantity Updated Successfully!!";
 	}
@@ -189,6 +199,7 @@ public class ProductService {
 			   .distinct()
 			   .sorted()
 			   .toList();
+		
 			  
 	}
 	//updateProductStatus
@@ -200,7 +211,7 @@ public class ProductService {
 		 Product pr = p.get();
 		 pr.setProductStatus(status);
 		 productRepo.save(pr);
-		 return "Product Satus Updated !! ";
+		 return "Product Status Updated !! ";
 	}
 	
 }

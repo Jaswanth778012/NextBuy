@@ -190,17 +190,17 @@ public class PaymentService {
 
 	private void updateStockStatus(Product product) {
 		if (product.getStockQuantity() <= 0) {
-			product.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
+			product.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
 
-			product.setProductStatus(ProductStatus.OUT_OF_STOCK);
-		} else if (product.getStockQuantity() >= 50) {
+			
+		} else if (product.getStockQuantity() >= 100) {
 			product.setStockStatus(AvailabilityStockStatus.AVAILABLE);
 
-			product.setProductStatus(ProductStatus.AVAILABLE);
+			
 		} else {
 			product.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
 
-			product.setProductStatus(ProductStatus.AVAILABLE);
+			
 		}
 	}
 }

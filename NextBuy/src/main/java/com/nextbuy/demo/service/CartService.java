@@ -115,13 +115,14 @@ public class CartService {
 		    cart.setCuponDiscount(null);
 
 		    double finalPrice = shipping + totalAmount - totalAmount*discount/100;
-		    cart.setFinalPrice(finalPrice);
+		    double result = ((long)(finalPrice * 100)) / 100.0;
+		    cart.setFinalPrice(result);
 
 		    cartRepo.save(cart);
 
 		    return "Product added to cart successfully";
 		
-	        
+	       
 	}
 	
 	//detete-item
