@@ -106,8 +106,8 @@ public class OrderService {
 			item.setOrder(order);
 			item.setProduct(product);
 			item.setQuantity(cartItem.getQuantity());
-			item.setPrice(product.getFinalPrice());
-			item.setSubtotal(cartItem.getSubtotal());
+			item.setFinalPrice(product.getFinalPrice());
+			item.setActualProdPrice(cartItem.getActualProdPrice());
 			item.setStatus(OrderItemStatus.ACTIVE);
 
 			orderItems.add(item);
@@ -174,13 +174,16 @@ public class OrderService {
 		if (order.getStatus() != OrderStatus.DELIVERED) {
 			throw new RuntimeException("Only delivered orders can be returned");
 		}
-
+		
+		validateReturnWindow(order);
 		// restore stock
 		restoreStock(order);
 
 		// refund online payment
-		if (order.getPayment() != null && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS) {
-			paymentService.refundPayment(order.getId());
+		if (order.getPayment() != null
+		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
+		    paymentService.refundPayment(order.getId());
 		}
 
 		order.setStatus(OrderStatus.RETURNED);
@@ -196,7 +199,9 @@ public class OrderService {
 		if (order.getStatus() != OrderStatus.DELIVERED) {
 			throw new RuntimeException("Only delivered orders can be returned");
 		}
-
+		
+		validateReturnWindow(order);
+		
 		OrderItem orderItem = order.getOrderItems().stream().filter(item -> item.getId().equals(orderItemId))
 				.findFirst().orElseThrow(() -> new RuntimeException("Order item not found"));
 
@@ -212,11 +217,13 @@ public class OrderService {
 		updateStockStatus(product);
 
 		// calculate refund amount
-		double refundAmount = orderItem.getSubtotal();
+		double refundAmount = orderItem.getActualProdPrice();
 
 		// refund payment
-		if (order.getPayment() != null && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS) {
-			paymentService.refundPartialPayment(order.getId(), refundAmount);
+		if (order.getPayment() != null
+		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
+		    paymentService.refundPartialPayment(order.getId(), refundAmount);
 		}
 
 		// mark item returned
@@ -238,7 +245,7 @@ public class OrderService {
 		return "Item returned successfully";
 	}
 
-	public String cancelOrder(String username, Long orderId) {
+	public String cancelOrder(String username, Long orderId, String reason) {
 		Order order = getOrderById(username, orderId);
 
 		if (order.getStatus() == OrderStatus.DELIVERED) {
@@ -253,12 +260,15 @@ public class OrderService {
 		restoreStock(order);
 
 		// refund online payment
-		if (order.getPayment() != null && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS) {
-			paymentService.refundPayment(order.getId());
+		if (order.getPayment() != null
+		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
+		    paymentService.refundPayment(order.getId());
 		}
 
 		order.setStatus(OrderStatus.CANCELLED);
 		order.setCancelledAt(LocalDateTime.now());
+		order.setCancelReason(reason);
 
 		orderRepo.save(order);
 
@@ -307,4 +317,18 @@ public class OrderService {
 		
 	}
 	
+	private void validateReturnWindow(Order order) {
+
+	    if (order.getDeliveredAt() == null) {
+	        throw new RuntimeException("Delivery date not found");
+	    }
+
+	    LocalDateTime returnLastDate = order.getDeliveredAt().plusDays(7);
+
+	    if (LocalDateTime.now().isAfter(returnLastDate)) {
+	        throw new RuntimeException(
+	            "Return period expired. Returns allowed only within 7 days of delivery"
+	        );
+	    }
+	}
 }

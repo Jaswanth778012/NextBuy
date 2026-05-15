@@ -40,7 +40,7 @@ public class ProductService {
     	p.setName(Pdto.getName());
     	p.setDescription(Pdto.getDescription());
     	p.setCategory(Pdto.getCategory());
-    	p.setPrice(Pdto.getPrice());
+    	p.setMrp_price(Pdto.getMrp_price());
     	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
@@ -65,9 +65,9 @@ public class ProductService {
     	p.setDeliveryTimeInDays(Pdto.getDeliveryTimeInDays());
     	p.setAttributes(Pdto.getAttributes());
 		p.setBrand(Pdto.getBrand());
-		if(Pdto.getPrice() > 1000) {
+		if(Pdto.getMrp_price() > 1000) {
 			p.setDiscountPercentage(Pdto.getDiscountPercentage());
-			double finale = Pdto.getPrice()-Pdto.getPrice()*Pdto.getDiscountPercentage().doubleValue()/100;
+			double finale = Pdto.getMrp_price()-Pdto.getMrp_price()*Pdto.getDiscountPercentage().doubleValue()/100;
 			finale = Double.parseDouble(
 			       String.format("%.2f", finale)
 			);
@@ -83,7 +83,7 @@ public class ProductService {
 	public String updateDisCount(Long id ,Double disCount) {
 		 Product product = productRepo.findById(id).get();
 		 product.setDiscountPercentage(disCount);
-		 double finale =product.getPrice()-product.getPrice()*disCount/100;
+		 double finale =product.getMrp_price()-product.getMrp_price()*disCount/100;
 		 finale = Double.parseDouble(
 			       String.format("%.2f", finale)
 			);
@@ -132,7 +132,7 @@ public class ProductService {
 		p.setName(product.getName());
     	p.setDescription(product.getDescription());
     	p.setCategory(product.getCategory());
-    	p.setPrice(product.getPrice());
+    	p.setMrp_price(product.getMrp_price());
     	p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
     	p.setStockQuantity(product.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
@@ -149,9 +149,9 @@ public class ProductService {
     	}
     	
     	
-    	if(product.getPrice() > 1000) {
+    	if(product.getMrp_price() > 1000) {
     		p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
-    		 double finale =product.getPrice()-product.getPrice()*p.getDiscountPercentage()/100;
+    		 double finale =product.getMrp_price()-product.getMrp_price()*p.getDiscountPercentage()/100;
     		 finale = Double.parseDouble(
     			       String.format("%.2f", finale)
     			);

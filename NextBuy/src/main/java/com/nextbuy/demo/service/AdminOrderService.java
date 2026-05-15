@@ -7,23 +7,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.enums.OrderStatus;
 import com.nextbuy.demo.repository.OrderItemRepository;
 import com.nextbuy.demo.repository.OrderRepository;
-@Service
-public class AdminOrderService {
-     OrderRepository orderRepo;
-     OrderItemRepository orderItemsRepo;
-     
-     
-     public AdminOrderService(OrderRepository orderRepo, OrderItemRepository orderItemsRepo) {
-		super();
-		this.orderRepo = orderRepo;
-		this.orderItemsRepo = orderItemsRepo;
-	}
 
+@Service
+@Transactional
+public class AdminOrderService {
+
+    private OrderRepository orderRepo;
+    private OrderItemRepository orderItemsRepo;
+
+    public AdminOrderService(OrderRepository orderRepo,
+                             OrderItemRepository orderItemsRepo) {
+
+        this.orderRepo = orderRepo;
+        this.orderItemsRepo = orderItemsRepo;
+    }
 
 	 public List<Order> getAllOrders(){
     	    List<Order> allOrders = orderRepo.findAll();
@@ -72,16 +75,54 @@ public class AdminOrderService {
     	    return orderRepo.findByOrderedAtBetween(start, end);
     	    
      }
-     public List<Order> getByStatus(OrderStatus status){
+     public List<Order> getByStatus1(OrderStatus status){
     	   return orderRepo.findByStatus(status);
      }
-     public Double totalSales() {
-    	    List<Order> orders = orderRepo.findAll();
-    	 return orders.stream().filter(order->order.getStatus()==OrderStatus.DELIVERED)
-    	    .mapToDouble(Order::getFinalPrice)
-    	    .sum();
-     }
+
      public int countOfAllOrders() {
     	 return orderRepo.findAll().size();
      }
+
+    public List<Order> getByStatus(OrderStatus status) {
+
+        return orderRepo.findByStatus(status);
+    }
+
+    public Double totalSales() {
+
+        return orderRepo.findAll()
+                .stream()
+                .filter(order ->
+                        order.getStatus() == OrderStatus.DELIVERED)
+                .mapToDouble(Order::getFinalPrice)
+                .sum();
+    }
+
+
+    public long deliveredOrdersCount() {
+
+        return orderRepo.findAll()
+                .stream()
+                .filter(order ->
+                        order.getStatus() == OrderStatus.DELIVERED)
+                .count();
+    }
+
+    public long cancelledOrdersCount() {
+
+        return orderRepo.findAll()
+                .stream()
+                .filter(order ->
+                        order.getStatus() == OrderStatus.CANCELLED)
+                .count();
+    }
+
+    public long returnedOrdersCount() {
+
+        return orderRepo.findAll()
+                .stream()
+                .filter(order ->
+                        order.getStatus() == OrderStatus.RETURNED)
+                .count();
+    }
 }

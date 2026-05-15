@@ -36,9 +36,9 @@ public class OrderItem {
 
     private Integer quantity = 1;
 
-    private Double price;
+    private Double finalPrice;
 
-    private Double subtotal;
+    private Double actualProdPrice;
     
     @Enumerated(EnumType.STRING)
     private OrderItemStatus status;
