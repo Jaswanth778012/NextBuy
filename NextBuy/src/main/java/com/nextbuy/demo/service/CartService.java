@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,6 @@ import com.nextbuy.demo.repository.CartRepository;
 import com.nextbuy.demo.repository.ProductRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
 
 public class CartService {
@@ -28,17 +25,17 @@ public class CartService {
 	ProductRepository productRepo;
 	CartRepository  cartRepo;
 	CartItemRepository cartItemrepo;
-	JavaMailSender mailSender;
+	EmailService emailService;
 	
 	
 	public CartService(UserRepository userRepo, ProductRepository productRepo, CartRepository cartRepo,
-			CartItemRepository cartItemrepo, JavaMailSender mailSender) {
+			CartItemRepository cartItemrepo,EmailService emailService) {
 		super();
 		this.userRepo = userRepo;
 		this.productRepo = productRepo;
 		this.cartRepo = cartRepo;
 		this.cartItemrepo = cartItemrepo;
-		this.mailSender = mailSender;
+		this.emailService = emailService;
 	}
 
 	//add-to-cart
@@ -302,14 +299,10 @@ public class CartService {
 		
 		String toEmail = user.getEmail();
 		try {
-		SimpleMailMessage message = new SimpleMailMessage();
+			
+			emailService.sendEmail(toEmail, subject, body);
 		
-		message.setTo(toEmail);
-		message.setSubject(subject);
-		message.setText(body);
-		mailSender.send(message);
-		
-		return "User Got tha mail";
+		return "Email Sent Successfully to "+toEmail;
 		
 		}catch(Exception e) {
 			return "message Faild "+e ;
