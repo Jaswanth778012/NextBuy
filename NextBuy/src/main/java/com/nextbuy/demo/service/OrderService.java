@@ -24,12 +24,10 @@ import com.nextbuy.demo.enums.OrderItemStatus;
 import com.nextbuy.demo.enums.OrderStatus;
 import com.nextbuy.demo.enums.PaymentMethod;
 import com.nextbuy.demo.enums.PaymentStatus;
-import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.AddressRepository;
 import com.nextbuy.demo.repository.CartRepository;
 import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.UserRepository;
-import com.razorpay.RazorpayClient;
 
 @Service
 @Transactional
@@ -284,7 +282,7 @@ public class OrderService {
 
 	private void updateStockStatus(Product product) {
 		if (product.getStockQuantity() <= 0) {
-			product.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
+			product.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
 
 		} else if (product.getStockQuantity() >= 100) {
 			product.setStockStatus(AvailabilityStockStatus.AVAILABLE);

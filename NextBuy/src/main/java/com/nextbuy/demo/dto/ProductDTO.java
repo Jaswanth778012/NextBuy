@@ -36,6 +36,7 @@ private Long id;
 	private Integer stockQuantity;
 	
 	private Double discountPercentage=0.0; 
+	
 	private ProductCondition productCondition;
 	
 	private Brand brand;
