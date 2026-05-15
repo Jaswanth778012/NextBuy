@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.mail.javamail.JavaMailSender;
+
 import org.springframework.stereotype.Service;
 
 import com.nextbuy.demo.dto.CartRequestDTO;
@@ -65,19 +65,20 @@ public class CartService {
 		            .stream()
 		            .filter(item -> item.getProduct().getId().equals(product.getId()))
 		            .findFirst();
-		    int qty = (cartDTO.getQuantity() == null || cartDTO.getQuantity() <= 0)
-	                ? 1
-	                : cartDTO.getQuantity();
+		   
 		    if (existingItemOpt.isPresent()) {
 
 		        // UPDATE EXISTING ITEM
 		        CartItem item = existingItemOpt.get();
 		        
-		       
-		        item.setQuantity(item.getQuantity() + qty);
+		       if(cartDTO.getQuantity() == null || cartDTO.getQuantity() <=0) {
+		        item.setQuantity(item.getQuantity() + 1);
 		        item.setSubtotal(item.getQuantity() * product.getFinalPrice());
-		        
-            
+		       }else {
+		    	   item.setQuantity(item.getQuantity() + cartDTO.getQuantity());
+			        item.setSubtotal(item.getQuantity() * product.getFinalPrice());
+		       }
+              
 		        cartItemrepo.save(item);
 
 		    } else {
@@ -87,7 +88,7 @@ public class CartService {
 		        item.setCart(cart);
 		        item.setProduct(product);
 		        
-		        item.setSubtotal(product.getFinalPrice() * qty);
+		        item.setSubtotal(product.getFinalPrice() * cartDTO.getQuantity());
 		       
 		        cartItemrepo.save(item);
 		    }

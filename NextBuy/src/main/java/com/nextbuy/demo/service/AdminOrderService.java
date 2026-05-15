@@ -1,4 +1,4 @@
-package com.nextbuy.demo.service;
+ package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +27,8 @@ public class AdminOrderService {
 
 	 public List<Order> getAllOrders(){
     	    List<Order> allOrders = orderRepo.findAll();
-    	    return allOrders;
+    	    return allOrders.stream().filter(o->o.getStatus()!= OrderStatus.PENDING).toList();
+    	    
      }
      
      
