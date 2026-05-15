@@ -293,8 +293,10 @@ public class CartService {
 		            DateTimeFormatter.ofPattern("hh:mm:ss a");
 		    String time = now.format(formatter);
 		    String cartTime = cartt.getCreatedAt().format(formatter);
+		    
+		  int day = now.getDayOfMonth();
 		   
-		 if(time.equals(cartTime) ) {
+		 if(time.equals(cartTime)&& day%2 == 0 ) {
 		 List<CartItem> cartitems = cartItemrepo.findByCartId(cartt.getId());
 		 if(cartitems.isEmpty()) {
 			 return "cart is empty";
