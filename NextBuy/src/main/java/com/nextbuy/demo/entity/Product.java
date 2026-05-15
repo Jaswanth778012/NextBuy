@@ -47,7 +47,7 @@ public class Product {
 	
 	private String category;
 	
-	private Double price;
+	private Double mrp_price;
 	
 	private String imageUrl;
 	

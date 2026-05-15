@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextbuy.demo.dto.CancelOrderRequestDto;
 import com.nextbuy.demo.dto.CheckOutRequestDto;
 import com.nextbuy.demo.dto.CheckOutResponseDto;
 import com.nextbuy.demo.entity.Order;
@@ -67,8 +68,8 @@ public class OrderController {
 	}
 	
 	@PutMapping("/cancelOrder/{id}")
-	public ResponseEntity<String> cancelOrder(Principal principal, @PathVariable Long id)
+	public ResponseEntity<String> cancelOrder(Principal principal, @PathVariable Long id, @RequestBody CancelOrderRequestDto cancelRequest)
 	{
-		return ResponseEntity.ok(orderService.cancelOrder(principal.getName(), id)); 
+		return ResponseEntity.ok(orderService.cancelOrder(principal.getName(), id, cancelRequest.getReason())); 
 	}
 }

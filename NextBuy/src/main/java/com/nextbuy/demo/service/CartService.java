@@ -75,7 +75,7 @@ public class CartService {
 		        
 		       
 		        item.setQuantity(item.getQuantity() + qty);
-		        item.setSubtotal(item.getQuantity() * product.getFinalPrice());
+		        item.setActualProdPrice(item.getQuantity() * product.getFinalPrice());;
 		        
             
 		        cartItemrepo.save(item);
@@ -87,7 +87,7 @@ public class CartService {
 		        item.setCart(cart);
 		        item.setProduct(product);
 		        
-		        item.setSubtotal(product.getFinalPrice() * qty);
+		        item.setActualProdPrice(product.getFinalPrice() * qty);;
 		       
 		        cartItemrepo.save(item);
 		    }
@@ -96,7 +96,7 @@ public class CartService {
 		    List<CartItem> items = cartItemrepo.findByCartId(cart.getId());
 
 		    double totalAmount = items.stream()
-		            .mapToDouble(CartItem::getSubtotal)
+		            .mapToDouble(CartItem::getActualProdPrice)
 		            .sum();
 
 		    cart.setTotalPrice(totalAmount);
@@ -157,7 +157,7 @@ public class CartService {
 
 	    // 7. Recalculate total properly
 	    double total = items.stream()
-	            .mapToDouble(CartItem::getSubtotal)
+	            .mapToDouble(CartItem::getActualProdPrice)
 	            .sum();
 
 	    cart.setTotalPrice(total);
@@ -246,13 +246,13 @@ public class CartService {
 	    item.setQuantity(quantity);
 
 	    double subtotal = quantity * item.getProduct().getFinalPrice();
-	    item.setSubtotal(subtotal);
+	    item.setActualProdPrice(subtotal);
 
 	    cartItemrepo.save(item);
 	    List<CartItem> items = cartItemrepo.findByCartId(cart.getId());
 
 	    double total = items.stream()
-	            .mapToDouble(CartItem::getSubtotal)
+	            .mapToDouble(CartItem::getActualProdPrice)
 	            .sum();
 
 	    cart.setTotalPrice(total);

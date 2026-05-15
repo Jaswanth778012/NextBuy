@@ -1,32 +1,33 @@
 	package com.nextbuy.demo.service;
 	
 	import java.time.LocalDateTime;
-	
-	import org.json.JSONObject;
-	import org.springframework.beans.factory.annotation.Value;
-	import org.springframework.stereotype.Service;
-	import org.springframework.transaction.annotation.Transactional;
-	
-	import com.nextbuy.demo.dto.PaymentVerificationDto;
-	import com.nextbuy.demo.entity.Order;
-	import com.nextbuy.demo.entity.OrderItem;
-	import com.nextbuy.demo.entity.Payment;
-	import com.nextbuy.demo.entity.Product;
-	import com.nextbuy.demo.enums.AvailabilityStockStatus;
-	import com.nextbuy.demo.enums.OrderStatus;
-	import com.nextbuy.demo.enums.PaymentStatus;
-	import com.nextbuy.demo.enums.ProductStatus;
-	import com.nextbuy.demo.repository.OrderRepository;
-	import com.nextbuy.demo.repository.PaymentRepository;
-	import com.razorpay.RazorpayClient;
-	import com.razorpay.Utils;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.nextbuy.demo.dto.PaymentVerificationDto;
+import com.nextbuy.demo.entity.Order;
+import com.nextbuy.demo.entity.OrderItem;
+import com.nextbuy.demo.entity.Payment;
+import com.nextbuy.demo.entity.Product;
+import com.nextbuy.demo.enums.AvailabilityStockStatus;
+import com.nextbuy.demo.enums.OrderStatus;
+import com.nextbuy.demo.enums.PaymentStatus;
+import com.nextbuy.demo.repository.OrderRepository;
+import com.nextbuy.demo.repository.PaymentRepository;
+import com.nextbuy.demo.repository.ProductRepository;
+import com.razorpay.RazorpayClient;
+import com.razorpay.Utils;
 	
 	@Service
 	@Transactional
 	public class PaymentService {
 	
-		private final OrderRepository orderRepository;
-		private final PaymentRepository paymentRepository;
+		private  OrderRepository orderRepository;
+		private  PaymentRepository paymentRepository;
+		private ProductRepository productRepository;
 	
 		@Value("${razorpay.key.id}")
 		private String razorpayKeyId;
@@ -34,9 +35,10 @@
 		@Value("${razorpay.key.secret}")
 		private String razorpayKeySecret;
 	
-		public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository) {
+		public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository) {
 			this.orderRepository = orderRepository;
 			this.paymentRepository = paymentRepository;
+			this.productRepository = productRepository;
 		}
 		
 		public JSONObject createRazorpayOrder(Long orderId) {
@@ -78,38 +80,53 @@
 		}
 	
 		public String refundPayment(Long orderId) {
-			Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
-	
-			Payment payment = order.getPayment();
-	
-			if (payment == null) {
-				throw new RuntimeException("Payment not found");
-			}
-	
-			if (payment.getPaymentStatus() != PaymentStatus.SUCCESS) {
-				throw new RuntimeException("Payment not completed");
-			}
-	
-			try {
-	
-				RazorpayClient razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
-	
-				JSONObject refundRequest = new JSONObject();
-	
-				refundRequest.put("amount", (int) (payment.getAmount() * 100));
-	
-				razorpayClient.payments.refund(payment.getRazorpayPaymentId(), refundRequest);
-	
-				payment.setPaymentStatus(PaymentStatus.REFUNDED);
-	
-				paymentRepository.save(payment);
-	
-				return "Refund processed successfully";
-	
-			} catch (Exception e) {
-	
-				throw new RuntimeException("Refund failed: " + e.getMessage());
-			}
+		    Order order = orderRepository.findById(orderId)
+		            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+		    Payment payment = order.getPayment();
+
+		    if (payment == null) {
+		        throw new RuntimeException("Payment not found");
+		    }
+
+		    if (payment.getPaymentStatus() != PaymentStatus.SUCCESS) {
+		        throw new RuntimeException("Payment not completed");
+		    }
+
+		    if (payment.getRazorpayPaymentId() == null ||
+		        !payment.getRazorpayPaymentId().startsWith("pay_")) {
+		        throw new RuntimeException(
+		                "Invalid Razorpay payment ID: " + payment.getRazorpayPaymentId());
+		    }
+
+		    try {
+		        RazorpayClient razorpayClient =
+		                new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+
+		       
+		        int amountInPaise = (int) Math.round(payment.getAmount());
+
+		        JSONObject refundRequest = new JSONObject();
+		        refundRequest.put("amount", amountInPaise);
+		        refundRequest.put("speed", "normal"); // optional
+
+		        System.out.println("Refund Payment ID: " + payment.getRazorpayPaymentId());
+		        System.out.println("Refund Amount (paise): " + amountInPaise);
+
+		        razorpayClient.payments.refund(
+		                payment.getRazorpayPaymentId(),
+		                refundRequest
+		        );
+
+		        payment.setPaymentStatus(PaymentStatus.REFUNDED);
+		        paymentRepository.save(payment);
+
+		        return "Refund processed successfully";
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        throw new RuntimeException("Refund failed: " + e.getMessage(), e);
+		    }
 		}
 	
 		public String refundPartialPayment(Long orderId, Double refundAmount) {
@@ -142,6 +159,7 @@
 				throw new RuntimeException("Refund failed: " + e.getMessage());
 			}
 		}
+		
 		public String verifyPayment(PaymentVerificationDto dto) {
 			Order order = orderRepository.findById(dto.getOrderId())
 					.orElseThrow(() -> new RuntimeException("Order not found"));
@@ -201,9 +219,13 @@
 					throw new RuntimeException(product.getName() + " is out of stock");
 				}
 	
-				product.setStockQuantity(product.getStockQuantity() - item.getQuantity());
-	
+				product.setStockQuantity(
+				        product.getStockQuantity() - item.getQuantity()
+				);
+
 				updateStockStatus(product);
+
+				productRepository.save(product);
 			}
 	
 			payment.setTransactionId(dto.getRazorpayPaymentId());

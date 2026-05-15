@@ -46,7 +46,7 @@ public class CommonService {
 		  userDto.setName(product.getName());
 	        userDto.setDescription(product.getDescription());
 	        userDto.setCategory(product.getCategory());
-	        userDto.setPrice(product.getPrice());
+	        userDto.setPrice(product.getMrp_price());
 	        userDto.setDiscountPercentage(product.getDiscountPercentage());
 	        userDto.setImageUrl(product.getImageUrl());
 	        userDto .setAttributes(product.getAttributes());
