@@ -44,7 +44,7 @@ public class ProductService {
     	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
-    		p.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
+    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
     	}else if(p.getStockQuantity() >= 100) {
     		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
     	}else {
@@ -116,7 +116,7 @@ public class ProductService {
 			 throw new RuntimeException("No products found");
 		 }
 		return allproducts.stream()
-				   .filter(p->p.getProductStatus()==ProductStatus.Active)
+				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
 				   .sorted()
 				   .toList();
 	}
@@ -136,7 +136,7 @@ public class ProductService {
     	p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
     	p.setStockQuantity(product.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
-    		p.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
+    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
     	}else if(p.getStockQuantity() >= 100) {
     		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
     	}else {
@@ -177,7 +177,7 @@ public class ProductService {
 		  Product p =pr.get();
 		  p.setStockQuantity(stock);
 		  if(p.getStockQuantity() <= 0) {
-	    		p.setStockStatus(AvailabilityStockStatus.OutOff_Stock);
+	    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
 	    	}else if(p.getStockQuantity() >= 50) {
 	    		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
 	    	}else {
