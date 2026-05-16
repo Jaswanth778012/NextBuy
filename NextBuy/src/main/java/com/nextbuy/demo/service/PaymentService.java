@@ -1,6 +1,7 @@
 	package com.nextbuy.demo.service;
 	
-	import java.time.LocalDateTime;
+	import java.io.File;
+import java.time.LocalDateTime;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,17 +29,21 @@ import com.razorpay.Utils;
 		private  OrderRepository orderRepository;
 		private  PaymentRepository paymentRepository;
 		private ProductRepository productRepository;
-	
+		
+		private EmailService emailService;
+		private InvoiceService invoiceService;
 		@Value("${razorpay.key.id}")
 		private String razorpayKeyId;
 	
 		@Value("${razorpay.key.secret}")
 		private String razorpayKeySecret;
 	
-		public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository) {
+		public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository, EmailService emailService, InvoiceService invoiceService) {
 			this.orderRepository = orderRepository;
 			this.paymentRepository = paymentRepository;
 			this.productRepository = productRepository;
+			this.emailService = emailService;
+			this.invoiceService = invoiceService;
 		}
 		
 		public JSONObject createRazorpayOrder(Long orderId) {
@@ -244,6 +249,29 @@ import com.razorpay.Utils;
 	
 			paymentRepository.save(payment);
 			orderRepository.save(order);
+			
+			// generate invoice
+			File invoicePdf =
+			        invoiceService.generateInvoice(order);
+
+			String subject =
+			        "Payment Successful & Invoice - NextBuy";
+
+			String body =
+			        "Hello " + order.getUser().getUsername() + ",\n\n" +
+			        "Your payment was successful.\n\n" +
+			        "Order Number : " + order.getOrderNumber() + "\n" +
+			        "Amount Paid : ₹" + order.getFinalPrice() + "\n\n" +
+			        "Invoice PDF is attached.\n\n" +
+			        "Thank you for shopping with NextBuy.";
+
+			emailService.sendInvoiceEmail(
+			        order.getUser().getEmail(),
+			        subject,
+			        body,
+			        invoicePdf
+			);
+
 	
 			return "Payment verified successfully";
 		}
