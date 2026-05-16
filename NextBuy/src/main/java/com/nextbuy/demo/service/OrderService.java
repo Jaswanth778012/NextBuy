@@ -306,7 +306,7 @@ public class OrderService {
 		}
 	}
 	
-	private List<Order> ConformOrders(String username){
+	public List<Order> conformOrders(String username){
 		Optional<User> user = userRepo.findByUsername(username);
 		if(user.isEmpty()) {
 			 throw new RuntimeException("Order Id not found");

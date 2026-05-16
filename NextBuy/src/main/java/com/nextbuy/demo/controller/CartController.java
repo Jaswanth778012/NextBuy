@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nextbuy.demo.dto.CartRequestDTO;
 import com.nextbuy.demo.entity.Cart;
 import com.nextbuy.demo.entity.CartItem;
+import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.service.CartService;
 import com.nextbuy.demo.service.JwtService;
 
@@ -98,4 +99,5 @@ public class CartController {
               cartService.updateQuantity(username, id, quantity)
 			);
    }
+  
 }
