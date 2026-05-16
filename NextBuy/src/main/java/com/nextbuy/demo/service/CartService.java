@@ -38,20 +38,16 @@ public class CartService {
 		this.emailService = emailService;
 	}
 
-	//add-to-cart
 	public String addCart(String username,CartRequestDTO cartDTO) {
 		  
-		
-
-		    // 1. Get User
 		    User user = userRepo.findByUsername(username)
 		            .orElseThrow(() -> new RuntimeException("User not found"));
 
-		    // 2. Get Product
 		    Product product = productRepo.findById(cartDTO.getProductId())
 		            .orElseThrow(() -> new RuntimeException("Product not found"));
-
-		    // 3. Get or Create Cart
+		    if (product.getStockQuantity() <= 0) {
+		      return "Product Out Of Stock";
+		    } 
 		    Cart cart = cartRepo.findByUserAndActiveTrue(user)
 		            .orElseGet(() -> {
 		                Cart newCart = new Cart();
@@ -59,38 +55,41 @@ public class CartService {
 		                newCart.setActive(true);
 		                return cartRepo.save(newCart);
 		            });
-
-		    // 4. Check if product already exists in cart
 		    Optional<CartItem> existingItemOpt = cart.getCartItems()
 		            .stream()
 		            .filter(item -> item.getProduct().getId().equals(product.getId()))
 		            .findFirst();
-		   
-		    if (existingItemOpt.isPresent()) {
-
-		        // UPDATE EXISTING ITEM
-		        CartItem item = existingItemOpt.get();
-		        
-		       
-		        cartItemrepo.save(item);
+		    int qty =0;
+		    if( cartDTO.getQuantity() == null ||cartDTO.getQuantity() <=0) {
+		    	qty = 1;
+		    }else {
+		    	qty = cartDTO.getQuantity();
 		    }
-
-		 
+		    if (existingItemOpt.isPresent()) {
+		        CartItem item = existingItemOpt.get();
+		        int updatedQuantity = item.getQuantity()+qty;
+		        if(product.getStockQuantity() < updatedQuantity) {
+		        	return "Not enough stock available";
+		        }
+		        item.setQuantity(updatedQuantity);
+		        item.setActualProdPrice(product.getFinalPrice()*updatedQuantity);
+		        cartItemrepo.save(item);
+		    }else {
+		    	CartItem item = new CartItem();
+		    	item.setCart(cart);
+		    	item.setProduct(product);
+		    	item.setQuantity(qty);
+		    	item.setActualProdPrice(product.getFinalPrice()*qty);
+		    	cartItemrepo.save(item);
+		    }
 		    List<CartItem> items = cartItemrepo.findByCartId(cart.getId());
-
 		    double totalAmount = items.stream()
 		            .mapToDouble(CartItem::getActualProdPrice)
 		            .sum();
-
 		    cart.setTotalPrice(totalAmount);
-
-		    // 6. Shipping Charge
 		    double shipping = 80.0;
 		    cart.setShipingCharges(shipping);
-
-		    // 7. Discount Logic
 		    double discount = 0;
-
 		    if (totalAmount > 100000) {
 		        discount = 20;   // 20%
 		    } else if (totalAmount > 10000) {
@@ -98,7 +97,6 @@ public class CartService {
 		    }
 
 		    cart.setDiscount(discount);
-		    
 		    cart.setCuponDiscount(null);
 
 		    double finalPrice = shipping + totalAmount - totalAmount*discount/100;
@@ -112,7 +110,7 @@ public class CartService {
 	       
 	}
 	
-	//detete-item
+	
 	public String deleteItem(String username, Long cartItemId) {
 
 	    // 1. Get user

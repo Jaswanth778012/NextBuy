@@ -71,6 +71,10 @@ public class Product {
 	
 	private Double averageRating = 0.0;
 	
+	private Double gstPercentage = 0.0;
+	
+	private Double taxablePrice = 0.0;
+	
 	@Enumerated(EnumType.STRING)
 	private ProductStatus productStatus;
 	

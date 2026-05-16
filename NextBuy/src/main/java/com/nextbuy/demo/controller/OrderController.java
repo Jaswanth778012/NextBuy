@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,4 +73,9 @@ public class OrderController {
 	{
 		return ResponseEntity.ok(orderService.cancelOrder(principal.getName(), id, cancelRequest.getReason())); 
 	}
+	 @GetMapping("/conformOrders")
+	   public  List<Order> conformOrders(Authentication authentication){
+		   String username = authentication.getName();
+		   return orderService.conformOrders(username);
+	   }
 }

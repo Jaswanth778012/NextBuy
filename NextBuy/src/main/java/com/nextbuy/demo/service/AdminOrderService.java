@@ -34,7 +34,14 @@ public class AdminOrderService {
     	    
      }
      
-     
+	 public List<Order> getPendingOrders(){
+		 List<Order> pendingOrders = orderRepo.findAll();
+		 if(pendingOrders.isEmpty()) {
+	     	 throw new RuntimeException("no Pending Orders !");
+		 }
+		 return pendingOrders.stream().filter(or->or.getStatus()==OrderStatus.PENDING).toList();
+	 }
+      
      public Order getOrderById(Long id){
     	       Optional<Order> order = orderRepo.findById(id);
     	       if(order.isEmpty()) {
@@ -56,7 +63,7 @@ public class AdminOrderService {
     	        return "Status changed";
      }
      
-     public List<Order> getUserOrders(Long userId){
+     public List<Order> getUserByIdOrders(Long userId){
     	       List<Order> order = orderRepo.findByUserId(userId);
     	       if(order.isEmpty()) {
     	    	   throw new RuntimeException("User Id not found");

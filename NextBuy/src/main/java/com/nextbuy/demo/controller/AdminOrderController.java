@@ -29,6 +29,10 @@ public class AdminOrderController {
 	 public List<Order> getAllOrders(){
  	   return adminOrderService.getAllOrders();
   }
+	@GetMapping("/getPendingOrders")
+	public List<Order> getPendingOrders(){
+		return adminOrderService.getPendingOrders();
+	}
   
   @GetMapping("/getOrderById/{id}")
   public Order getOrderById(@PathVariable Long id){
@@ -42,7 +46,7 @@ public class AdminOrderController {
   
   @GetMapping("/getUserOrders/{userId}")
   public List<Order> getUserOrders(@PathVariable Long userId){
- 	     return adminOrderService.getUserOrders(userId);
+ 	     return adminOrderService.getUserByIdOrders(userId);
   }
   
   @GetMapping("/getOrdersByDate/{date}")
