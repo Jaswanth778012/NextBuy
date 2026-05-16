@@ -6,6 +6,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +28,13 @@ public class AdminOrderService {
         this.orderRepo = orderRepo;
     }
 
-	 public List<Order> getAllOrders(){
+	 public Page<Order> getAllOrders(int page, int size){
     	    List<Order> allOrders = orderRepo.findAll();
-    	    return allOrders.stream().filter(o->o.getStatus()!= OrderStatus.PENDING).toList();
+    	    if(allOrders.isEmpty()) {
+    	    	throw new RuntimeException("no orders");
+    	    }
+    	    Pageable pageable = PageRequest.of(page, size);
+    	    return orderRepo.findByStatusNotOrderByOrderedAtDesc(OrderStatus.PENDING, pageable);
     	    
      }
     

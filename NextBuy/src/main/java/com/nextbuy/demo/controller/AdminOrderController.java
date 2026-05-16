@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.entity.Order;
@@ -26,9 +29,15 @@ public class AdminOrderController {
 	
 	
 	@GetMapping("/getAllOrders")
-	 public List<Order> getAllOrders(){
- 	   return adminOrderService.getAllOrders();
-  }
+	public ResponseEntity<Page<Order>> getAllOrders(
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "5") int size
+	) {
+
+	    return ResponseEntity.ok(
+	            adminOrderService.getAllOrders(page, size)
+	    );
+	}
 	@GetMapping("/getPendingOrders")
 	public List<Order> getPendingOrders(){
 		return adminOrderService.getPendingOrders();

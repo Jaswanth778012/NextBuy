@@ -361,10 +361,34 @@ public class OrderService {
 		}
 	}
 	
-	public List<Order> confirmOrders(String username){
-		Optional<User> user = userRepo.findByUsername(username);
-		return orderRepo.findByUserIdAndStatusOrderByOrderedAtDesc(user.get().getId(),OrderStatus.CONFIRMED);
-	
+	public List<Order> confirmOrders(
+	        String username,
+	        int page,
+	        int size
+	) {
+
+	    User user = userRepo.findByUsername(username)
+	            .orElseThrow(() ->
+	                    new RuntimeException("User not found"));
+
+	    List<Order> orders =
+	            orderRepo.findByUserIdAndStatusOrderByOrderedAtDesc(
+	                    user.getId(),
+	                    OrderStatus.CONFIRMED
+	            );
+
+	    if (orders.isEmpty()) {
+	        throw new RuntimeException("No confirmed orders found");
+	    }
+
+	    int start = page * size;
+	    int end = Math.min(start + size, orders.size());
+
+	    if (start >= orders.size()) {
+	        return List.of();
+	    }
+
+	    return orders.subList(start, end);
 	}
 	
 	private void validateReturnWindow(Order order) {

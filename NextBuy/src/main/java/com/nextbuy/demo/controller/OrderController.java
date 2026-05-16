@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.CancelOrderRequestDto;
@@ -73,9 +74,22 @@ public class OrderController {
 	{
 		return ResponseEntity.ok(orderService.cancelOrder(principal.getName(), id, cancelRequest.getReason())); 
 	}
-	 @GetMapping("/conformOrders")
-	   public  List<Order> conformOrders(Authentication authentication){
-		   String username = authentication.getName();
-		   return orderService.confirmOrders(username);
-	   }
+	 @GetMapping("/confirmOrders")
+	
+	 public ResponseEntity<List<Order>> confirmOrders(
+	         Authentication authentication,
+	         @RequestParam(defaultValue = "0") int page,
+	         @RequestParam(defaultValue = "10") int size
+	 ) {
+
+	     String username = authentication.getName();
+
+	     return ResponseEntity.ok(
+	             orderService.confirmOrders(
+	                     username,
+	                     page,
+	                     size
+	             )
+	     );
+	 }
 }
