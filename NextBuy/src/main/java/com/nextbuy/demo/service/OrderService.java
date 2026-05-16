@@ -252,11 +252,10 @@ public class OrderService {
 
 		return orderRepo.findByIdAndUser(orderId, user).orElseThrow(() -> new RuntimeException("Order Not Found"));
 	}
-
 	public List<Order> getReturnedOrders(String username) {
 		User user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
 
-		return orderRepo.findByUserAndStatusOrderByOrderedAtDesc(user, OrderStatus.RETURNED);
+		return orderRepo.findByUserIdAndStatusOrderByOrderedAtDesc(user.getId(),OrderStatus.CONFIRMED);
 	}
 
 	public String returnOrder(String username, Long orderId) {
@@ -440,15 +439,10 @@ public class OrderService {
 		}
 	}
 	
-	public List<Order> conformOrders(String username){
+	public List<Order> confirmOrders(String username){
 		Optional<User> user = userRepo.findByUsername(username);
-		if(user.isEmpty()) {
-			 throw new RuntimeException("Order Id not found");
-		}
-		   User u = user.get();
-          List<Order> orders = orderRepo.findByUserId(u.getId());
-		return  orders.stream().filter(o->o.getStatus() == OrderStatus.CONFIRMED).toList();
-		
+		return orderRepo.findByUserIdAndStatusOrderByOrderedAtDesc(user.get().getId(),OrderStatus.CONFIRMED);
+	
 	}
 	
 	private void validateReturnWindow(Order order) {

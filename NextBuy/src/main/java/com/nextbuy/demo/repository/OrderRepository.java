@@ -17,10 +17,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	
 	Optional<Order> findByIdAndUser(Long id, User user);
 
-	List<Order> findByStatus(OrderStatus status);
+	List<Order> findByStatusOrderByOrderedAtDesc(OrderStatus status);
 	List<Order> findByUserId(Long userId);
 	List<Order> findByOrderedAt(LocalDateTime orderedAt);
 	List<Order> findByOrderedAtBetween(LocalDateTime start, LocalDateTime end);
 	
-	List<Order> findByUserAndStatusOrderByOrderedAtDesc(User user, OrderStatus status);
+	
+	List<Order> findByUserIdOrderByIdDesc(Long userId);
+	List<Order> findByUserIdAndStatusOrderByOrderedAtDesc(
+	        Long userId,
+	        OrderStatus status
+	);
 }
