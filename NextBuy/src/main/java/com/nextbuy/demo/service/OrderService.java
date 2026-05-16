@@ -4,9 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
-
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,14 +37,16 @@ public class OrderService {
 	private AddressRepository addressRepo;
 	private OrderRepository orderRepo;
 	private PaymentService paymentService;
+	private EmailService emailService;
 
 	public OrderService(UserRepository userRepo, CartRepository cartRepo, AddressRepository addressRepo,
-			OrderRepository orderRepo, PaymentService paymentService) {
+			OrderRepository orderRepo, PaymentService paymentService, EmailService emailService) {
 		this.userRepo = userRepo;
 		this.cartRepo = cartRepo;
 		this.addressRepo = addressRepo;
 		this.orderRepo = orderRepo;
 		this.paymentService = paymentService;
+		this.emailService = emailService;
 	}
 
 	@Value("${razorpay.key.id}")
@@ -186,9 +185,42 @@ public class OrderService {
 			 paymentService.createRazorpayOrder(savedOrder.getId());
 
 			    savedOrder = orderRepo.findById(savedOrder.getId())
-			            .orElseThrow(() -> new RuntimeException("Order not found"));   
+			            .orElseThrow(() -> new RuntimeException("Order not found")); 
+			    
+			    String orderSubject = "NextBuy Order Created";
+
+		        String orderBody =
+		                "Hello " + user.getUsername() + ",\n\n" +
+		                "Your order has been created successfully.\n\n" +
+		                "Order Number : " + savedOrder.getOrderNumber() + "\n" +
+		                "Amount : ₹" + savedOrder.getFinalPrice() + "\n" +
+		                "Payment Method : " + dto.getPaymentMethod() + "\n\n" +
+		                "Thank you for shopping with NextBuy.";
+
+		        emailService.sendEmail(
+		                user.getEmail(),
+		                orderSubject,
+		                orderBody
+		        );
 		}
 		
+		if (dto.getPaymentMethod() == PaymentMethod.COD) {
+
+            String codSubject = "Order Confirmed - NextBuy";
+
+            String codBody =
+                    "Hello " + user.getUsername() + ",\n\n" +
+                    "Your Cash On Delivery order has been confirmed.\n\n" +
+                    "Order Number : " + savedOrder.getOrderNumber() + "\n" +
+                    "Amount : ₹" + savedOrder.getFinalPrice() + "\n\n" +
+                    "Your order will be shipped soon.";
+
+            emailService.sendEmail(
+                    user.getEmail(),
+                    codSubject,
+                    codBody
+            );
+        }
 		// clear cart
 		cart.getCartItems().clear();
 		cart.setTotalPrice(0.0);
@@ -244,6 +276,20 @@ public class OrderService {
 		order.setStatus(OrderStatus.RETURNED);
 
 		orderRepo.save(order);
+		
+		String subject = "Order Returned - NextBuy";
+
+        String body =
+                "Hello " + order.getUser().getUsername() + ",\n\n" +
+                "Your order return request has been processed successfully.\n\n" +
+                "Order Number : " + order.getOrderNumber() + "\n\n" +
+                "Refund will reflect in 3-4 Business Working Days.";
+
+        emailService.sendEmail(
+                order.getUser().getEmail(),
+                subject,
+                body
+        );
 
 		return "Order returned successfully";
 	}
@@ -296,6 +342,21 @@ public class OrderService {
 		}
 
 		orderRepo.save(order);
+		
+		String subject = "Item Returned - NextBuy";
+
+        String body =
+                "Hello " + order.getUser().getUsername() + ",\n\n" +
+                "Your item return request has been processed.\n\n" +
+                "Product : " + orderItem.getProduct().getName() + "\n" +
+                "Refund Amount : ₹" + refundAmount + "\n\n" +
+                "Refund will reflect in 3-4 Business Working Days.";
+
+        emailService.sendEmail(
+                order.getUser().getEmail(),
+                subject,
+                body
+        );
 
 		return "Item returned successfully";
 	}
@@ -326,6 +387,20 @@ public class OrderService {
 		order.setCancelReason(reason);
 
 		orderRepo.save(order);
+		
+		 String subject = "Order Cancelled - NextBuy";
+
+	        String body =
+	                "Hello " + order.getUser().getUsername() + ",\n\n" +
+	                "Your order has been cancelled successfully.\n\n" +
+	                "Order Number : " + order.getOrderNumber() + "\n\n" +
+	                "Refund will be processed shortly if payment was completed.";
+
+	        emailService.sendEmail(
+	                order.getUser().getEmail(),
+	                subject,
+	                body
+	        );
 
 		return "Order Cancelled Successfully";
 	}
