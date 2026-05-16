@@ -65,6 +65,9 @@ public class Order {
 	    private Double couponDiscount = 0.0;
 	    private Double shippingCharges = 0.0;
 	    private Double finalPrice = 0.0;
+	    
+	    private Double totalTaxableAmount = 0.0;
+	    private Double totalGstAmount = 0.0;
 
 	    @Enumerated(EnumType.STRING)
 	    private OrderStatus status = OrderStatus.PENDING;
