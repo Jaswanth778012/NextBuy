@@ -3,6 +3,8 @@ package com.nextbuy.demo.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -358,6 +360,17 @@ public class OrderService {
 
 			
 		}
+	}
+	
+	private List<Order> ConformOrders(String username){
+		Optional<User> user = userRepo.findByUsername(username);
+		if(user.isEmpty()) {
+			 throw new RuntimeException("Order Id not found");
+		}
+		   User u = user.get();
+          List<Order> orders = orderRepo.findByUserId(u.getId());
+		return  orders.stream().filter(o->o.getStatus() == OrderStatus.CONFIRMED).toList();
+		
 	}
 	
 	private void validateReturnWindow(Order order) {
