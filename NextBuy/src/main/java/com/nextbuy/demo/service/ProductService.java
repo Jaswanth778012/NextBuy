@@ -65,20 +65,41 @@ public class ProductService {
     	p.setDeliveryTimeInDays(Pdto.getDeliveryTimeInDays());
     	p.setAttributes(Pdto.getAttributes());
 		p.setBrand(Pdto.getBrand());
-		if(Pdto.getMrp_price() > 1000) {
-			p.setDiscountPercentage(Pdto.getDiscountPercentage());
-			double finale = Pdto.getMrp_price()-Pdto.getMrp_price()*Pdto.getDiscountPercentage().doubleValue()/100;
-			finale = Double.parseDouble(
-			       String.format("%.2f", finale)
-			);
+		
+		double mrp = Pdto.getMrp_price();
 
-			p.setFinalPrice(finale);
-			
-		}
+		double discount =
+		        Pdto.getDiscountPercentage();
+
+		double gst =
+		        Pdto.getGstPercentage();
+
+		double taxablePrice =
+		        mrp - (mrp * discount / 100);
+
+		double finalPrice =
+		        calculateFinalPrice(
+		                mrp,
+		                discount,
+		                gst
+		        );
+
+		p.setDiscountPercentage(discount);
+
+		p.setGstPercentage(gst);
+ 
+		p.setTaxablePrice(
+		        Double.parseDouble(
+		                String.format("%.2f", taxablePrice)
+		        )
+		);
+
+		p.setFinalPrice(finalPrice);
 		
 		productRepo.save(p);
 		return "Product Added Successfully";
 	}
+	
 	//UPDATEDIS-COUNT
 	public String updateDisCount(Long id ,Double disCount) {
 		 Product product = productRepo.findById(id).get();
@@ -100,7 +121,7 @@ public class ProductService {
 			  return "Product not Found";
 		  }
 		  Product product = pr.get();
-		  if(!product.getName().equals(name) && !product.getBrand().equals(Brand_id)) {
+		  if(!product.getName().equals(name) && !product.getBrand().getId().equals(Brand_id)) {
 			 
 			  return "something went Worng";
 		  }
@@ -117,7 +138,8 @@ public class ProductService {
 		 }
 		return allproducts.stream()
 				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
-				   .sorted()
+				   .sorted((a,b) ->
+			        a.getName().compareTo(b.getName()))
 				   .toList();
 	}
 	//UPDATEPRODUCT
@@ -149,15 +171,35 @@ public class ProductService {
     	}
     	
     	
-    	if(product.getMrp_price() > 1000) {
-    		p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
-    		 double finale =product.getMrp_price()-product.getMrp_price()*p.getDiscountPercentage()/100;
-    		 finale = Double.parseDouble(
-    			       String.format("%.2f", finale)
-    			);
-    		 p.setFinalPrice(finale);
-			
-		}
+    	double mrp = product.getMrp_price();
+
+    	double discount =
+    	        product.getDiscountPercentage();
+
+    	double gst =
+    	        product.getGstPercentage();
+
+    	double taxablePrice =
+    	        mrp - (mrp * discount / 100);
+
+    	double finalPrice =
+    	        calculateFinalPrice(
+    	                mrp,
+    	                discount,
+    	                gst
+    	        );
+
+    	p.setDiscountPercentage(discount);
+
+    	p.setGstPercentage(gst);
+
+    	p.setTaxablePrice(
+    	        Double.parseDouble(
+    	                String.format("%.2f", taxablePrice)
+    	        )
+    	);
+
+    	p.setFinalPrice(finalPrice);
 		
     	p.setUpdatedAt(LocalDateTime.now());
     	p.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
@@ -197,7 +239,8 @@ public class ProductService {
 			   .stream()
 			   .filter(p->p.getCategory().equalsIgnoreCase(category))
 			   .distinct()
-			   .sorted()
+			   .sorted((a,b) ->
+		        a.getName().compareTo(b.getName()))
 			   .toList();
 		
 			  
@@ -212,6 +255,26 @@ public class ProductService {
 		 pr.setProductStatus(status);
 		 productRepo.save(pr);
 		 return "Product Status Updated !! ";
+	}
+	
+	//gst and final price calculation
+	private Double calculateFinalPrice(
+	        Double mrp,
+	        Double discountPercentage,
+	        Double gstPercentage) {
+
+	    double discountedPrice =
+	            mrp - (mrp * discountPercentage / 100);
+
+	    double gstAmount =
+	            discountedPrice * gstPercentage / 100;
+
+	    double finalPrice =
+	            discountedPrice + gstAmount;
+
+	    return Double.parseDouble(
+	            String.format("%.2f", finalPrice)
+	    );
 	}
 	
 }

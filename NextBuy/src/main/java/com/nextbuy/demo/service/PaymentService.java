@@ -104,7 +104,7 @@ import com.razorpay.Utils;
 		                new RazorpayClient(razorpayKeyId, razorpayKeySecret);
 
 		       
-		        int amountInPaise = (int) Math.round(payment.getAmount());
+		        int amountInPaise = (int) Math.round(payment.getAmount()*100);
 
 		        JSONObject refundRequest = new JSONObject();
 		        refundRequest.put("amount", amountInPaise);

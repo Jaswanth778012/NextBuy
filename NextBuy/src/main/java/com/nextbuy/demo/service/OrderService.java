@@ -104,14 +104,70 @@ public class OrderService {
 			item.setOrder(order);
 			item.setProduct(product);
 			item.setQuantity(cartItem.getQuantity());
+			
+			double taxableAmount =
+			        product.getTaxablePrice()
+			        * cartItem.getQuantity();
+
+			double gstAmount =
+			        taxableAmount
+			        * product.getGstPercentage() / 100;
+
+			double totalAmount =
+			        taxableAmount + gstAmount;
+
 			item.setFinalPrice(product.getFinalPrice());
-			item.setActualProdPrice(cartItem.getActualProdPrice());
+
+			item.setTaxableAmount(
+			        Double.parseDouble(
+			                String.format("%.2f", taxableAmount)
+			        )
+			);
+
+			item.setGstPercentage(
+			        product.getGstPercentage()
+			);
+
+			item.setGstAmount(
+			        Double.parseDouble(
+			                String.format("%.2f", gstAmount)
+			        )
+			);
+
+			item.setTotalAmount(
+			        Double.parseDouble(
+			                String.format("%.2f", totalAmount)
+			        )
+			);
+
 			item.setStatus(OrderItemStatus.ACTIVE);
 
 			orderItems.add(item);
 		}
 
 		order.setOrderItems(orderItems);
+		
+		double totalTaxable =
+		        orderItems.stream()
+		        .mapToDouble(OrderItem::getTaxableAmount)
+		        .sum();
+
+		double totalGst =
+		        orderItems.stream()
+		        .mapToDouble(OrderItem::getGstAmount)
+		        .sum();
+
+		order.setTotalTaxableAmount(
+		        Double.parseDouble(
+		                String.format("%.2f", totalTaxable)
+		        )
+		);
+
+		order.setTotalGstAmount(
+		        Double.parseDouble(
+		                String.format("%.2f", totalGst)
+		        )
+		);
 
 		Payment payment = new Payment();
 
@@ -215,7 +271,7 @@ public class OrderService {
 		updateStockStatus(product);
 
 		// calculate refund amount
-		double refundAmount = orderItem.getActualProdPrice();
+		double refundAmount = orderItem.getTotalAmount();
 
 		// refund payment
 		if (order.getPayment() != null

@@ -37,8 +37,14 @@ public class OrderItem {
     private Integer quantity = 1;
 
     private Double finalPrice;
-
-    private Double actualProdPrice;
+    
+    private Double gstPercentage;
+    
+    private Double gstAmount;
+    
+    private Double totalAmount;
+    
+    private Double taxableAmount;
     
     @Enumerated(EnumType.STRING)
     private OrderItemStatus status;

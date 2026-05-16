@@ -51,6 +51,7 @@ private Long id;
 	
 	private ProductStatus productStatus;
 	
+	private Double gstPercentage;
 	
 	private LocalDate createdAt;
 	
