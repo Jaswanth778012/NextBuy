@@ -37,7 +37,6 @@ public class CartService {
 		this.cartItemrepo = cartItemrepo;
 		this.emailService = emailService;
 	}
-
 	public String addCart(String username,CartRequestDTO cartDTO) {
 		  
 		    User user = userRepo.findByUsername(username)
@@ -55,10 +54,8 @@ public class CartService {
 		                newCart.setActive(true);
 		                return cartRepo.save(newCart);
 		            });
-		    Optional<CartItem> existingItemOpt = cart.getCartItems()
-		            .stream()
-		            .filter(item -> item.getProduct().getId().equals(product.getId()))
-		            .findFirst();
+		    Optional<CartItem> existingItemOpt =
+		            cartItemrepo.findByCartAndProduct(cart, product);
 		    int qty =0;
 		    if( cartDTO.getQuantity() == null ||cartDTO.getQuantity() <=0) {
 		    	qty = 1;
@@ -75,6 +72,9 @@ public class CartService {
 		        item.setActualProdPrice(product.getFinalPrice()*updatedQuantity);
 		        cartItemrepo.save(item);
 		    }else {
+		    	  if (qty > product.getStockQuantity()) {
+		              return "Not enough stock available";
+		          }
 		    	CartItem item = new CartItem();
 		    	item.setCart(cart);
 		    	item.setProduct(product);
