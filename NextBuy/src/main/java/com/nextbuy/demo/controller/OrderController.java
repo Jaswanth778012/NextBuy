@@ -76,6 +76,6 @@ public class OrderController {
 	 @GetMapping("/conformOrders")
 	   public  List<Order> conformOrders(Authentication authentication){
 		   String username = authentication.getName();
-		   return orderService.conformOrders(username);
+		   return orderService.confirmOrders(username);
 	   }
 }

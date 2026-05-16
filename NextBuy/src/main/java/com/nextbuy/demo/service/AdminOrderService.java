@@ -19,13 +19,10 @@ import com.nextbuy.demo.repository.OrderRepository;
 public class AdminOrderService {
 
     private OrderRepository orderRepo;
-    private OrderItemRepository orderItemsRepo;
+  
 
-    public AdminOrderService(OrderRepository orderRepo,
-                             OrderItemRepository orderItemsRepo) {
-
+    public AdminOrderService(OrderRepository orderRepo) {
         this.orderRepo = orderRepo;
-        this.orderItemsRepo = orderItemsRepo;
     }
 
 	 public List<Order> getAllOrders(){
@@ -33,13 +30,9 @@ public class AdminOrderService {
     	    return allOrders.stream().filter(o->o.getStatus()!= OrderStatus.PENDING).toList();
     	    
      }
-     
+    
 	 public List<Order> getPendingOrders(){
-		 List<Order> pendingOrders = orderRepo.findAll();
-		 if(pendingOrders.isEmpty()) {
-	     	 throw new RuntimeException("no Pending Orders !");
-		 }
-		 return pendingOrders.stream().filter(or->or.getStatus()==OrderStatus.PENDING).toList();
+		return orderRepo.findByStatusOrderByOrderedAtDesc(OrderStatus.PENDING);
 	 }
       
      public Order getOrderById(Long id){
@@ -64,11 +57,8 @@ public class AdminOrderService {
      }
      
      public List<Order> getUserByIdOrders(Long userId){
-    	       List<Order> order = orderRepo.findByUserId(userId);
-    	       if(order.isEmpty()) {
-    	    	   throw new RuntimeException("User Id not found");
-    	       }
-    	       return order;
+    	 
+    	      return orderRepo.findByUserIdOrderByIdDesc(userId);
      }
      
      public List<Order> getOrdersByDate(LocalDate date){
@@ -80,20 +70,17 @@ public class AdminOrderService {
     	    LocalDateTime start = date.atStartOfDay();
     	    LocalDateTime end = date.atTime(LocalTime.MAX);
     	    return orderRepo.findByOrderedAtBetween(start, end);
-    	    
+    	   
      }
-     public List<Order> getByStatus1(OrderStatus status){
-    	   return orderRepo.findByStatus(status);
+     public List<Order> getByStatus(OrderStatus status){
+    	   return orderRepo.findByStatusOrderByOrderedAtDesc(status);
      }
 
      public int countOfAllOrders() {
     	 return orderRepo.findAll().size();
      }
 
-    public List<Order> getByStatus(OrderStatus status) {
-
-        return orderRepo.findByStatus(status);
-    }
+   
 
     public Double totalSales() {
 
