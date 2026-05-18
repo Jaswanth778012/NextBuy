@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,7 +60,17 @@ public class AdminOrderService {
 	       }
     	       Order orde = order.get();
     	       orde.setStatus(status);
-    	        orderRepo.save(orde);
+    	       orderRepo.save(orde);
+    	       orderRepo.save(orde);
+    	       if(OrderStatus.DELIVERED == orde.getStatus() ) {
+    	    	   orde.setDeliveredAt(LocalDateTime.now());
+    	       }else if(orde.getStatus() == OrderStatus.SHIPPED){
+    	    	   int randomNum = ThreadLocalRandom.current().nextInt(100000, 999999);
+    	    	   orde.setTrackingNumber("NextBY-"+randomNum);
+    	    	   orde.setShippedAt(LocalDateTime.now());
+    	       }
+    	       orderRepo.save(orde);
+    	       
     	        return "Status changed";
      }
      

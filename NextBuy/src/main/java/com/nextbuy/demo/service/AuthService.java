@@ -25,13 +25,15 @@ public class AuthService {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtService jwtService;
     private final CloudinaryService cloudinaryService;
+    private final EmailService emailService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
                        CustomUserDetailsService customUserDetailsService,
                        JwtService jwtService,
-                       CloudinaryService cloudinaryService) {
+                       CloudinaryService cloudinaryService,
+                       EmailService emailService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -39,6 +41,7 @@ public class AuthService {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtService = jwtService;
         this.cloudinaryService = cloudinaryService;
+        this.emailService = emailService;
     }
 
     public String register(UserRegisterRequestDto request, MultipartFile image) {
@@ -67,7 +70,21 @@ public class AuthService {
         user.setDpUrl(imageUrl);
 
         userRepository.save(user);
-
+      String email =  user.getEmail();
+      String subject = "Welcome to NextBuy – Registration Successful";
+      String username = user.getUsername();
+      String password =request.getPassword();
+      String Body = " Dear User,\r\n"
+      		+ "\r\n"
+      		+ "Welcome to NextBuy!\r\n"
+      		+ "\r\n"
+      		+ "Your registration has been completed successfully. We’re excited to have you as part of our community.Thank you for choosing NextBuy. We look forward to providing you with a great shopping experience.\r\n"
+      		+ "\r\n"
+      		+"Username: "+username+"\r\n"
+      		+"Password: "+password+"  Please Don't share to anyone !\r\n"
+      		+ "Best Regards,\r\n"
+      		+ "NextBuy Team";
+         emailService.sendEmail(email, subject, Body);
         return "User registered successfully";
     }
     

@@ -1,15 +1,18 @@
 package com.nextbuy.demo.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nextbuy.demo.dto.CheckOutRequestDto;
 import com.nextbuy.demo.dto.CheckOutResponseDto;
+import com.nextbuy.demo.dto.OrderTrakingDTO;
 import com.nextbuy.demo.entity.Address;
 import com.nextbuy.demo.entity.Cart;
 import com.nextbuy.demo.entity.CartItem;
@@ -27,6 +30,8 @@ import com.nextbuy.demo.repository.AddressRepository;
 import com.nextbuy.demo.repository.CartRepository;
 import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.UserRepository;
+
+import tools.jackson.databind.ext.javatime.deser.LocalDateDeserializer;
 
 @Service
 @Transactional
@@ -72,7 +77,7 @@ public class OrderService {
 		order.setUser(user);
 		order.setShippingAddress(address);
 		order.setAppliedCupon(cart.getAppliedCupon());
-
+        
 		order.setTotalPrice(cart.getTotalPrice());
 		order.setDiscount(cart.getDiscount());
 		order.setCouponDiscount(cart.getCuponDiscount());
@@ -178,8 +183,11 @@ public class OrderService {
 		payment.setPaymentStatus(PaymentStatus.PENDING);
 		
 		order.setPayment(payment);
+	   orderRepo.save(order);
+		order.setEstimatedDeliveryDate(order.getOrderedAt().plusDays(7).plusMinutes(30));
 		
 		Order savedOrder = orderRepo.save(order);
+		
 
 		if (dto.getPaymentMethod() == PaymentMethod.RAZORPAY) {
 			 paymentService.createRazorpayOrder(savedOrder.getId());
@@ -480,4 +488,39 @@ public class OrderService {
 	        );
 	    }
 	}
+	public OrderTrakingDTO OrderTraking(String username, Long orderID) {
+
+	    User user = userRepo.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+	    Order order = orderRepo.findByIdAndUser(orderID, user)
+	            .orElseThrow(() -> new RuntimeException("Order Not Found"));
+
+	    OrderTrakingDTO t = new OrderTrakingDTO();
+
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+	    t.setOrderNumber(order.getOrderNumber());
+	    t.setStatus(order.getStatus());
+	    t.setTrackingNumber(order.getTrackingNumber());
+	    t.setCancelReason(order.getCancelReason());
+
+	  
+	    t.setOrderedAt(format(order.getOrderedAt(), formatter));
+	    t.setShippedAt(format(order.getShippedAt(), formatter));
+	    t.setDeliveredAt(format(order.getDeliveredAt(), formatter));
+	    t.setCancelledAt(format(order.getCancelledAt(), formatter));
+
+	    if (order.getEstimatedDeliveryDate() != null) {
+	        t.setEstimatedDeliveryDate(order.getEstimatedDeliveryDate().format(formatter));
+	    }
+
+	    t.setShippingAddress(order.getShippingAddress());
+
+	    return t;
+	}
+	private String format(LocalDateTime dateTime, DateTimeFormatter formatter) {
+	    return dateTime != null ? dateTime.format(formatter) : null;
+	}
+
 }

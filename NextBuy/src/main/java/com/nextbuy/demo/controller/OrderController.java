@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nextbuy.demo.dto.CancelOrderRequestDto;
 import com.nextbuy.demo.dto.CheckOutRequestDto;
 import com.nextbuy.demo.dto.CheckOutResponseDto;
+import com.nextbuy.demo.dto.OrderTrakingDTO;
 import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.service.OrderService;
 
@@ -91,5 +92,10 @@ public class OrderController {
 	                     size
 	             )
 	     );
+	 }
+	 @GetMapping("/orderTraking/{id}")
+	 public OrderTrakingDTO ordertraking( Authentication authentication,@PathVariable Long id) {
+		 String username = authentication.getName();
+		 return orderService.OrderTraking(username, id);
 	 }
 }

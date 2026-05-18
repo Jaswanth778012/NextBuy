@@ -77,14 +77,15 @@ public class Order {
 
 	    private LocalDateTime orderedAt;
 	    private LocalDateTime updatedAt;
+	    private LocalDateTime  shippedAt;
 	    private LocalDateTime deliveredAt;
 	    private LocalDateTime cancelledAt;
-
+	    private LocalDateTime estimatedDeliveryDate;
 	    @PrePersist
 	    public void prePersist() {
 	        orderedAt = LocalDateTime.now();
 	        updatedAt = LocalDateTime.now();
-
+	       
 	        if (orderNumber == null) {
 	            orderNumber = "ORD-" + System.currentTimeMillis();
 	        }
