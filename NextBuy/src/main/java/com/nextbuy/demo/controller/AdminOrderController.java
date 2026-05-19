@@ -84,6 +84,16 @@ public class AdminOrderController {
   public int countOfAllOrders() {
 	  return adminOrderService.countOfAllOrders();
   }
-  
-  
+  @GetMapping("/getOrdersByMonth/{month}")
+  public List<Order> getOrdersByMonth(@PathVariable int month){
+	    return  adminOrderService.getOrdersByMonth(month);
+  }
+  @GetMapping("/getOrdersByYear/{year}")
+  public List<Order> getOrdersByyear(@PathVariable int year){
+	 return  adminOrderService.getOrdersByYear(year);
+  }
+  @GetMapping("/getOrdersByMonthAndYear/{month}/{year}")
+  public List<Order> getOrdersByMonthAndYear(@PathVariable int month, @PathVariable int year){
+	 return  adminOrderService.getOrdersByMonthAndyear(month, year);
+  }
 }

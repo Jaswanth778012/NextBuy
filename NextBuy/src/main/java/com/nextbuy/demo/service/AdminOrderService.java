@@ -137,4 +137,28 @@ public class AdminOrderService {
                         order.getStatus() == OrderStatus.RETURNED)
                 .count();
     }
+    public List<Order> getOrdersByMonth(int month){
+    	List<Order> monthorders = orderRepo.findByMonthOrders(month);
+    	if(monthorders.isEmpty()) {
+    		 throw new RuntimeException("this Month orders Empty !!");
+    	}
+    	return monthorders;
+    	
+    }
+    public List<Order> getOrdersByYear(int year){
+    	  List<Order> yearOrders = orderRepo.findByYear(year);
+    	  if(yearOrders.isEmpty()) {
+    		  throw new RuntimeException("this Year orders Empty !!");
+    	  }
+    	  return yearOrders;
+    }
+    public List<Order> getOrdersByMonthAndyear(int month , int year){
+    	     List<Order> ordersMandY = orderRepo.findByMonthAndYear(month,year);
+    	     if(ordersMandY.isEmpty()) {
+    	    	 throw new RuntimeException("this Month&Year orders Empty !!");
+    	     }
+    	     return ordersMandY;
+    	     
+    }
+    
 }

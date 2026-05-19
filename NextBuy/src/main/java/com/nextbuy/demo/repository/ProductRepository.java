@@ -12,7 +12,7 @@ import com.nextbuy.demo.entity.Brand;
 import com.nextbuy.demo.entity.Product;
 
 public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
-	
+	 long count();
 	boolean existsByNameAndBrand(String name, Brand brand);
 	Optional<Product> findByName(String name);
 	List<Product> findByCategory(String category);
