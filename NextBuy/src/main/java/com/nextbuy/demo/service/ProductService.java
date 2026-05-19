@@ -2,16 +2,19 @@ package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nextbuy.demo.dto.ComparisionProductDto;
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
-import com.nextbuy.demo.enums.ProductCondition;
 import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.BrandRepository;
 import com.nextbuy.demo.repository.ProductRepository;
@@ -226,11 +229,57 @@ public class ProductService {
 	    		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
 	    	}
 
-	    		
-	    	
-	    	
 		  productRepo.save(p);
 		  return "Stock Quantity Updated Successfully!!";
+	}
+	
+	public List<ComparisionProductDto> compareProducts(
+	        List<String> keywords) {
+
+	    List<Product> products = new ArrayList<>();
+
+	    for(String keyword : keywords) {
+
+	        List<Product> matchedProducts =
+	                productRepo.searchProducts(keyword);
+
+	        if(matchedProducts.isEmpty()) {
+	            throw new RuntimeException(
+	                    "No products found for: " + keyword
+	            );
+	        }
+
+	        products.add(matchedProducts.get(0));
+	    }
+
+	    Set<String> categories = products.stream()
+	            .map(Product::getCategory)
+	            .collect(Collectors.toSet());
+
+	    if(categories.size() > 1) {
+	        throw new RuntimeException(
+	                "Products must belong to same category"
+	        );
+	    }
+
+	    return products.stream().map(product -> {
+
+	        ComparisionProductDto dto =
+	                new ComparisionProductDto();
+
+	        dto.setName(product.getName());
+	        dto.setSlug(product.getSlug());
+	        dto.setImageUrl(product.getImageUrl());
+	        dto.setMrpPrice(product.getMrp_price());
+	        dto.setFinalPrice(product.getFinalPrice());
+	        dto.setAverageRating(product.getAverageRating());
+	        dto.setCategory(product.getCategory());
+	        dto.setBrand(product.getBrand());
+	        dto.setAttributes(product.getAttributes());
+
+	        return dto;
+
+	    }).toList();
 	}
 	
 	//SerachByCategory

@@ -25,6 +25,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,6 +43,9 @@ public class Product {
 	private Long id;
 	
 	private String name;
+	
+	@Column(unique = true, nullable = false)
+	private String slug;
 	
 	private String description;
 	
@@ -103,7 +107,27 @@ public class Product {
 	@PrePersist
 	protected void onCreate() {
 		this.createdAt = LocalDate.now();
+		if(this.slug == null || this.slug.isEmpty()) {
+	        this.slug = generateSlug(this.name);
+	    }
 	}
 	
+	@PreUpdate
+	protected void onUpdate() {
+
+	    this.updatedAt = LocalDateTime.now();
+
+	    if(this.name != null) {
+	        this.slug = generateSlug(this.name);
+	    }
+	}
+	
+	private String generateSlug(String text) {
+
+	    return text.toLowerCase()
+	            .trim()
+	            .replace(" ", "-")
+	            .replaceAll("[^a-z0-9-]", "");
+	}
 	
 }
