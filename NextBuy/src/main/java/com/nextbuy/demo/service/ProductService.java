@@ -2,6 +2,7 @@ package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -228,23 +229,27 @@ public class ProductService {
 	    		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
 	    	}
 
-	    		
-	    	
-	    	
 		  productRepo.save(p);
 		  return "Stock Quantity Updated Successfully!!";
 	}
 	
 	public List<ComparisionProductDto> compareProducts(
-	        List<String> slugs) {
+	        List<String> keywords) {
 
-	    List<Product> products =
-	            productRepo.findBySlugIn(slugs);
+	    List<Product> products = new ArrayList<>();
 
-	    if(products.isEmpty()) {
-	        throw new RuntimeException(
-	                "Products not found"
-	        );
+	    for(String keyword : keywords) {
+
+	        List<Product> matchedProducts =
+	                productRepo.searchProducts(keyword);
+
+	        if(matchedProducts.isEmpty()) {
+	            throw new RuntimeException(
+	                    "No products found for: " + keyword
+	            );
+	        }
+
+	        products.add(matchedProducts.get(0));
 	    }
 
 	    Set<String> categories = products.stream()
@@ -261,7 +266,7 @@ public class ProductService {
 
 	        ComparisionProductDto dto =
 	                new ComparisionProductDto();
-	        
+
 	        dto.setName(product.getName());
 	        dto.setSlug(product.getSlug());
 	        dto.setImageUrl(product.getImageUrl());

@@ -19,6 +19,14 @@ public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpe
 	 @Query("SELECT DISTINCT p.category FROM Product p")
 	List<String> findAllProductCategory();
 	 
-	 List<Product> findBySlugIn(List<String> slugs);
+	 
+	 @Query("""
+	           SELECT p FROM Product p
+	           WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           OR LOWER(p.slug) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           OR LOWER(p.category) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           OR LOWER(p.brand.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           """)
+	    List<Product> searchProducts(String keyword);
 
 }
