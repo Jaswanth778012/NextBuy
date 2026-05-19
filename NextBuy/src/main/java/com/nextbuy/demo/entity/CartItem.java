@@ -22,9 +22,9 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer quantity =1;
+    private Integer quantity=1;
 
-    private Double subtotal;
+    private Double actualProdPrice;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

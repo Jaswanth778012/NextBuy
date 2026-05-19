@@ -1,16 +1,18 @@
 package com.nextbuy.demo.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nextbuy.demo.dto.CheckOutRequestDto;
 import com.nextbuy.demo.dto.CheckOutResponseDto;
+import com.nextbuy.demo.dto.OrderTrakingDTO;
 import com.nextbuy.demo.entity.Address;
 import com.nextbuy.demo.entity.Cart;
 import com.nextbuy.demo.entity.CartItem;
@@ -24,12 +26,12 @@ import com.nextbuy.demo.enums.OrderItemStatus;
 import com.nextbuy.demo.enums.OrderStatus;
 import com.nextbuy.demo.enums.PaymentMethod;
 import com.nextbuy.demo.enums.PaymentStatus;
-import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.AddressRepository;
 import com.nextbuy.demo.repository.CartRepository;
 import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.UserRepository;
-import com.razorpay.RazorpayClient;
+
+import tools.jackson.databind.ext.javatime.deser.LocalDateDeserializer;
 
 @Service
 @Transactional
@@ -40,14 +42,16 @@ public class OrderService {
 	private AddressRepository addressRepo;
 	private OrderRepository orderRepo;
 	private PaymentService paymentService;
+	private EmailService emailService;
 
 	public OrderService(UserRepository userRepo, CartRepository cartRepo, AddressRepository addressRepo,
-			OrderRepository orderRepo, PaymentService paymentService) {
+			OrderRepository orderRepo, PaymentService paymentService, EmailService emailService) {
 		this.userRepo = userRepo;
 		this.cartRepo = cartRepo;
 		this.addressRepo = addressRepo;
 		this.orderRepo = orderRepo;
 		this.paymentService = paymentService;
+		this.emailService = emailService;
 	}
 
 	@Value("${razorpay.key.id}")
@@ -68,12 +72,12 @@ public class OrderService {
 		Address address = addressRepo.findByIdAndUser(dto.getAddressId(), user)
 				.orElseThrow(() -> new RuntimeException("Address Not Found"));
 
+		
 		Order order = new Order();
-
 		order.setUser(user);
 		order.setShippingAddress(address);
 		order.setAppliedCupon(cart.getAppliedCupon());
-
+        
 		order.setTotalPrice(cart.getTotalPrice());
 		order.setDiscount(cart.getDiscount());
 		order.setCouponDiscount(cart.getCuponDiscount());
@@ -106,54 +110,125 @@ public class OrderService {
 			item.setOrder(order);
 			item.setProduct(product);
 			item.setQuantity(cartItem.getQuantity());
-			item.setPrice(product.getFinalPrice());
-			item.setSubtotal(cartItem.getSubtotal());
+			
+			double taxableAmount =
+			        product.getTaxablePrice()
+			        * cartItem.getQuantity();
+
+			double gstAmount =
+			        taxableAmount
+			        * product.getGstPercentage() / 100;
+
+			double totalAmount =
+			        taxableAmount + gstAmount;
+
+			item.setFinalPrice(product.getFinalPrice());
+
+			item.setTaxableAmount(
+			        Double.parseDouble(
+			                String.format("%.2f", taxableAmount)
+			        )
+			);
+
+			item.setGstPercentage(
+			        product.getGstPercentage()
+			);
+
+			item.setGstAmount(
+			        Double.parseDouble(
+			                String.format("%.2f", gstAmount)
+			        )
+			);
+
+			item.setTotalAmount(
+			        Double.parseDouble(
+			                String.format("%.2f", totalAmount)
+			        )
+			);
+
 			item.setStatus(OrderItemStatus.ACTIVE);
 
 			orderItems.add(item);
 		}
 
 		order.setOrderItems(orderItems);
+		
+		double totalTaxable =
+		        orderItems.stream()
+		        .mapToDouble(OrderItem::getTaxableAmount)
+		        .sum();
+
+		double totalGst =
+		        orderItems.stream()
+		        .mapToDouble(OrderItem::getGstAmount)
+		        .sum();
+
+		order.setTotalTaxableAmount(
+		        Double.parseDouble(
+		                String.format("%.2f", totalTaxable)
+		        )
+		);
+
+		order.setTotalGstAmount(
+		        Double.parseDouble(
+		                String.format("%.2f", totalGst)
+		        )
+		);
 
 		Payment payment = new Payment();
 
 		payment.setOrder(order);
 		payment.setPaymentMethod(dto.getPaymentMethod());
 		payment.setAmount(order.getFinalPrice());
-
-		if (dto.getPaymentMethod() == PaymentMethod.COD) {
-			payment.setPaymentStatus(PaymentStatus.PENDING);
-		} else {
-			payment.setPaymentStatus(PaymentStatus.PENDING);
-		}
+		payment.setPaymentStatus(PaymentStatus.PENDING);
+		
+		order.setPayment(payment);
+	   orderRepo.save(order);
+		order.setEstimatedDeliveryDate(order.getOrderedAt().plusDays(7).plusMinutes(30));
+		
+		Order savedOrder = orderRepo.save(order);
+		
 
 		if (dto.getPaymentMethod() == PaymentMethod.RAZORPAY) {
-			try {
+			 paymentService.createRazorpayOrder(savedOrder.getId());
 
-				RazorpayClient razorpayClient = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+			    savedOrder = orderRepo.findById(savedOrder.getId())
+			            .orElseThrow(() -> new RuntimeException("Order not found")); 
+			    
+			    String orderSubject = "NextBuy Order Created";
 
-				JSONObject options = new JSONObject();
+		        String orderBody =
+		                "Hello " + user.getUsername() + ",\n\n" +
+		                "Your order has been created successfully.\n\n" +
+		                "Order Number : " + savedOrder.getOrderNumber() + "\n" +
+		                "Amount : ₹" + savedOrder.getFinalPrice() + "\n" +
+		                "Payment Method : " + dto.getPaymentMethod() + "\n\n" +
+		                "Thank you for shopping with NextBuy.";
 
-				options.put("amount", (int) (order.getFinalPrice() * 100));
-
-				options.put("currency", "INR");
-
-				options.put("receipt", "order_" + System.currentTimeMillis());
-
-				com.razorpay.Order razorpayOrder = razorpayClient.orders.create(options);
-
-				payment.setRazorpayOrderId(razorpayOrder.get("id"));
-
-			} catch (Exception e) {
-
-				throw new RuntimeException("Failed to create Razorpay order: " + e.getMessage());
-			}
+		        emailService.sendEmail(
+		                user.getEmail(),
+		                orderSubject,
+		                orderBody
+		        );
 		}
+		
+		if (dto.getPaymentMethod() == PaymentMethod.COD) {
 
-		order.setPayment(payment);
+            String codSubject = "Order Confirmed - NextBuy";
 
-		Order savedOrder = orderRepo.save(order);
+            String codBody =
+                    "Hello " + user.getUsername() + ",\n\n" +
+                    "Your Cash On Delivery order has been confirmed.\n\n" +
+                    "Order Number : " + savedOrder.getOrderNumber() + "\n" +
+                    "Amount : ₹" + savedOrder.getFinalPrice() + "\n\n" +
+                    "Your order will be shipped soon.";
 
+            emailService.sendEmail(
+                    user.getEmail(),
+                    codSubject,
+                    codBody
+            );
+        }
 		// clear cart
 		cart.getCartItems().clear();
 		cart.setTotalPrice(0.0);
@@ -168,7 +243,7 @@ public class OrderService {
 
 		return new CheckOutResponseDto(savedOrder.getId(), savedOrder.getOrderNumber(),
 				savedOrder.getPayment() != null ? savedOrder.getPayment().getRazorpayOrderId() : null,
-				savedOrder.getFinalPrice(), null, "INR");
+				savedOrder.getFinalPrice(), razorpayKeyId, "INR");
 	}
 
 	public List<Order> getMyOrders(String username) {
@@ -182,11 +257,10 @@ public class OrderService {
 
 		return orderRepo.findByIdAndUser(orderId, user).orElseThrow(() -> new RuntimeException("Order Not Found"));
 	}
-
 	public List<Order> getReturnedOrders(String username) {
 		User user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User Not Found"));
 
-		return orderRepo.findByUserAndStatusOrderByOrderedAtDesc(user, OrderStatus.RETURNED);
+		return orderRepo.findByUserIdAndStatusOrderByOrderedAtDesc(user.getId(),OrderStatus.CONFIRMED);
 	}
 
 	public String returnOrder(String username, Long orderId) {
@@ -195,18 +269,35 @@ public class OrderService {
 		if (order.getStatus() != OrderStatus.DELIVERED) {
 			throw new RuntimeException("Only delivered orders can be returned");
 		}
-
+		
+		validateReturnWindow(order);
 		// restore stock
 		restoreStock(order);
 
 		// refund online payment
-		if (order.getPayment() != null && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS) {
-			paymentService.refundPayment(order.getId());
+		if (order.getPayment() != null
+		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
+		    paymentService.refundPayment(order.getId());
 		}
 
 		order.setStatus(OrderStatus.RETURNED);
 
 		orderRepo.save(order);
+		
+		String subject = "Order Returned - NextBuy";
+
+        String body =
+                "Hello " + order.getUser().getUsername() + ",\n\n" +
+                "Your order return request has been processed successfully.\n\n" +
+                "Order Number : " + order.getOrderNumber() + "\n\n" +
+                "Refund will reflect in 3-4 Business Working Days.";
+
+        emailService.sendEmail(
+                order.getUser().getEmail(),
+                subject,
+                body
+        );
 
 		return "Order returned successfully";
 	}
@@ -217,7 +308,9 @@ public class OrderService {
 		if (order.getStatus() != OrderStatus.DELIVERED) {
 			throw new RuntimeException("Only delivered orders can be returned");
 		}
-
+		
+		validateReturnWindow(order);
+		
 		OrderItem orderItem = order.getOrderItems().stream().filter(item -> item.getId().equals(orderItemId))
 				.findFirst().orElseThrow(() -> new RuntimeException("Order item not found"));
 
@@ -233,11 +326,13 @@ public class OrderService {
 		updateStockStatus(product);
 
 		// calculate refund amount
-		double refundAmount = orderItem.getSubtotal();
+		double refundAmount = orderItem.getTotalAmount();
 
 		// refund payment
-		if (order.getPayment() != null && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS) {
-			paymentService.refundPartialPayment(order.getId(), refundAmount);
+		if (order.getPayment() != null
+		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
+		    paymentService.refundPartialPayment(order.getId(), refundAmount);
 		}
 
 		// mark item returned
@@ -255,11 +350,26 @@ public class OrderService {
 		}
 
 		orderRepo.save(order);
+		
+		String subject = "Item Returned - NextBuy";
+
+        String body =
+                "Hello " + order.getUser().getUsername() + ",\n\n" +
+                "Your item return request has been processed.\n\n" +
+                "Product : " + orderItem.getProduct().getName() + "\n" +
+                "Refund Amount : ₹" + refundAmount + "\n\n" +
+                "Refund will reflect in 3-4 Business Working Days.";
+
+        emailService.sendEmail(
+                order.getUser().getEmail(),
+                subject,
+                body
+        );
 
 		return "Item returned successfully";
 	}
 
-	public String cancelOrder(String username, Long orderId) {
+	public String cancelOrder(String username, Long orderId, String reason) {
 		Order order = getOrderById(username, orderId);
 
 		if (order.getStatus() == OrderStatus.DELIVERED) {
@@ -274,14 +384,31 @@ public class OrderService {
 		restoreStock(order);
 
 		// refund online payment
-		if (order.getPayment() != null && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS) {
-			paymentService.refundPayment(order.getId());
+		if (order.getPayment() != null
+		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
+		    paymentService.refundPayment(order.getId());
 		}
 
 		order.setStatus(OrderStatus.CANCELLED);
 		order.setCancelledAt(LocalDateTime.now());
+		order.setCancelReason(reason);
 
 		orderRepo.save(order);
+		
+		 String subject = "Order Cancelled - NextBuy";
+
+	        String body =
+	                "Hello " + order.getUser().getUsername() + ",\n\n" +
+	                "Your order has been cancelled successfully.\n\n" +
+	                "Order Number : " + order.getOrderNumber() + "\n\n" +
+	                "Refund will be processed shortly if payment was completed.";
+
+	        emailService.sendEmail(
+	                order.getUser().getEmail(),
+	                subject,
+	                body
+	        );
 
 		return "Order Cancelled Successfully";
 	}
@@ -305,17 +432,95 @@ public class OrderService {
 
 	private void updateStockStatus(Product product) {
 		if (product.getStockQuantity() <= 0) {
-			product.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
+			product.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
 
-			product.setProductStatus(ProductStatus.OUT_OF_STOCK);
-		} else if (product.getStockQuantity() >= 50) {
+		} else if (product.getStockQuantity() >= 100) {
 			product.setStockStatus(AvailabilityStockStatus.AVAILABLE);
 
-			product.setProductStatus(ProductStatus.AVAILABLE);
 		} else {
 			product.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
 
-			product.setProductStatus(ProductStatus.AVAILABLE);
+			
 		}
 	}
+	
+	public List<Order> confirmOrders(
+	        String username,
+	        int page,
+	        int size
+	) {
+
+	    User user = userRepo.findByUsername(username)
+	            .orElseThrow(() ->
+	                    new RuntimeException("User not found"));
+
+	    List<Order> orders =
+	            orderRepo.findByUserIdAndStatusOrderByOrderedAtDesc(
+	                    user.getId(),
+	                    OrderStatus.CONFIRMED
+	            );
+
+	    if (orders.isEmpty()) {
+	        throw new RuntimeException("No confirmed orders found");
+	    }
+
+	    int start = page * size;
+	    int end = Math.min(start + size, orders.size());
+
+	    if (start >= orders.size()) {
+	        return List.of();
+	    }
+
+	    return orders.subList(start, end);
+	}
+	
+	private void validateReturnWindow(Order order) {
+
+	    if (order.getDeliveredAt() == null) {
+	        throw new RuntimeException("Delivery date not found");
+	    }
+
+	    LocalDateTime returnLastDate = order.getDeliveredAt().plusDays(7);
+
+	    if (LocalDateTime.now().isAfter(returnLastDate)) {
+	        throw new RuntimeException(
+	            "Return period expired. Returns allowed only within 7 days of delivery"
+	        );
+	    }
+	}
+	public OrderTrakingDTO OrderTraking(String username, Long orderID) {
+
+	    User user = userRepo.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+	    Order order = orderRepo.findByIdAndUser(orderID, user)
+	            .orElseThrow(() -> new RuntimeException("Order Not Found"));
+
+	    OrderTrakingDTO t = new OrderTrakingDTO();
+
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+	    t.setOrderNumber(order.getOrderNumber());
+	    t.setStatus(order.getStatus());
+	    t.setTrackingNumber(order.getTrackingNumber());
+	    t.setCancelReason(order.getCancelReason());
+
+	  
+	    t.setOrderedAt(format(order.getOrderedAt(), formatter));
+	    t.setShippedAt(format(order.getShippedAt(), formatter));
+	    t.setDeliveredAt(format(order.getDeliveredAt(), formatter));
+	    t.setCancelledAt(format(order.getCancelledAt(), formatter));
+
+	    if (order.getEstimatedDeliveryDate() != null) {
+	        t.setEstimatedDeliveryDate(order.getEstimatedDeliveryDate().format(formatter));
+	    }
+
+	    t.setShippingAddress(order.getShippingAddress());
+
+	    return t;
+	}
+	private String format(LocalDateTime dateTime, DateTimeFormatter formatter) {
+	    return dateTime != null ? dateTime.format(formatter) : null;
+	}
+
 }

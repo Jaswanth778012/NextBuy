@@ -1,5 +1,6 @@
 package com.nextbuy.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nextbuy.demo.enums.OrderItemStatus;
 
 import jakarta.persistence.Entity;
@@ -26,6 +27,7 @@ public class OrderItem {
 	
 	@ManyToOne
     @JoinColumn(name = "order_id")
+	@JsonBackReference
     private Order order;
 
     @ManyToOne
@@ -34,9 +36,15 @@ public class OrderItem {
 
     private Integer quantity = 1;
 
-    private Double price;
-
-    private Double subtotal;
+    private Double finalPrice;
+    
+    private Double gstPercentage;
+    
+    private Double gstAmount;
+    
+    private Double totalAmount;
+    
+    private Double taxableAmount;
     
     @Enumerated(EnumType.STRING)
     private OrderItemStatus status;

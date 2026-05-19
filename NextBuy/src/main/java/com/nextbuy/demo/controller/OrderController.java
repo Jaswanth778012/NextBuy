@@ -4,19 +4,25 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextbuy.demo.dto.CancelOrderRequestDto;
 import com.nextbuy.demo.dto.CheckOutRequestDto;
 import com.nextbuy.demo.dto.CheckOutResponseDto;
+import com.nextbuy.demo.dto.OrderTrakingDTO;
 import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.service.OrderService;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/Orders")
 public class OrderController {
@@ -65,8 +71,31 @@ public class OrderController {
 	}
 	
 	@PutMapping("/cancelOrder/{id}")
-	public ResponseEntity<String> cancelOrder(Principal principal, @PathVariable Long id)
+	public ResponseEntity<String> cancelOrder(Principal principal, @PathVariable Long id, @RequestBody CancelOrderRequestDto cancelRequest)
 	{
-		return ResponseEntity.ok(orderService.cancelOrder(principal.getName(), id)); 
+		return ResponseEntity.ok(orderService.cancelOrder(principal.getName(), id, cancelRequest.getReason())); 
 	}
+	 @GetMapping("/confirmOrders")
+	
+	 public ResponseEntity<List<Order>> confirmOrders(
+	         Authentication authentication,
+	         @RequestParam(defaultValue = "0") int page,
+	         @RequestParam(defaultValue = "10") int size
+	 ) {
+
+	     String username = authentication.getName();
+
+	     return ResponseEntity.ok(
+	             orderService.confirmOrders(
+	                     username,
+	                     page,
+	                     size
+	             )
+	     );
+	 }
+	 @GetMapping("/orderTraking/{id}")
+	 public OrderTrakingDTO ordertraking( Authentication authentication,@PathVariable Long id) {
+		 String username = authentication.getName();
+		 return orderService.OrderTraking(username, id);
+	 }
 }

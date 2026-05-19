@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.CartRequestDTO;
 import com.nextbuy.demo.entity.Cart;
 import com.nextbuy.demo.entity.CartItem;
+import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.service.CartService;
 import com.nextbuy.demo.service.JwtService;
 
@@ -41,6 +41,24 @@ public class CartController {
 		return cartService.addCart(username,cartDTO);
 	}
    
+   @PostMapping("/toRemindCart")
+   public String toRemindCart(HttpServletRequest request) {
+	   String token = request.getHeader("Authorization").substring(7);
+	   String username = jwtService.extractUsername(token);
+	   String subject = "⏳ Your Cart is Waiting for You 🛒";
+	   String body = "Hiiii "+username+" 💙 💙 💙,\r\n"
+	   		+ "\r\n"
+	   		+ "You still have amazing products waiting in your cart 🛍️.\r\n"
+	   		+ "\r\n"
+	   		+ "Complete your purchase before they go out of stock.\r\n"
+	   		+ "\r\n"
+	   		+ "Visit your cart now and continue shopping with NextBuy.\r\n"
+	   		+ "\r\n"
+	   		+ "Happy Shopping ....💖,\r\n"
+	   		+ "Team NextBuy ✨";
+	   return cartService.ToRemindCart(username, subject, body);
+	   
+   }
   
    @DeleteMapping("/delete/{cartItemId}")
    public ResponseEntity<String> deleteItem(
@@ -80,4 +98,5 @@ public class CartController {
               cartService.updateQuantity(username, id, quantity)
 			);
    }
+  
 }

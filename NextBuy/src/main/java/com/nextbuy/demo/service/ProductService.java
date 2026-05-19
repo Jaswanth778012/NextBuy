@@ -2,12 +2,16 @@ package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.nextbuy.demo.dto.ComparisionProductDto;
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
@@ -34,26 +38,27 @@ public class ProductService {
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
 			return "Product alredy existed !!!";
 		}
+		 
 		
     	p.setName(Pdto.getName());
     	p.setDescription(Pdto.getDescription());
     	p.setCategory(Pdto.getCategory());
-    	p.setPrice(Pdto.getPrice());
+    	p.setMrp_price(Pdto.getMrp_price());
     	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
-    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
-    	}else if(p.getStockQuantity() >= 50) {
+    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
+    	}else if(p.getStockQuantity() >= 100) {
     		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
     	}else {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
     	}
-    	
+    	p.setProductCondition(Pdto.getProductCondition());
     	if(imageFile != null && !imageFile.isEmpty()) {
 			String imageUrl = cloudinaryService.uploadProductImage(imageFile);
 			p.setImageUrl(imageUrl);
 		}
-    	
+    
     	p.setAverageRating(0.0);
     	p.setTotalRating(0.0);
     	p.setRatingsCount(0);
@@ -63,19 +68,50 @@ public class ProductService {
     	p.setDeliveryTimeInDays(Pdto.getDeliveryTimeInDays());
     	p.setAttributes(Pdto.getAttributes());
 		p.setBrand(Pdto.getBrand());
-		if(Pdto.getPrice() > 1000) {
-			p.setDiscountPercentage(Pdto.getDiscountPercentage());
-			p.setFinalPrice(Pdto.getPrice()-Pdto.getPrice()*Pdto.getDiscountPercentage().doubleValue()/100);
-		}
+		
+		double mrp = Pdto.getMrp_price();
+
+		double discount =
+		        Pdto.getDiscountPercentage();
+
+		double gst =
+		        Pdto.getGstPercentage();
+
+		double taxablePrice =
+		        mrp - (mrp * discount / 100);
+
+		double finalPrice =
+		        calculateFinalPrice(
+		                mrp,
+		                discount,
+		                gst
+		        );
+
+		p.setDiscountPercentage(discount);
+
+		p.setGstPercentage(gst);
+ 
+		p.setTaxablePrice(
+		        Double.parseDouble(
+		                String.format("%.2f", taxablePrice)
+		        )
+		);
+
+		p.setFinalPrice(finalPrice);
 		
 		productRepo.save(p);
 		return "Product Added Successfully";
 	}
+	
 	//UPDATEDIS-COUNT
 	public String updateDisCount(Long id ,Double disCount) {
 		 Product product = productRepo.findById(id).get();
 		 product.setDiscountPercentage(disCount);
-		 product.setFinalPrice(product.getPrice()-product.getPrice()*disCount/100);
+		 double finale =product.getMrp_price()-product.getMrp_price()*disCount/100;
+		 finale = Double.parseDouble(
+			       String.format("%.2f", finale)
+			);
+		 product.setFinalPrice(finale);
 		 productRepo.save(product);
 		 return "updated DiscountPercentage";
 	}
@@ -88,7 +124,7 @@ public class ProductService {
 			  return "Product not Found";
 		  }
 		  Product product = pr.get();
-		  if(!product.getName().equals(name) && !product.getBrand().equals(Brand_id)) {
+		  if(!product.getName().equals(name) && !product.getBrand().getId().equals(Brand_id)) {
 			 
 			  return "something went Worng";
 		  }
@@ -103,7 +139,11 @@ public class ProductService {
 		 if(allproducts.isEmpty()) {
 			 throw new RuntimeException("No products found");
 		 }
-		return allproducts;
+		return allproducts.stream()
+				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
+				   .sorted((a,b) ->
+			        a.getName().compareTo(b.getName()))
+				   .toList();
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
@@ -117,12 +157,12 @@ public class ProductService {
 		p.setName(product.getName());
     	p.setDescription(product.getDescription());
     	p.setCategory(product.getCategory());
-    	p.setPrice(product.getPrice());
+    	p.setMrp_price(product.getMrp_price());
     	p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
     	p.setStockQuantity(product.getStockQuantity());
     	if(p.getStockQuantity() <= 0) {
-    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
-    	}else if(p.getStockQuantity() >= 50) {
+    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
+    	}else if(p.getStockQuantity() >= 100) {
     		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
     	}else {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
@@ -133,19 +173,37 @@ public class ProductService {
     		p.setImageUrl(imageUrl);
     	}
     	
-    	if(p.getStockQuantity() <= 0) {
-    		p.setProductStatus(ProductStatus.OUT_OF_STOCK);
     	
-    	}else {
-    		p.setProductStatus(ProductStatus.AVAILABLE);
-    	}
-    	if(product.getPrice() > 1000) {
-    		p.setDiscountPercentage(product.getDiscountPercentage().doubleValue());
-			p.setFinalPrice(product.getPrice()-product.getPrice()*product.getDiscountPercentage().doubleValue()/100);
-			
-		}
+    	double mrp = product.getMrp_price();
+
+    	double discount =
+    	        product.getDiscountPercentage();
+
+    	double gst =
+    	        product.getGstPercentage();
+
+    	double taxablePrice =
+    	        mrp - (mrp * discount / 100);
+
+    	double finalPrice =
+    	        calculateFinalPrice(
+    	                mrp,
+    	                discount,
+    	                gst
+    	        );
+
+    	p.setDiscountPercentage(discount);
+
+    	p.setGstPercentage(gst);
+
+    	p.setTaxablePrice(
+    	        Double.parseDouble(
+    	                String.format("%.2f", taxablePrice)
+    	        )
+    	);
+
+    	p.setFinalPrice(finalPrice);
 		
-    
     	p.setUpdatedAt(LocalDateTime.now());
     	p.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
     	p.setAttributes(product.getAttributes());
@@ -164,21 +222,64 @@ public class ProductService {
 		  Product p =pr.get();
 		  p.setStockQuantity(stock);
 		  if(p.getStockQuantity() <= 0) {
-	    		p.setStockStatus(AvailabilityStockStatus.NOT_AVAILABLE);
+	    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
 	    	}else if(p.getStockQuantity() >= 50) {
 	    		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
 	    	}else {
 	    		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
 	    	}
 
-	    	if(p.getStockQuantity() <= 0) {
-	    		p.setProductStatus(ProductStatus.OUT_OF_STOCK);
-	    	
-	    	}else {
-	    		p.setProductStatus(ProductStatus.AVAILABLE);
-	    	}
 		  productRepo.save(p);
 		  return "Stock Quantity Updated Successfully!!";
+	}
+	
+	public List<ComparisionProductDto> compareProducts(
+	        List<String> keywords) {
+
+	    List<Product> products = new ArrayList<>();
+
+	    for(String keyword : keywords) {
+
+	        List<Product> matchedProducts =
+	                productRepo.searchProducts(keyword);
+
+	        if(matchedProducts.isEmpty()) {
+	            throw new RuntimeException(
+	                    "No products found for: " + keyword
+	            );
+	        }
+
+	        products.add(matchedProducts.get(0));
+	    }
+
+	    Set<String> categories = products.stream()
+	            .map(Product::getCategory)
+	            .collect(Collectors.toSet());
+
+	    if(categories.size() > 1) {
+	        throw new RuntimeException(
+	                "Products must belong to same category"
+	        );
+	    }
+
+	    return products.stream().map(product -> {
+
+	        ComparisionProductDto dto =
+	                new ComparisionProductDto();
+
+	        dto.setName(product.getName());
+	        dto.setSlug(product.getSlug());
+	        dto.setImageUrl(product.getImageUrl());
+	        dto.setMrpPrice(product.getMrp_price());
+	        dto.setFinalPrice(product.getFinalPrice());
+	        dto.setAverageRating(product.getAverageRating());
+	        dto.setCategory(product.getCategory());
+	        dto.setBrand(product.getBrand());
+	        dto.setAttributes(product.getAttributes());
+
+	        return dto;
+
+	    }).toList();
 	}
 	
 	//SerachByCategory
@@ -187,8 +288,10 @@ public class ProductService {
 			   .stream()
 			   .filter(p->p.getCategory().equalsIgnoreCase(category))
 			   .distinct()
-			   .sorted()
+			   .sorted((a,b) ->
+		        a.getName().compareTo(b.getName()))
 			   .toList();
+		
 			  
 	}
 	//updateProductStatus
@@ -200,7 +303,27 @@ public class ProductService {
 		 Product pr = p.get();
 		 pr.setProductStatus(status);
 		 productRepo.save(pr);
-		 return "Product Satus Updated !! ";
+		 return "Product Status Updated !! ";
+	}
+	
+	//gst and final price calculation
+	private Double calculateFinalPrice(
+	        Double mrp,
+	        Double discountPercentage,
+	        Double gstPercentage) {
+
+	    double discountedPrice =
+	            mrp - (mrp * discountPercentage / 100);
+
+	    double gstAmount =
+	            discountedPrice * gstPercentage / 100;
+
+	    double finalPrice =
+	            discountedPrice + gstAmount;
+
+	    return Double.parseDouble(
+	            String.format("%.2f", finalPrice)
+	    );
 	}
 	
 }

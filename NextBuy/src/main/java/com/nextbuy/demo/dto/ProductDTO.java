@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
+import com.nextbuy.demo.enums.ProductCondition;
 import com.nextbuy.demo.enums.ProductStatus;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ private Long id;
 	
 	private String category;
 	
-	private Double price;
+	private Double mrp_price;
 	
 	private String imageUrl;
 	
@@ -36,6 +37,7 @@ private Long id;
 	
 	private Double discountPercentage=0.0; 
 	
+	private ProductCondition productCondition;
 	
 	private Brand brand;
 	
@@ -49,6 +51,7 @@ private Long id;
 	
 	private ProductStatus productStatus;
 	
+	private Double gstPercentage;
 	
 	private LocalDate createdAt;
 	
