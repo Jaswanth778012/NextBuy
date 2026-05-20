@@ -22,13 +22,7 @@ function Login() {
   const [showForgot, setShowForgot] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
 
-import { loginUser } from "../services/authService";
-
-function Login() {
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
+  // LOGIN
   const handleLogin = async (e) => {
 
     e.preventDefault();
@@ -60,6 +54,7 @@ function Login() {
       alert("Invalid Credentials");
     }
   };
+
   // SEND OTP
   const handleForgotPassword = async () => {
 
@@ -99,6 +94,11 @@ function Login() {
   // RESET PASSWORD
   const handleResetPassword = async () => {
 
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
     try {
 
       const response =
@@ -111,8 +111,12 @@ function Login() {
       alert(response.data.message);
 
       setShowForgot(false);
-
       setOtpVerified(false);
+
+      setEmail("");
+      setOtp("");
+      setNewPassword("");
+      setConfirmPassword("");
 
     } catch (error) {
 
@@ -126,6 +130,7 @@ function Login() {
     <div>
 
       <h2>Login</h2>
+
       {!showForgot ? (
 
         <form onSubmit={handleLogin}>
@@ -264,36 +269,6 @@ function Login() {
 
         </div>
       )}
-
-      <form onSubmit={handleLogin}>
-
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) =>
-            setUsername(e.target.value)
-          }
-        />
-
-        <br /><br />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
-
-        <br /><br />
-
-        <button type="submit">
-          Login
-        </button>
-
-      </form>
 
     </div>
   );
