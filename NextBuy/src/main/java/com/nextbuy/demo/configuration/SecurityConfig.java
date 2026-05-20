@@ -33,17 +33,22 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider)
 			throws Exception {
 
-		http.csrf(csrf -> csrf.disable())
+		http
+		.cors(cors -> {})
+		.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 
 						.requestMatchers("/auth/**").permitAll()
 						
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**").hasRole("ADMIN")
+						.requestMatchers("/Product/compare/**")
+						.hasRole("USER")
+						
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**").hasRole("ADMIN")
 
 			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**").hasRole("USER")
 			            
-			            .requestMatchers("/notifications","/Common/**").hasAnyRole("USER","ADMIN")
+			            .requestMatchers("/Common/**").hasAnyRole("USER","ADMIN")
 			            
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider)

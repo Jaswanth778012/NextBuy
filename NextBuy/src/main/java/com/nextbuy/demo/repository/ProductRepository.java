@@ -12,11 +12,21 @@ import com.nextbuy.demo.entity.Brand;
 import com.nextbuy.demo.entity.Product;
 
 public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product>{
-	
+	 long count();
 	boolean existsByNameAndBrand(String name, Brand brand);
 	Optional<Product> findByName(String name);
 	List<Product> findByCategory(String category);
 	 @Query("SELECT DISTINCT p.category FROM Product p")
 	List<String> findAllProductCategory();
+	 
+	 
+	 @Query("""
+	           SELECT p FROM Product p
+	           WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           OR LOWER(p.slug) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           OR LOWER(p.category) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           OR LOWER(p.brand.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+	           """)
+	    List<Product> searchProducts(String keyword);
 
 }

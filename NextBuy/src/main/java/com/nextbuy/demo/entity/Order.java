@@ -3,6 +3,8 @@ package com.nextbuy.demo.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nextbuy.demo.enums.OrderStatus;
 
 import jakarta.persistence.CascadeType;
@@ -30,14 +32,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Order {
 	
-	 @Id
+	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 
 	    private String orderNumber;
-
 	    @ManyToOne
 	    @JoinColumn(name = "user_id")
+	    @JsonBackReference
 	    private User user;
 
 	    @ManyToOne
@@ -49,10 +51,12 @@ public class Order {
 	    private Cupon appliedCupon;
 
 	    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	    @JsonManagedReference
 	    private List<OrderItem> orderItems;
 
 
 	    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+	    @JsonManagedReference
 	    private Payment payment;
 
 
@@ -61,6 +65,9 @@ public class Order {
 	    private Double couponDiscount = 0.0;
 	    private Double shippingCharges = 0.0;
 	    private Double finalPrice = 0.0;
+	    
+	    private Double totalTaxableAmount = 0.0;
+	    private Double totalGstAmount = 0.0;
 
 	    @Enumerated(EnumType.STRING)
 	    private OrderStatus status = OrderStatus.PENDING;
@@ -70,14 +77,15 @@ public class Order {
 
 	    private LocalDateTime orderedAt;
 	    private LocalDateTime updatedAt;
+	    private LocalDateTime  shippedAt;
 	    private LocalDateTime deliveredAt;
 	    private LocalDateTime cancelledAt;
-
+	    private LocalDateTime estimatedDeliveryDate;
 	    @PrePersist
 	    public void prePersist() {
 	        orderedAt = LocalDateTime.now();
 	        updatedAt = LocalDateTime.now();
-
+	       
 	        if (orderNumber == null) {
 	            orderNumber = "ORD-" + System.currentTimeMillis();
 	        }

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
+import com.nextbuy.demo.enums.ProductCondition;
 import com.nextbuy.demo.enums.ProductStatus;
 
 import jakarta.persistence.CascadeType;
@@ -24,6 +25,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,11 +44,14 @@ public class Product {
 	
 	private String name;
 	
+	@Column(unique = true, nullable = false)
+	private String slug;
+	
 	private String description;
 	
 	private String category;
 	
-	private Double price;
+	private Double mrp_price;
 	
 	private String imageUrl;
 	
@@ -70,8 +75,16 @@ public class Product {
 	
 	private Double averageRating = 0.0;
 	
+	private Double gstPercentage = 0.0;
+	
+	private Double taxablePrice = 0.0;
+	
 	@Enumerated(EnumType.STRING)
 	private ProductStatus productStatus;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private ProductCondition productCondition;
 	
 	@Column(updatable = false)
 	private LocalDate createdAt;
@@ -94,7 +107,27 @@ public class Product {
 	@PrePersist
 	protected void onCreate() {
 		this.createdAt = LocalDate.now();
+		if(this.slug == null || this.slug.isEmpty()) {
+	        this.slug = generateSlug(this.name);
+	    }
 	}
 	
+	@PreUpdate
+	protected void onUpdate() {
+
+	    this.updatedAt = LocalDateTime.now();
+
+	    if(this.name != null) {
+	        this.slug = generateSlug(this.name);
+	    }
+	}
+	
+	private String generateSlug(String text) {
+
+	    return text.toLowerCase()
+	            .trim()
+	            .replace(" ", "-")
+	            .replaceAll("[^a-z0-9-]", "");
+	}
 	
 }

@@ -2,6 +2,7 @@ package com.nextbuy.demo.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.nextbuy.demo.enums.PaymentMethod;
 import com.nextbuy.demo.enums.PaymentStatus;
 
@@ -29,6 +30,7 @@ public class Payment {
 
 	    @OneToOne
 	    @JoinColumn(name = "order_id")
+	    @JsonBackReference
 	    private Order order;
 
 	    private String transactionId;
