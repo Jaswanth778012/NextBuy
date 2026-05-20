@@ -89,17 +89,6 @@ function Register() {
           type="password"
           name="password"
           placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          type="tel"
-          name="mobileNumber"
-          placeholder="Mobile Number"
-          value={form.mobileNumber}
           onChange={handleChange}
         />
 

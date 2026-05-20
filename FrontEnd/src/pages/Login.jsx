@@ -22,7 +22,13 @@ function Login() {
   const [showForgot, setShowForgot] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
 
-  // LOGIN
+import { loginUser } from "../services/authService";
+
+function Login() {
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleLogin = async (e) => {
 
     e.preventDefault();
@@ -54,7 +60,6 @@ function Login() {
       alert("Invalid Credentials");
     }
   };
-
   // SEND OTP
   const handleForgotPassword = async () => {
 
@@ -121,7 +126,6 @@ function Login() {
     <div>
 
       <h2>Login</h2>
-
       {!showForgot ? (
 
         <form onSubmit={handleLogin}>
@@ -260,6 +264,36 @@ function Login() {
 
         </div>
       )}
+
+      <form onSubmit={handleLogin}>
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) =>
+            setUsername(e.target.value)
+          }
+        />
+
+        <br /><br />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+
+        <br /><br />
+
+        <button type="submit">
+          Login
+        </button>
+
+      </form>
 
     </div>
   );
