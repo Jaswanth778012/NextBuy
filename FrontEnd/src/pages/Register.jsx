@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { registerUser } from "../services/authService";
-
+import "../App.css";
 function Register() {
 
   const [form, setForm] = useState({
@@ -48,7 +48,21 @@ function Register() {
 
       alert(response.data.message);
 
-      console.log(form);
+       setForm({
+
+      username: "",
+      name: "",
+      password: "",
+      mobileNumber: "",
+      email: "",
+      gender: "",
+      address: "",
+      dob: "",
+
+    });
+
+    // RESET IMAGE
+    setImage(null);
 
     } catch (error) {
 
@@ -59,13 +73,20 @@ function Register() {
 
   return (
 
-    <div>
+  <div className="register-page">
 
-      <h2>Register</h2>
+    <div className="register-card">
+
+      
+
+      <h2 className="register-title">
+        Create Account
+      </h2>
 
       <form onSubmit={handleSubmit}>
 
         <input
+          className="register-input"
           type="text"
           name="username"
           placeholder="Username"
@@ -73,28 +94,25 @@ function Register() {
           onChange={handleChange}
         />
 
-        <br /><br />
-
         <input
+          className="register-input"
           type="text"
           name="name"
-          placeholder="Name"
+          placeholder="Full Name"
           value={form.name}
           onChange={handleChange}
         />
 
-        <br /><br />
-
         <input
+          className="register-input"
           type="password"
           name="password"
           placeholder="Password"
           onChange={handleChange}
         />
 
-        <br /><br />
-
         <input
+          className="register-input"
           type="email"
           name="email"
           placeholder="Email"
@@ -102,22 +120,40 @@ function Register() {
           onChange={handleChange}
         />
 
-        <br /><br />
+        <input
+          className="register-input"
+          type="text"
+          name="mobileNumber"
+          placeholder="Mobile Number"
+          value={form.mobileNumber}
+          onChange={handleChange}
+        />
 
         <select
+          className="register-select"
           name="gender"
           value={form.gender}
           onChange={handleChange}
         >
-          <option value="">Select Gender</option>
-          <option value="MALE">Male</option>
-          <option value="FEMALE">Female</option>
-          <option value="OTHER">Other</option>
+          <option value="">
+            Select Gender
+          </option>
+
+          <option value="MALE">
+            Male
+          </option>
+
+          <option value="FEMALE">
+            Female
+          </option>
+
+          <option value="OTHER">
+            Other
+          </option>
         </select>
 
-        <br /><br />
-
         <input
+          className="register-input"
           type="text"
           name="address"
           placeholder="Address"
@@ -125,34 +161,35 @@ function Register() {
           onChange={handleChange}
         />
 
-        <br /><br />
-
         <input
+          className="register-input"
           type="date"
           name="dob"
           value={form.dob}
           onChange={handleChange}
         />
 
-        <br /><br />
-
         <input
+          className="file-input"
           type="file"
           onChange={(e) =>
             setImage(e.target.files[0])
           }
         />
 
-        <br /><br />
-
-        <button type="submit">
+        <button
+          className="register-btn"
+          type="submit"
+        >
           Register
         </button>
 
       </form>
 
     </div>
-  );
+
+  </div>
+);
 }
 
 export default Register;

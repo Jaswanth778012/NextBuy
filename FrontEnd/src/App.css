@@ -1,0 +1,473 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* =========================
+   ROOT COLORS
+========================= */
+
+:root{
+
+    --bg1:#F7D7C3;
+    --bg2:#E5C7F7;
+
+    --sidebar:#F8EFE8;
+
+    --card:#F9F0F2;
+
+    --primary:#49A6F8;
+
+    --primary-dark:#297BE6;
+
+    --pink:#FF6B81;
+
+    --green:#8BC34A;
+
+    --text:#2D2D2D;
+
+    --text-light:#6B7280;
+
+    --white:#FFFFFF;
+
+    --shadow:
+      0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   GLOBAL
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    background:linear-gradient(
+        135deg,
+        var(--bg1),
+        var(--bg2)
+    );
+
+    min-height:100vh;
+}
+
+/* =========================
+   LOGIN PAGE
+========================= */
+
+.login-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+}
+
+/* =========================
+   LOGIN CARD
+========================= */
+
+.login-card{
+
+    width:100%;
+
+    max-width:430px;
+
+    background:rgba(255,255,255,0.55);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:30px;
+
+    padding:40px;
+
+    box-shadow:var(--shadow);
+
+    border:1px solid rgba(255,255,255,0.4);
+}
+
+/* =========================
+   LOGIN TITLE
+========================= */
+
+.login-title{
+
+    text-align:center;
+
+    font-size:36px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:30px;
+}
+
+/* =========================
+   SUB TITLE
+========================= */
+
+.sub-title{
+
+    text-align:center;
+
+    font-size:28px;
+
+    font-weight:600;
+
+    color:var(--primary);
+
+    margin-bottom:25px;
+}
+
+/* =========================
+   LOGIN INPUT
+========================= */
+
+.login-input{
+
+    width:100%;
+
+    padding:15px 18px;
+
+    margin-bottom:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:var(--white);
+
+    color:var(--text);
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:0.3s;
+
+    box-shadow:
+      inset 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.login-input::placeholder{
+
+    color:#9CA3AF;
+}
+
+.login-input:focus{
+
+    border:2px solid var(--primary);
+
+    box-shadow:
+      0 0 12px rgba(73,166,248,0.25);
+}
+
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+.login-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #49A6F8,
+        #7C4DFF
+    );
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    margin-bottom:15px;
+}
+
+.login-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+      0 10px 20px rgba(73,166,248,0.25);
+}
+
+/* =========================
+   SECONDARY BUTTON
+========================= */
+
+.secondary-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#EEF4FF;
+
+    color:var(--primary-dark);
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.secondary-btn:hover{
+
+    background:#DDEBFF;
+
+    transform:translateY(-2px);
+}
+
+/* =========================
+   SMALL TEXT
+========================= */
+
+.small-text{
+
+    text-align:center;
+
+    margin-top:15px;
+
+    color:var(--text-light);
+
+    font-size:14px;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+
+/* =========================
+   REGISTER PAGE
+========================= */
+
+.register-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:30px;
+}
+
+/* =========================
+   REGISTER CARD
+========================= */
+
+.register-card{
+
+    width:100%;
+
+    max-width:500px;
+
+    background:rgba(255,255,255,0.55);
+
+    backdrop-filter:blur(14px);
+
+    border-radius:30px;
+
+    padding:40px;
+
+    box-shadow:var(--shadow);
+
+    border:1px solid rgba(255,255,255,0.4);
+}
+
+/* =========================
+   REGISTER TITLE
+========================= */
+
+.register-title{
+
+    text-align:center;
+
+    font-size:36px;
+
+    font-weight:700;
+
+    color:var(--text);
+
+    margin-bottom:30px;
+}
+
+/* =========================
+   REGISTER INPUT
+========================= */
+
+.register-input{
+
+    width:100%;
+
+    padding:15px 18px;
+
+    margin-bottom:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:var(--white);
+
+    font-size:15px;
+
+    color:var(--text);
+
+    outline:none;
+
+    transition:0.3s;
+
+    box-shadow:
+      inset 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.register-input::placeholder{
+
+    color:#9CA3AF;
+}
+
+.register-input:focus{
+
+    border:2px solid var(--primary);
+
+    box-shadow:
+      0 0 12px rgba(73,166,248,0.25);
+}
+
+/* =========================
+   SELECT
+========================= */
+
+.register-select{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-bottom:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:var(--white);
+
+    font-size:15px;
+
+    outline:none;
+
+    cursor:pointer;
+}
+
+/* =========================
+   FILE INPUT
+========================= */
+
+.file-input{
+
+    width:100%;
+
+    margin-bottom:20px;
+
+    background:var(--white);
+
+    padding:14px;
+
+    border-radius:16px;
+
+    cursor:pointer;
+}
+
+/* =========================
+   REGISTER BUTTON
+========================= */
+
+.register-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #49A6F8,
+        #7C4DFF
+    );
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.register-btn:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+      0 10px 20px rgba(73,166,248,0.25);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:550px){
+
+    .login-card,
+    .register-card{
+
+        padding:30px 22px;
+    }
+
+    .login-title,
+    .register-title{
+
+        font-size:30px;
+    }
+
+    .sub-title{
+
+        font-size:24px;
+    }
+}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import "../App.css";
 import {
   loginUser,
   forgotPassword,
@@ -57,30 +57,32 @@ function Login() {
 
   // SEND OTP
   const handleForgotPassword = async () => {
-
+     
     try {
 
       const response =
         await forgotPassword(email);
 
-      alert(response.data.message);
+      alert(response.data);
 
     } catch (error) {
 
       console.error(error);
       alert("Failed To Send OTP");
     }
+    
   };
 
   // VERIFY OTP
   const handleVerifyOtp = async () => {
-
+    const forgotPassword =document.getElementById("forgot-psaaword");
+   
     try {
 
       const response =
         await verifyOtp(email, otp);
-
-      alert(response.data.message);
+      
+      alert(response.data);
 
       setOtpVerified(true);
 
@@ -89,6 +91,7 @@ function Login() {
       console.error(error);
       alert("Invalid OTP");
     }
+ forgotPassword.style.display="none";
   };
 
   // RESET PASSWORD
@@ -107,8 +110,8 @@ function Login() {
           newPassword,
           confirmPassword
         );
-
-      alert(response.data.message);
+      
+      alert(response.data);
 
       setShowForgot(false);
       setOtpVerified(false);
@@ -127,60 +130,73 @@ function Login() {
 
   return (
 
-    <div>
+    
 
-      <h2>Login</h2>
+  <div className="login-page">
+
+    <div className="login-card">
 
       {!showForgot ? (
 
-        <form onSubmit={handleLogin}>
+        <>
 
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) =>
-              setUsername(e.target.value)
-            }
-          />
+          <h2 className="login-title">
+            Login 
+          </h2>
 
-          <br /><br />
+          <form onSubmit={handleLogin}>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-          />
+            <input
+              className="login-input"
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) =>
+                setUsername(e.target.value)
+              }
+            />
 
-          <br /><br />
+            <input
+              className="login-input"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+            />
 
-          <button type="submit">
-            Login
-          </button>
+            <button
+              className="login-btn"
+              type="submit"
+            >
+              Login
+            </button>
 
-          <br /><br />
+            <button
+              className="secondary-btn"
+              type="button"
+              onClick={() =>
+                setShowForgot(true)
+              }
+            >
+              Forgot Password?
+            </button>
 
-          <button
-            type="button"
-            onClick={() =>
-              setShowForgot(true)
-            }
-          >
-            Forgot Password?
-          </button>
+          </form>
 
-        </form>
+        </>
 
       ) : (
 
-        <div>
-
-          <h3>Forgot Password</h3>
+        <>
+        <div id="forgot-psaaword">
+          <h3 className="sub-title">
+            Forgot Password
+          </h3>
 
           <input
+            className="login-input"
             type="email"
             placeholder="Enter Email"
             value={email}
@@ -189,17 +205,15 @@ function Login() {
             }
           />
 
-          <br /><br />
-
           <button
+            className="login-btn"
             onClick={handleForgotPassword}
           >
             Send OTP
           </button>
 
-          <br /><br />
-
           <input
+            className="login-input"
             type="text"
             placeholder="Enter OTP"
             value={otp}
@@ -208,21 +222,19 @@ function Login() {
             }
           />
 
-          <br /><br />
-
           <button
+            className="login-btn"
             onClick={handleVerifyOtp}
           >
             Verify OTP
           </button>
-
-          <br /><br />
-
+         </div>
           {otpVerified && (
 
-            <div>
-
+            <>
+         <div id="confiromPassword">
               <input
+                className="login-input"
                 type="password"
                 placeholder="New Password"
                 value={newPassword}
@@ -233,9 +245,8 @@ function Login() {
                 }
               />
 
-              <br /><br />
-
               <input
+                className="login-input"
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPassword}
@@ -246,32 +257,44 @@ function Login() {
                 }
               />
 
-              <br /><br />
-
               <button
+                className="login-btn"
                 onClick={handleResetPassword}
               >
                 Reset Password
               </button>
+             </div>
+            </>
 
-            </div>
           )}
 
-          <br /><br />
-
           <button
-            onClick={() =>
-              setShowForgot(false)
-            }
-          >
-            Back To Login
-          </button>
+  className="secondary-btn"
+  onClick={() => {
 
-        </div>
+    setShowForgot(false);
+
+    setOtpVerified(false);
+
+    setEmail("");
+    setOtp("");
+    setNewPassword("");
+    setConfirmPassword("");
+
+  }}
+>
+  Back To Login
+</button>
+     
+        </>
+
       )}
 
     </div>
-  );
+
+  </div>
+);
+  
 }
 
 export default Login;
