@@ -44,10 +44,11 @@ function Register() {
         formData.append("image", image);
       }
 
-      const response =
-        await registerUser(formData);
+      const response = await registerUser(formData);
 
       alert(response.data.message);
+
+      console.log(form);
 
     } catch (error) {
 
@@ -68,6 +69,7 @@ function Register() {
           type="text"
           name="username"
           placeholder="Username"
+          value={form.username}
           onChange={handleChange}
         />
 
@@ -77,6 +79,7 @@ function Register() {
           type="text"
           name="name"
           placeholder="Name"
+          value={form.name}
           onChange={handleChange}
         />
 
@@ -95,6 +98,39 @@ function Register() {
           type="email"
           name="email"
           placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+        />
+
+        <br /><br />
+
+        <select
+          name="gender"
+          value={form.gender}
+          onChange={handleChange}
+        >
+          <option value="">Select Gender</option>
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
+
+        <br /><br />
+
+        <input
+          type="text"
+          name="address"
+          placeholder="Address"
+          value={form.address}
+          onChange={handleChange}
+        />
+
+        <br /><br />
+
+        <input
+          type="date"
+          name="dob"
+          value={form.dob}
           onChange={handleChange}
         />
 
