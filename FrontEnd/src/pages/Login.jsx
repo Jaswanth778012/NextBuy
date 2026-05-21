@@ -74,7 +74,7 @@ function Login() {
       const response = await forgotPassword(email);
       toast.success(response.data);
     } catch (error) {
-      toast.error("Failed To Send OTP");
+      toast.error("Your Email Is Not Registered");
     }
   };
 
