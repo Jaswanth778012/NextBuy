@@ -695,3 +695,47 @@ body{
         width:75px;
     }
 }
+
+
+
+.input-box{
+    position: relative;
+    width: 100%;
+}
+
+.input-icon{
+    position: absolute;
+    left: 15px;
+    top: 40%;
+    padding-bottom: 5px;
+    transform: translateY(-50%);
+    font-size: 22px;
+    color: rgb(13, 13, 13);
+   
+}
+
+.login-input{
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+}
+
+.input-boxx{
+    position: relative;
+    width: 100%;
+}
+
+.input-iconn{
+    position: absolute;
+    left: 25%;
+    top: 53%;
+    padding-bottom: 5px;
+    transform: translateY(-50%);
+    font-size: 22px;
+    color: rgb(13, 13, 13);
+   
+}
+
+.login-input{
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+}

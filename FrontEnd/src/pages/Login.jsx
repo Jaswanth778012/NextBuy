@@ -7,7 +7,12 @@ import "../App.css";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { FaUser } from "react-icons/fa";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { MdEmail } from "react-icons/md";
+import { SiPronounsdotpage } from "react-icons/si";
+import { TbPasswordFingerprint } from "react-icons/tb";
+import { MdLockReset } from "react-icons/md";
 import {
   FaEye,
   FaEyeSlash,
@@ -54,6 +59,7 @@ function Login() {
   const [otpVerified, setOtpVerified] =
     useState(false);
 
+
   // LOGIN
   const handleLogin = async (e) => {
 
@@ -75,9 +81,10 @@ function Login() {
         "role",
         response.data.role
       );
-
+      
       toast.success("Login Successful 🚀");
-
+       setUsername("");
+setPassword("");
     } catch (error) {
 
       toast.error("Invalid Credentials");
@@ -232,18 +239,24 @@ function Login() {
 
             <form onSubmit={handleLogin}>
 
-              <input
-                className="login-input"
-                type="text"
-                placeholder="Email or Username"
-                value={username}
-                onChange={(e) =>
-                  setUsername(e.target.value)
-                }
-              />
+             
+              <div className="input-box">
 
+  <FaUser className="input-icon" />
+
+  <input 
+    className="login-input"
+    type="text"
+    placeholder=" Username"
+    value={username}
+    onChange={(e) => setUsername(e.target.value)}
+  />
+
+</div>
+                 
               <div className="password-wrapper">
-
+                <div className="input-box">
+                  <RiLockPasswordFill className="input-icon" />
                 <input
                   className="login-input password-input"
                   type={
@@ -257,7 +270,7 @@ function Login() {
                     setPassword(e.target.value)
                   }
                 />
-
+                 </div>
                 <span
                   className="eye-icon"
                   onClick={() =>
@@ -279,7 +292,8 @@ function Login() {
               >
                 Login →
               </button>
-
+              <div className="input-boxx">
+                <MdLockReset className="input-iconn" />
               <button
                 className="secondary-btn"
                 type="button"
@@ -289,7 +303,7 @@ function Login() {
               >
                 Forgot Password?
               </button>
-
+               </div>
             </form>
           </>
         ) : (
@@ -299,7 +313,8 @@ function Login() {
                 <h3 className="sub-title">
                   Forgot Password
                 </h3>
-
+                 <div className="input-box">
+                  <MdEmail className="input-icon" />
                 <input
                   className="login-input"
                   type="email"
@@ -309,14 +324,15 @@ function Login() {
                     setEmail(e.target.value)
                   }
                 />
-
+               </div>
                 <button
                   className="login-btn"
                   onClick={handleForgotPassword}
                 >
                   Send OTP
                 </button>
-
+                <div className="input-box">
+                   <SiPronounsdotpage className="input-icon" />
                 <input
                   className="login-input"
                   type="text"
@@ -326,7 +342,7 @@ function Login() {
                     setOtp(e.target.value)
                   }
                 />
-
+               </div>
                 <button
                   className="login-btn"
                   onClick={handleVerifyOtp}
@@ -336,12 +352,14 @@ function Login() {
               </>
             ) : (
               <>
+              
                 <h3 className="sub-title">
                   Reset Password
                 </h3>
-
+                 
                 <div className="password-wrapper">
-
+                 <div className="input-box">
+                   <RiLockPasswordFill className="input-icon" />
                   <input
                     className="login-input password-input"
                     type={
@@ -357,6 +375,7 @@ function Login() {
                       )
                     }
                   />
+                  </div>
 
                   <span
                     className="eye-icon"
@@ -376,7 +395,8 @@ function Login() {
                 </div>
 
                 <div className="password-wrapper">
-
+                   <div className="input-box">
+                   <TbPasswordFingerprint className="input-icon" />
                   <input
                     className="login-input password-input"
                     type={
@@ -392,6 +412,7 @@ function Login() {
                       )
                     }
                   />
+                  </div>
 
                   <span
                     className="eye-icon"
