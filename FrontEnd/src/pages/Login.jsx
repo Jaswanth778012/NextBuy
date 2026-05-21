@@ -11,10 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   FaEye,
   FaEyeSlash,
-  FaShoppingCart,
-  FaBoxOpen,
-  FaGift,
-  FaHeart,
 } from "react-icons/fa";
 
 import {
@@ -24,84 +20,128 @@ import {
   resetPassword,
 } from "../services/authService";
 
+// PNG ASSETS
+import bag from "../assets/bag.png";
+import cart from "../assets/cart.png";
+import shoe from "../assets/shoe.png";
+import gift from "../assets/gift.png";
+import headphone from "../assets/headphone.png";
+import perfume from "../assets/perfume.png";
+
 function Login() {
-  // LOGIN STATES
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // PASSWORD VISIBILITY
   const [showPassword, setShowPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // FORGOT PASSWORD STATES
+  const [showNewPassword, setShowNewPassword] =
+    useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
-  // UI STATES
+  const [newPassword, setNewPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
   const [showForgot, setShowForgot] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
+
+  const [otpVerified, setOtpVerified] =
+    useState(false);
 
   // LOGIN
   const handleLogin = async (e) => {
+
     e.preventDefault();
 
     try {
+
       const response = await loginUser({
         username,
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
+      localStorage.setItem(
+        "token",
+        response.data.token
+      );
+
+      localStorage.setItem(
+        "role",
+        response.data.role
+      );
 
       toast.success("Login Successful 🚀");
+
     } catch (error) {
+
       toast.error("Invalid Credentials");
     }
   };
 
   // SEND OTP
   const handleForgotPassword = async () => {
+
     if (!email) {
+
       toast.warning("Please Enter Email");
+
       return;
     }
 
     try {
+
       const response = await forgotPassword(email);
+
       toast.success(response.data);
+
     } catch (error) {
+
       toast.error("Your Email Is Not Registered");
     }
   };
 
   // VERIFY OTP
   const handleVerifyOtp = async () => {
+
     if (!otp) {
+
       toast.warning("Please Enter OTP");
+
       return;
     }
 
     try {
+
       const response = await verifyOtp(email, otp);
+
       toast.success(response.data);
+
       setOtpVerified(true);
+
     } catch (error) {
+
       toast.error("Invalid OTP");
     }
   };
 
   // RESET PASSWORD
   const handleResetPassword = async () => {
+
     if (newPassword !== confirmPassword) {
+
       toast.warning("Passwords Do Not Match");
+
       return;
     }
 
     try {
+
       const response = await resetPassword(
         email,
         newPassword,
@@ -111,13 +151,16 @@ function Login() {
       toast.success(response.data);
 
       setShowForgot(false);
+
       setOtpVerified(false);
 
       setEmail("");
       setOtp("");
       setNewPassword("");
       setConfirmPassword("");
+
     } catch (error) {
+
       toast.error("Password Reset Failed");
     }
   };
@@ -125,12 +168,45 @@ function Login() {
   return (
     <div className="login-page">
 
-      {/* FLOATING ICONS */}
-      <div className="floating-icons">
-        <FaShoppingCart className="float-icon icon1" />
-        <FaBoxOpen className="float-icon icon2" />
-        <FaGift className="float-icon icon3" />
-        <FaHeart className="float-icon icon4" />
+      {/* FLOATING OBJECTS */}
+      <div className="floating-objects">
+
+        <img
+          src={bag}
+          alt=""
+          className="floating-item bag1"
+        />
+
+        <img
+          src={cart}
+          alt=""
+          className="floating-item cart"
+        />
+
+        <img
+          src={shoe}
+          alt=""
+          className="floating-item shoe"
+        />
+
+        <img
+          src={gift}
+          alt=""
+          className="floating-item gift"
+        />
+
+        <img
+          src={headphone}
+          alt=""
+          className="floating-item headphone"
+        />
+
+        <img
+          src={perfume}
+          alt=""
+          className="floating-item perfume"
+        />
+
       </div>
 
       {/* GLOW CIRCLES */}
@@ -141,15 +217,17 @@ function Login() {
       <div className="login-card">
 
         <div className="brand-logo">
-          🛍️
+          🛒
         </div>
 
         {!showForgot ? (
           <>
-            <h2 className="login-title">Welcome Back</h2>
+            <h2 className="login-title">
+              Welcome Back
+            </h2>
 
             <p className="login-subtext">
-              Login to continue your shopping journey
+              Sign in to continue your account
             </p>
 
             <form onSubmit={handleLogin}>
@@ -157,39 +235,57 @@ function Login() {
               <input
                 className="login-input"
                 type="text"
-                placeholder="Username"
+                placeholder="Email or Username"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) =>
+                  setUsername(e.target.value)
+                }
               />
 
-              {/* PASSWORD FIELD */}
               <div className="password-wrapper">
 
                 <input
                   className="login-input password-input"
-                  type={showPassword ? "text" : "password"}
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
                   placeholder="Password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
                 />
 
                 <span
                   className="eye-icon"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() =>
+                    setShowPassword(!showPassword)
+                  }
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  {showPassword ? (
+                    <FaEyeSlash />
+                  ) : (
+                    <FaEye />
+                  )}
                 </span>
 
               </div>
 
-              <button className="login-btn" type="submit">
-                Login
+              <button
+                className="login-btn"
+                type="submit"
+              >
+                Login →
               </button>
 
               <button
                 className="secondary-btn"
                 type="button"
-                onClick={() => setShowForgot(true)}
+                onClick={() =>
+                  setShowForgot(true)
+                }
               >
                 Forgot Password?
               </button>
@@ -200,14 +296,18 @@ function Login() {
           <>
             {!otpVerified ? (
               <>
-                <h3 className="sub-title">Forgot Password</h3>
+                <h3 className="sub-title">
+                  Forgot Password
+                </h3>
 
                 <input
                   className="login-input"
                   type="email"
                   placeholder="Enter Email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
                 />
 
                 <button
@@ -222,7 +322,9 @@ function Login() {
                   type="text"
                   placeholder="Enter OTP"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
+                  onChange={(e) =>
+                    setOtp(e.target.value)
+                  }
                 />
 
                 <button
@@ -234,47 +336,69 @@ function Login() {
               </>
             ) : (
               <>
-                <h3 className="sub-title">Reset Password</h3>
+                <h3 className="sub-title">
+                  Reset Password
+                </h3>
 
-                {/* NEW PASSWORD */}
                 <div className="password-wrapper">
 
                   <input
                     className="login-input password-input"
-                    type={showNewPassword ? "text" : "password"}
+                    type={
+                      showNewPassword
+                        ? "text"
+                        : "password"
+                    }
                     placeholder="New Password"
                     value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    onChange={(e) =>
+                      setNewPassword(
+                        e.target.value
+                      )
+                    }
                   />
 
                   <span
                     className="eye-icon"
                     onClick={() =>
-                      setShowNewPassword(!showNewPassword)
+                      setShowNewPassword(
+                        !showNewPassword
+                      )
                     }
                   >
-                    {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                    {showNewPassword ? (
+                      <FaEyeSlash />
+                    ) : (
+                      <FaEye />
+                    )}
                   </span>
 
                 </div>
 
-                {/* CONFIRM PASSWORD */}
                 <div className="password-wrapper">
 
                   <input
                     className="login-input password-input"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={
+                      showConfirmPassword
+                        ? "text"
+                        : "password"
+                    }
                     placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) =>
-                      setConfirmPassword(e.target.value)
+                      setConfirmPassword(
+                        e.target.value
+                      )
                     }
                   />
 
                   <span
                     className="eye-icon"
                     onClick={() =>
-                      setShowConfirmPassword(!showConfirmPassword)
+                      setShowConfirmPassword(
+                        !showConfirmPassword
+                      )
                     }
                   >
                     {showConfirmPassword ? (
@@ -298,13 +422,16 @@ function Login() {
             <button
               className="secondary-btn"
               onClick={() => {
+
                 setShowForgot(false);
+
                 setOtpVerified(false);
 
                 setEmail("");
                 setOtp("");
                 setNewPassword("");
                 setConfirmPassword("");
+
               }}
             >
               Back To Login

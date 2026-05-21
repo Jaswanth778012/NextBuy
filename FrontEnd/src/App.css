@@ -1,12 +1,4 @@
-/* =========================
-   GOOGLE FONT
-========================= */
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
-/* =========================
-   ROOT COLORS
-========================= */
 
 :root{
 
@@ -20,20 +12,7 @@
     --text-light:#6B7280;
 
     --white:#FFFFFF;
-
-    --glass:
-      rgba(255,255,255,0.22);
-
-    --border:
-      rgba(255,255,255,0.35);
-
-    --shadow:
-      0 10px 40px rgba(0,0,0,0.12);
 }
-
-/* =========================
-   GLOBAL
-========================= */
 
 *{
     margin:0;
@@ -51,34 +30,13 @@ body{
     background:
       linear-gradient(
         135deg,
-        #f7d7c3,
-        #e5c7f7,
-        #dff4ff
+        #ffd7c8,
+        #f4d4ff,
+        #d9f2ff
       );
-
-    background-size:400% 400%;
-
-    animation:bgMove 12s ease infinite;
 }
 
-@keyframes bgMove{
-
-    0%{
-        background-position:0% 50%;
-    }
-
-    50%{
-        background-position:100% 50%;
-    }
-
-    100%{
-        background-position:0% 50%;
-    }
-}
-
-/* =========================
-   PAGE
-========================= */
+/* PAGE */
 
 .login-page,
 .register-page{
@@ -98,9 +56,7 @@ body{
     padding:30px;
 }
 
-/* =========================
-   GLOW CIRCLES
-========================= */
+/* GLOW EFFECTS */
 
 .bg-circle{
 
@@ -108,19 +64,19 @@ body{
 
     border-radius:50%;
 
-    filter:blur(70px);
+    filter:blur(90px);
 
     z-index:0;
 }
 
 .circle1{
 
-    width:280px;
-    height:280px;
+    width:300px;
+    height:300px;
 
     background:#ff9dcf;
 
-    top:-80px;
+    top:-100px;
     left:-50px;
 }
 
@@ -129,16 +85,16 @@ body{
     width:350px;
     height:350px;
 
-    background:#7dd3fc;
+    background:#9ed8ff;
 
     bottom:-120px;
-    right:-80px;
+    right:-60px;
 }
 
 .circle3{
 
-    width:240px;
-    height:240px;
+    width:250px;
+    height:250px;
 
     background:#c084fc;
 
@@ -146,111 +102,90 @@ body{
     left:45%;
 }
 
-/* =========================
-   FLOATING ICONS
-========================= */
+/* LOGIN CARD */
 
-.floating-icons{
-
-    position:absolute;
+.login-card{
 
     width:100%;
-    height:100%;
 
-    overflow:hidden;
+    max-width:520px;
 
-    z-index:1;
+    padding:42px 42px;
+
+    border-radius:34px;
+
+    background:
+      rgba(255,255,255,0.24);
+
+    backdrop-filter:blur(28px);
+
+    border:
+      1px solid rgba(255,255,255,0.35);
+
+    box-shadow:
+      0 10px 40px rgba(31,38,135,0.18);
+
+    position:relative;
+
+    z-index:10;
+
+    transition:0.4s ease;
+
+    animation:cardFade 0.7s ease;
 }
 
-.float-icon{
+/* REGISTER CARD */
 
-    position:absolute;
-
-    color:rgba(255,255,255,0.35);
-
-    animation:float 8s infinite ease-in-out;
-}
-
-.icon1{
-    font-size:60px;
-    top:12%;
-    left:10%;
-}
-
-.icon2{
-    font-size:55px;
-    top:75%;
-    left:15%;
-}
-
-.icon3{
-    font-size:50px;
-    top:20%;
-    right:12%;
-}
-
-.icon4{
-    font-size:60px;
-    bottom:15%;
-    right:18%;
-}
-
-@keyframes float{
-
-    0%{
-        transform:translateY(0px) rotate(0deg);
-    }
-
-    50%{
-        transform:translateY(-25px) rotate(8deg);
-    }
-
-    100%{
-        transform:translateY(0px) rotate(0deg);
-    }
-}
-
-/* =========================
-   CARD
-========================= */
-
-.login-card,
 .register-card{
 
     width:100%;
 
-    max-width:460px;
+    max-width:620px;
 
-    padding:40px;
+    padding:38px 38px;
 
-    border-radius:32px;
+    border-radius:34px;
 
-    background:rgba(255,255,255,0.22);
+    background:
+      rgba(255,255,255,0.24);
 
-    backdrop-filter:blur(22px);
+    backdrop-filter:blur(28px);
 
-    border:1px solid rgba(255,255,255,0.35);
+    border:
+      1px solid rgba(255,255,255,0.35);
 
     box-shadow:
-      0 10px 40px rgba(0,0,0,0.15);
+      0 10px 40px rgba(31,38,135,0.18);
 
     position:relative;
 
-    z-index:5;
+    z-index:10;
+
+    transition:0.4s ease;
+
+    animation:cardFade 0.7s ease;
 }
 
-/* =========================
-   BRAND LOGO
-========================= */
+.login-card:hover,
+.register-card:hover{
+
+    transform:
+      translateY(-4px);
+
+    box-shadow:
+      0 18px 45px rgba(73,166,248,0.22);
+}
+
+/* LOGO */
 
 .brand-logo{
 
-    width:85px;
-    height:85px;
+    width:82px;
+    height:82px;
 
     margin:auto;
 
-    margin-bottom:22px;
+    margin-bottom:18px;
 
     border-radius:50%;
 
@@ -259,115 +194,134 @@ body{
     justify-content:center;
     align-items:center;
 
-    font-size:38px;
+    font-size:34px;
+
+    color:white;
 
     background:
       linear-gradient(
         135deg,
-        rgba(255,255,255,0.5),
-        rgba(255,255,255,0.2)
+        #3b82f6,
+        #8b5cf6
       );
 
     box-shadow:
-      0 8px 20px rgba(0,0,0,0.08);
+      0 12px 25px rgba(73,166,248,0.35);
 }
 
-/* =========================
-   TITLES
-========================= */
+/* TITLES */
 
 .login-title,
 .register-title{
 
     text-align:center;
 
-    font-size:36px;
+    font-size:34px;
 
     font-weight:800;
 
-    color:var(--text);
+    color:#1e293b;
 
     margin-bottom:8px;
+
+    line-height:1.1;
 }
 
 .login-subtext{
 
     text-align:center;
 
-    color:var(--text-light);
+    color:#64748b;
 
     margin-bottom:28px;
 
-    font-size:14px;
+    font-size:15px;
 }
 
 .sub-title{
 
     text-align:center;
 
-    font-size:28px;
+    font-size:30px;
 
     font-weight:700;
 
-    margin-bottom:24px;
+    color:#111827;
 
-    color:var(--primary-dark);
+    margin-bottom:24px;
 }
 
-/* =========================
-   INPUTS
-========================= */
+/* FORM GRID */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+}
+
+.full-width{
+
+    grid-column:1 / -1;
+}
+
+/* INPUTS */
 
 .login-input,
-.register-input,
-.register-select,
-.file-input{
+.register-input{
 
     width:100%;
 
-    padding:16px 18px;
-
-    margin-bottom:18px;
+    padding:16px 20px;
 
     border:none;
 
     border-radius:18px;
 
-    background:rgba(255,255,255,0.85);
+    background:
+      rgba(255,255,255,0.82);
 
     font-size:15px;
 
     outline:none;
 
+    color:#2d2d2d;
+
     transition:0.3s;
 
-    color:var(--text);
-
-    box-shadow:
-      inset 0 2px 5px rgba(0,0,0,0.04);
+    margin-bottom:18px;
 }
 
 .login-input:focus,
-.register-input:focus,
-.register-select:focus{
+.register-input:focus{
 
     transform:translateY(-2px);
 
     box-shadow:
-      0 0 0 4px rgba(73,166,248,0.15),
-      0 10px 20px rgba(73,166,248,0.18);
+      0 0 0 4px rgba(73,166,248,0.15);
 }
 
-/* =========================
-   PASSWORD
-========================= */
+/* TEXTAREA */
+
+.register-textarea{
+
+    resize:none;
+}
+
+/* PASSWORD */
 
 .password-wrapper{
 
     position:relative;
+
+    width:100%;
 }
 
 .password-input{
+
+    width:100%;
 
     padding-right:55px;
 }
@@ -376,7 +330,7 @@ body{
 
     position:absolute;
 
-    top:42%;
+    top:46%;
 
     right:18px;
 
@@ -384,37 +338,90 @@ body{
 
     display:flex;
 
-    justify-content:center;
     align-items:center;
+    justify-content:center;
 
     font-size:18px;
 
     color:#6b7280;
 
     cursor:pointer;
+}
+
+/* FILE UPLOAD */
+
+.file-upload-wrapper{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-top:4px;
+}
+
+.upload-label{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#334155;
+}
+
+.file-input{
+
+    display:none;
+}
+
+.custom-file-upload{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:100%;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+      rgba(255,255,255,0.78);
+
+    border:
+      2px dashed rgba(139,92,246,0.35);
+
+    color:#6d28d9;
+
+    font-weight:600;
+
+    cursor:pointer;
 
     transition:0.3s;
 }
 
-.eye-icon:hover{
+.custom-file-upload:hover{
 
-    color:var(--primary);
+    background:
+      rgba(255,255,255,0.95);
 
-    transform:
-      translateY(-50%)
-      scale(1.15);
+    transform:translateY(-2px);
+
+    border-color:#8b5cf6;
 }
 
-/* =========================
-   BUTTONS
-========================= */
+/* BUTTONS */
 
 .login-btn,
 .register-btn{
 
     width:100%;
 
-    padding:15px;
+    padding:16px;
 
     border:none;
 
@@ -423,13 +430,13 @@ body{
     background:
       linear-gradient(
         135deg,
-        #49A6F8,
-        #7C4DFF
+        #3b82f6,
+        #8b5cf6
       );
 
     color:white;
 
-    font-size:16px;
+    font-size:18px;
 
     font-weight:700;
 
@@ -437,41 +444,41 @@ body{
 
     transition:0.35s;
 
-    margin-bottom:14px;
+    margin-top:4px;
 
-    position:relative;
-
-    overflow:hidden;
+    margin-bottom:16px;
 }
 
 .login-btn:hover,
 .register-btn:hover{
 
     transform:
-      translateY(-4px);
+      translateY(-3px);
 
     box-shadow:
       0 12px 24px rgba(73,166,248,0.35);
 }
 
+/* SECONDARY BUTTON */
+
 .secondary-btn{
 
     width:100%;
 
-    padding:15px;
+    padding:16px;
 
     border:none;
 
     border-radius:18px;
 
     background:
-      rgba(255,255,255,0.6);
+      rgba(255,255,255,0.7);
 
-    color:var(--primary-dark);
+    color:#2563eb;
 
-    font-size:15px;
+    font-size:16px;
 
-    font-weight:600;
+    font-weight:700;
 
     cursor:pointer;
 
@@ -482,17 +489,157 @@ body{
 
     transform:translateY(-2px);
 
-    background:white;
+    background:
+      rgba(255,255,255,0.92);
 }
 
-/* =========================
-   MOBILE
-========================= */
+/* FLOATING OBJECTS */
 
-@media(max-width:550px){
+.floating-objects{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    z-index:1;
+
+    pointer-events:none;
+}
+
+.floating-item{
+
+    position:absolute;
+
+    object-fit:contain;
+
+    animation:
+      floatAnimation 6s ease-in-out infinite;
+
+    filter:
+      drop-shadow(
+        0 20px 35px rgba(0,0,0,0.15)
+      );
+}
+
+/* FLOATING ITEM POSITIONS */
+
+.bag1{
+
+    width:150px;
+
+    top:8%;
+    left:10%;
+}
+
+.cart{
+
+    width:240px;
+
+    bottom:3%;
+    right:6%;
+}
+
+.shoe{
+
+    width:160px;
+
+    bottom:10%;
+    left:10%;
+}
+
+.gift{
+
+    width:110px;
+
+    top:54%;
+    left:22%;
+}
+
+.headphone{
+
+    width:120px;
+
+    top:5%;
+    right:16%;
+}
+
+.perfume{
+
+    width:115px;
+
+    bottom:18%;
+    right:20%;
+}
+
+/* FLOAT ANIMATION */
+
+@keyframes floatAnimation{
+
+    0%{
+        transform:
+          translateY(0px)
+          rotate(0deg);
+    }
+
+    50%{
+        transform:
+          translateY(-20px)
+          rotate(4deg);
+    }
+
+    100%{
+        transform:
+          translateY(0px)
+          rotate(0deg);
+    }
+}
+
+/* CARD ENTRY */
+
+@keyframes cardFade{
+
+    from{
+
+        opacity:0;
+
+        transform:
+          translateY(30px)
+          scale(0.96);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+          translateY(0)
+          scale(1);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .form-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .floating-item{
+
+        opacity:0.45;
+    }
 
     .login-card,
     .register-card{
+
+        max-width:95%;
 
         padding:28px 22px;
     }
@@ -500,7 +647,7 @@ body{
     .login-title,
     .register-title{
 
-        font-size:28px;
+        font-size:30px;
     }
 
     .sub-title{
@@ -513,6 +660,38 @@ body{
         width:70px;
         height:70px;
 
-        font-size:30px;
+        font-size:28px;
+    }
+
+    /* SMALLER FLOATING ITEMS */
+
+    .bag1{
+
+        width:100px;
+    }
+
+    .cart{
+
+        width:140px;
+    }
+
+    .shoe{
+
+        width:95px;
+    }
+
+    .gift{
+
+        width:70px;
+    }
+
+    .headphone{
+
+        width:75px;
+    }
+
+    .perfume{
+
+        width:75px;
     }
 }
