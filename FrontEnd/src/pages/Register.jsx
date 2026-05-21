@@ -1,10 +1,28 @@
+// ===============================
+// REGISTER.JSX
+// ===============================
+
 import React, { useState } from "react";
 import "../App.css";
+
+import {
+  FaShoppingBag,
+  FaCartPlus,
+  FaHeart,
+  FaGift,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import { registerUser } from "../services/authService";
 
 function Register() {
+
+  const [showPassword, setShowPassword] = useState(false);
+
   const [form, setForm] = useState({
     username: "",
     name: "",
@@ -17,9 +35,10 @@ function Register() {
   });
 
   const [image, setImage] = useState(null);
+
   const [loading, setLoading] = useState(false);
 
-  // HANDLE INPUT CHANGE
+  // HANDLE CHANGE
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -27,7 +46,7 @@ function Register() {
     });
   };
 
-  // HANDLE IMAGE CHANGE
+  // HANDLE IMAGE
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -36,21 +55,22 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // VALIDATION
-    if (!form.username || !form.name || !form.password || !form.email) {
+    if (
+      !form.username ||
+      !form.name ||
+      !form.password ||
+      !form.email
+    ) {
       toast.warning("Please Fill Required Fields");
       return;
     }
 
-    if (form.password.length < 6) {
-      toast.warning("Password Must Be Atleast 6 Characters");
-      return;
-    }
-
     try {
+
       setLoading(true);
 
       const formData = new FormData();
+
       formData.append(
         "user",
         new Blob([JSON.stringify(form)], {
@@ -68,7 +88,6 @@ function Register() {
         response.data.message || "Registration Successful 🚀"
       );
 
-      // RESET FORM
       setForm({
         username: "",
         name: "",
@@ -79,20 +98,53 @@ function Register() {
         address: "",
         dob: "",
       });
+
       setImage(null);
+
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data || "Registration Failed");
+
+      toast.error(
+        error.response?.data || "Registration Failed"
+      );
+
     } finally {
+
       setLoading(false);
     }
   };
 
   return (
     <div className="register-page">
+
+      {/* FLOATING ICONS */}
+      <div className="floating-icons">
+        <FaShoppingBag className="float-icon icon1" />
+        <FaCartPlus className="float-icon icon2" />
+        <FaHeart className="float-icon icon3" />
+        <FaGift className="float-icon icon4" />
+      </div>
+
+      {/* GLOW */}
+      <div className="bg-circle circle1"></div>
+      <div className="bg-circle circle2"></div>
+      <div className="bg-circle circle3"></div>
+
       <div className="register-card">
-        <h2 className="register-title">Create Account</h2>
+
+        <div className="brand-logo">
+          🛒
+        </div>
+
+        <h2 className="register-title">
+          Create Account
+        </h2>
+
+        <p className="login-subtext">
+          Join and start your shopping adventure
+        </p>
+
         <form onSubmit={handleSubmit}>
+
           <input
             className="register-input"
             type="text"
@@ -111,14 +163,26 @@ function Register() {
             onChange={handleChange}
           />
 
-          <input
-            className="register-input"
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-          />
+          {/* PASSWORD */}
+          <div className="password-wrapper">
+
+            <input
+              className="register-input password-input"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+            />
+
+            <span
+              className="eye-icon"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+
+          </div>
 
           <input
             className="register-input"
@@ -173,13 +237,22 @@ function Register() {
             onChange={handleImageChange}
           />
 
-          <button className="register-btn" type="submit" disabled={loading}>
+          <button
+            className="register-btn"
+            type="submit"
+            disabled={loading}
+          >
             {loading ? "Registering..." : "Register"}
           </button>
+
         </form>
       </div>
 
-      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme="light"
+      />
     </div>
   );
 }
