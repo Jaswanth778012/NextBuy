@@ -1,9 +1,22 @@
-import React from 'react'
+import React from "react";
 
-export default function Home() {
+function Home() {
+
   return (
-    <div>
-      HOME PAGE
+
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontSize: "42px",
+        fontWeight: "700",
+      }}
+    >
+      🏠 User Home Page
     </div>
-  )
+  );
 }
+
+export default Home;

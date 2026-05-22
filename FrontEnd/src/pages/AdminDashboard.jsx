@@ -1,9 +1,22 @@
-import React from 'react'
+import React from "react";
 
-export default function AdminDashboard() {
+function AdminDashboard() {
+
   return (
-    <div>
-      Hi Admin
+
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontSize: "42px",
+        fontWeight: "700",
+      }}
+    >
+      👑 Admin Dashboard
     </div>
-  )
+  );
 }
+
+export default AdminDashboard;
