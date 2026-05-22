@@ -123,7 +123,7 @@ body{
       1px solid rgba(255,255,255,0.35);
 
     box-shadow:
-      0 10px 40px rgba(31,38,135,0.18);
+      0 10px 40px rgba(28, 5, 232, 0.18);
 
     position:relative;
 
@@ -518,35 +518,39 @@ body{
     object-fit:contain;
 
     animation:
-      floatAnimation 6s ease-in-out infinite;
+      floatAnimation 7s ease-in-out infinite;
 
     filter:
       drop-shadow(
         0 20px 35px rgba(0,0,0,0.15)
       );
+
+    transition: 0.5s ease;
+
+    opacity: 0.96;
 }
 
 /* FLOATING ITEM POSITIONS */
 
 .bag1{
 
-    width:150px;
+    width:220px;
 
-    top:8%;
-    left:10%;
+    top:6%;
+    left:8%;
 }
 
 .cart{
 
-    width:240px;
+    width:290px;
 
     bottom:3%;
-    right:6%;
+    right:10%;
 }
 
 .shoe{
 
-    width:160px;
+    width:240px;
 
     bottom:10%;
     left:10%;
@@ -554,26 +558,26 @@ body{
 
 .gift{
 
-    width:110px;
+    width:220px;
 
-    top:54%;
-    left:22%;
+    top:48%;
+    left:15%;
 }
 
 .headphone{
 
-    width:120px;
+    width:250px;
 
-    top:5%;
+    top:15%;
     right:16%;
 }
 
 .perfume{
 
-    width:115px;
+    width:220px;
 
-    bottom:18%;
-    right:20%;
+    bottom:45%;
+    right:10%;
 }
 
 /* FLOAT ANIMATION */
@@ -583,7 +587,8 @@ body{
     0%{
         transform:
           translateY(0px)
-          rotate(0deg);
+          rotate(0deg)
+          scale(1);
     }
 
     50%{
@@ -633,7 +638,7 @@ body{
 
     .floating-item{
 
-        opacity:0.45;
+        opacity:100;
     }
 
     .login-card,
@@ -667,17 +672,19 @@ body{
 
     .bag1{
 
-        width:100px;
+        width:150px;
     }
 
     .cart{
 
-        width:140px;
+        width:220px;
+        bottom: 1%;
     }
 
     .shoe{
 
-        width:95px;
+        width:150px;
+        bottom: 5%;
     }
 
     .gift{
@@ -687,7 +694,8 @@ body{
 
     .headphone{
 
-        width:75px;
+        width:120px;
+        top: 10%;
     }
 
     .perfume{

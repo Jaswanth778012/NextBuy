@@ -1,12 +1,10 @@
-// ===============================
-// LOGIN.JSX
-// ===============================
-
 import React, { useState } from "react";
 import "../App.css";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { useNavigate } from "react-router-dom";
 
 import {
   FaEye,
@@ -54,6 +52,8 @@ function Login() {
   const [otpVerified, setOtpVerified] =
     useState(false);
 
+    const navigate = useNavigate();
+
   // LOGIN
   const handleLogin = async (e) => {
 
@@ -66,6 +66,10 @@ function Login() {
         password,
       });
 
+      const role = response.data.role;
+
+console.log("ROLE =", role);
+
       localStorage.setItem(
         "token",
         response.data.token
@@ -77,6 +81,20 @@ function Login() {
       );
 
       toast.success("Login Successful 🚀");
+
+      setTimeout(() => {
+
+      if (role === "ADMIN") {
+
+        navigate("/admin/dashboard");
+
+      } else if (role === "USER") {
+
+        navigate("/");
+
+      }
+
+    }, 1200);
 
     } catch (error) {
 
