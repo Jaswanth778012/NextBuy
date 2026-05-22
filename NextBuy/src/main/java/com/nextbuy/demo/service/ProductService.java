@@ -32,7 +32,7 @@ public class ProductService {
 		this.brandRepo = brandRepo;
 		this.cloudinaryService = cloudinaryService;
 	}
-	//ADDPRODUCT
+
 	public String addProduct(ProductDTO Pdto, MultipartFile imageFile) {
 		Product p = new Product();
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
@@ -43,6 +43,7 @@ public class ProductService {
     	p.setName(Pdto.getName());
     	p.setDescription(Pdto.getDescription());
     	p.setCategory(Pdto.getCategory());
+    	p.setSubCategory(Pdto.getSubCategory());
     	p.setMrp_price(Pdto.getMrp_price());
     	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
@@ -103,7 +104,6 @@ public class ProductService {
 		return "Product Added Successfully";
 	}
 	
-	//UPDATEDIS-COUNT
 	public String updateDisCount(Long id ,Double disCount) {
 		 Product product = productRepo.findById(id).get();
 		 product.setDiscountPercentage(disCount);
@@ -253,12 +253,23 @@ public class ProductService {
 	    }
 
 	    Set<String> categories = products.stream()
-	            .map(Product::getCategory)
+	            .map(p -> p.getCategory().getName())
 	            .collect(Collectors.toSet());
 
 	    if(categories.size() > 1) {
 	        throw new RuntimeException(
 	                "Products must belong to same category"
+	        );
+	    }
+	    
+	    Set<String> subCategories = products.stream()
+	            .map(p -> p.getSubCategory().getName())
+	            .collect(Collectors.toSet());
+
+	    if(subCategories.size() > 1) {
+
+	        throw new RuntimeException(
+	                "Products must belong to same subcategory"
 	        );
 	    }
 
@@ -274,6 +285,7 @@ public class ProductService {
 	        dto.setFinalPrice(product.getFinalPrice());
 	        dto.setAverageRating(product.getAverageRating());
 	        dto.setCategory(product.getCategory());
+	        dto.setSubCategory(product.getSubCategory());
 	        dto.setBrand(product.getBrand());
 	        dto.setAttributes(product.getAttributes());
 
@@ -286,7 +298,7 @@ public class ProductService {
 	public  List<Product> searchCategory(String category) {
 		return productRepo.findAll()
 			   .stream()
-			   .filter(p->p.getCategory().equalsIgnoreCase(category))
+			   .filter(p->p.getCategory().getName().equalsIgnoreCase(category))
 			   .distinct()
 			   .sorted((a,b) ->
 		        a.getName().compareTo(b.getName()))
@@ -294,6 +306,8 @@ public class ProductService {
 		
 			  
 	}
+	
+	
 	//updateProductStatus
 	public String updateProductStatus(Long id,ProductStatus status) {
 		  Optional<Product> p = productRepo.findById(id);

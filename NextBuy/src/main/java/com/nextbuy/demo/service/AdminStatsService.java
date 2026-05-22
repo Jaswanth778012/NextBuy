@@ -83,6 +83,7 @@ public class AdminStatsService {
 
 	        dto.setProductName(product.getName());
             dto.setCategory(product.getCategory());
+            dto.setSubCategory(product.getSubCategory());
             dto.setImg(product.getImageUrl());
 	        dto.setTotalSold(totalSold);
             
