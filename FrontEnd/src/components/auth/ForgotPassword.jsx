@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import "../../styles/LoginIcon.css"
 import {
   FaEye,
   FaEyeSlash,
@@ -12,6 +12,11 @@ import {
   verifyOtp,
   resetPassword,
 } from "../../services/authService";
+import { MdMarkEmailUnread } from "react-icons/md";
+import { SiPronounsdotpage } from "react-icons/si";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { PiPasswordFill } from "react-icons/pi";
+import { GiConfirmed } from "react-icons/gi";
 
 function ForgotPassword({ setShowForgot }) {
 
@@ -138,7 +143,8 @@ function ForgotPassword({ setShowForgot }) {
           <h3 className="sub-title">
             Forgot Password
           </h3>
-
+         <div className="input-box">
+           <MdMarkEmailUnread className="input-icon" />
           <input
             className="login-input"
             type="email"
@@ -148,14 +154,15 @@ function ForgotPassword({ setShowForgot }) {
               setEmail(e.target.value)
             }
           />
-
+        </div>
           <button
             className="login-btn"
             onClick={handleForgotPassword}
           >
-            Send OTP
+            Send OTP 
           </button>
-
+          <div className="input-box">
+           <SiPronounsdotpage className="input-icon" />
           <input
             className="login-input"
             type="text"
@@ -165,7 +172,7 @@ function ForgotPassword({ setShowForgot }) {
               setOtp(e.target.value)
             }
           />
-
+          </div>
           <button
             className="login-btn"
             onClick={handleVerifyOtp}
@@ -184,7 +191,8 @@ function ForgotPassword({ setShowForgot }) {
           {/* NEW PASSWORD */}
 
           <div className="password-wrapper">
-
+           <div className="input-box">
+           <RiLockPasswordLine className="input-icon" />
             <input
               className="
                 login-input
@@ -203,7 +211,7 @@ function ForgotPassword({ setShowForgot }) {
                 )
               }
             />
-
+           </div>
             <span
               className="eye-icon"
               onClick={() =>
@@ -222,7 +230,8 @@ function ForgotPassword({ setShowForgot }) {
           {/* CONFIRM PASSWORD */}
 
           <div className="password-wrapper">
-
+            <div className="input-box">
+           <GiConfirmed className="input-icon" />
             <input
               className="
                 login-input
@@ -241,7 +250,7 @@ function ForgotPassword({ setShowForgot }) {
                 )
               }
             />
-
+            </div>
             <span
               className="eye-icon"
               onClick={() =>

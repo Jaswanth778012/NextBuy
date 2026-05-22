@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-
+import "../../styles/LoginIcon.css"
 import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import { FaRotateRight } from "react-icons/fa6";
+import { GiThink } from "react-icons/gi";
 
 import { toast } from "react-toastify";
-
+import { FaUser } from "react-icons/fa";
+import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate }
 from "react-router-dom";
 
@@ -76,7 +79,7 @@ function LoginForm({ setShowForgot }) {
     <>
 
       <h2 className="login-title">
-        Welcome Back
+           Shop Smarter With NextBuy
       </h2>
 
       <p className="login-subtext">
@@ -84,19 +87,21 @@ function LoginForm({ setShowForgot }) {
       </p>
 
       <form onSubmit={handleLogin}>
-
+       <div className="input-box">
+         <FaUser className="input-icon" />
         <input
           className="login-input"
           type="text"
-          placeholder="Email or Username"
+          placeholder="Username"
           value={username}
           onChange={(e) =>
             setUsername(e.target.value)
           }
         />
-
+</div>
         <div className="password-wrapper">
-
+         <div className="input-box">
+           <RiLockPasswordFill className="input-icon" />
           <input
             className="
               login-input
@@ -113,7 +118,7 @@ function LoginForm({ setShowForgot }) {
               setPassword(e.target.value)
             }
           />
-
+        </div>
           <span
             className="eye-icon"
             onClick={() =>
@@ -135,7 +140,8 @@ function LoginForm({ setShowForgot }) {
         >
           Login →
         </button>
-
+        <div className="input-boxx">
+           <GiThink className="input-iconn" />
         <button
           className="secondary-btn"
           type="button"
@@ -145,7 +151,7 @@ function LoginForm({ setShowForgot }) {
         >
           Forgot Password?
         </button>
-
+         </div>
       </form>
     </>
   );

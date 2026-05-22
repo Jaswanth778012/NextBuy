@@ -1,0 +1,46 @@
+.input-box{
+    position:relative;
+    width:100%;
+}
+
+.input-icon{
+    position:absolute;
+    left:15px;
+    top:40%;
+    transform:translateY(-50%);
+    color:#0a0909;
+    font-size:16px;
+}
+
+.register-input{
+    width:100%;
+    padding:14px 14px 14px 45px;
+}
+
+.input-box{
+    position:relative;
+    width:100%;
+  top: 10px;
+}
+
+.textarea-icon{
+    position:absolute;
+    left:15px;
+    top:18px;
+    color:#000000;
+    font-size:15px;
+}
+
+.register-textarea{
+    width:100%;
+    padding:14px 14px 14px 45px;
+    resize:none;
+}
+
+
+
+
+
+
+
+

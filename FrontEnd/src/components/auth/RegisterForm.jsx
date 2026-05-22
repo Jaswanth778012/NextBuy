@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-
+import "../../styles/RegisterIcon.css"
+import { FaUserShield } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
+import { MdDriveFileRenameOutline } from "react-icons/md";
+import { RiFontSize, RiLockPasswordFill } from "react-icons/ri";
+import { MdEmail } from "react-icons/md";
+import { FaMobileRetro } from "react-icons/fa6";
+import { CgGenderMale } from "react-icons/cg";
+import { IoMdHome } from "react-icons/io";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { PiGenderFemaleBold } from "react-icons/pi";
+import { FaUserEdit } from "react-icons/fa";
 import {
   FaEye,
   FaEyeSlash,
@@ -147,20 +158,28 @@ function RegisterForm() {
   return (
 
     <form onSubmit={handleSubmit}>
-
+       
       <div className="form-grid">
 
-        {/* USERNAME */}
-        <input
-          className="register-input"
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-        />
+       <div className="input-box">
+  <FaUser className="input-icon" />
+
+  <input
+    className="register-input"
+    type="text"
+    name="username"
+    placeholder="Username"
+    value={form.username}
+    onChange={handleChange}
+  />
+
+</div>
+        
 
         {/* FULL NAME */}
+        <div className="input-box">
+
+  <FaUserEdit className="input-icon" />
         <input
           className="register-input"
           type="text"
@@ -169,13 +188,14 @@ function RegisterForm() {
           value={form.name}
           onChange={handleChange}
         />
-
+   </div>
         {/* PASSWORD */}
         <div className="
           password-wrapper
           full-width
         ">
-
+        <div className="input-box">
+  <RiLockPasswordFill className="input-icon" />
           <input
             className="
               register-input
@@ -191,7 +211,7 @@ function RegisterForm() {
             value={form.password}
             onChange={handleChange}
           />
-
+         </div>
           <span
             className="eye-icon"
             onClick={() =>
@@ -210,6 +230,8 @@ function RegisterForm() {
         </div>
 
         {/* EMAIL */}
+         <div className="input-box">
+  <MdEmail className="input-icon" />
         <input
           className="register-input"
           type="email"
@@ -218,8 +240,11 @@ function RegisterForm() {
           value={form.email}
           onChange={handleChange}
         />
+        </div>
 
         {/* MOBILE */}
+         <div className="input-box">
+  <FaMobileRetro className="input-icon" />
         <input
           className="register-input"
           type="text"
@@ -228,8 +253,11 @@ function RegisterForm() {
           value={form.mobileNumber}
           onChange={handleChange}
         />
+        </div>
 
         {/* GENDER */}
+         <div className="input-box">
+  <PiGenderFemaleBold className="input-icon"/>
         <select
           className="register-input"
           name="gender"
@@ -254,8 +282,9 @@ function RegisterForm() {
           </option>
 
         </select>
-
+ </div>
         {/* DOB */}
+        <div className="input-box">
         <input
           className="register-input"
           type="date"
@@ -263,21 +292,27 @@ function RegisterForm() {
           value={form.dob}
           onChange={handleChange}
         />
+        </div>
 
         {/* ADDRESS */}
-        <textarea
-          className="
-            register-input
-            register-textarea
-            full-width
-          "
-          name="address"
-          placeholder="Address"
-          value={form.address}
-          onChange={handleChange}
-          rows="3"
-        ></textarea>
+       <div className="input-box full-width">
 
+  <FaMapMarkerAlt className="textarea-icon" />
+
+  <textarea
+    className="
+      register-input
+      register-textarea
+    "
+    name="address"
+    placeholder="Address"
+    value={form.address}
+    onChange={handleChange}
+    rows="3"
+  ></textarea>
+
+</div>
+ 
         {/* IMAGE */}
         <div className="
           file-upload-wrapper
@@ -295,7 +330,7 @@ function RegisterForm() {
             {image
               ? image.name
               : "Choose Profile Image"}
-
+           
             <input
               className="file-input"
               type="file"
@@ -304,6 +339,7 @@ function RegisterForm() {
                 handleImageChange
               }
             />
+            
 
           </label>
 

@@ -1,0 +1,38 @@
+.input-box{
+    position:relative;
+    margin-bottom:18px;
+}
+
+.input-icon{
+    position:absolute;
+    left:15px;
+    top:40%;
+    transform:translateY(-50%);
+    color:#000000;
+    font-size:17px;
+}
+
+.login-input{
+    width:100%;
+    padding:14px 14px 14px 45px;
+}
+
+.input-boxx{
+    position:relative;
+    margin-bottom:18px;
+}
+
+.input-iconn{
+    position:absolute;
+    left:27%;
+    top:49%;
+    transform:translateY(-50%);
+    color:#000000;
+    font-size:20px;
+
+}
+
+.login-input{
+    width:100%;
+    padding:14px 14px 14px 45px;
+}
