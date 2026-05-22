@@ -28,8 +28,8 @@ public class CommonController {
 	BroadcastService broadcastService;
 	
 	public CommonController(CommonService commonService, BroadcastService broadcastService) {
-		super();
 		this.commonService = commonService;
+		this.broadcastService = broadcastService;
 	}
 	
 	
@@ -52,6 +52,7 @@ public class CommonController {
     public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String category,
+            @RequestParam(required = false) String subCategory,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String stockStatus,
@@ -63,6 +64,7 @@ public class CommonController {
         Page<Product> products = commonService.getProductsWithFilters(
                 search,
                 category,
+                subCategory,
                 minPrice,
                 maxPrice,
                 stockStatus,

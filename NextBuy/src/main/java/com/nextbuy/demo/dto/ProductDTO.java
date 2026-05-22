@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
+import com.nextbuy.demo.entity.Category;
+import com.nextbuy.demo.entity.SubCategory;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.ProductCondition;
 import com.nextbuy.demo.enums.ProductStatus;
@@ -27,12 +29,14 @@ private Long id;
 	
 	private String description;
 	
-	private String category;
-	
 	private Double mrp_price;
 	
 	private String imageUrl;
 	
+	private Category category;
+
+    private SubCategory subCategory;
+    
 	private Integer stockQuantity;
 	
 	private Double discountPercentage=0.0; 

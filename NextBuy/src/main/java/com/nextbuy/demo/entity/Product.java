@@ -49,7 +49,13 @@ public class Product {
 	
 	private String description;
 	
-	private String category;
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
+
+	@ManyToOne
+	@JoinColumn(name = "subcategory_id")
+	private SubCategory subCategory;
 	
 	private Double mrp_price;
 	
@@ -126,7 +132,7 @@ public class Product {
 
 	    return text.toLowerCase()
 	            .trim()
-	            .replace(" ", "-")
+	            .replace("\\s+", "-")
 	            .replaceAll("[^a-z0-9-]", "");
 	}
 	
