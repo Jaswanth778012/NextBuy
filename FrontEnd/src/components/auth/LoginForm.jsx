@@ -120,7 +120,7 @@ function LoginForm({ setShowForgot }) {
           />
         </div>
           <span
-            className="eye-icon"
+            className="eye-iconn"
             onClick={() =>
               setShowPassword(
                 !showPassword
