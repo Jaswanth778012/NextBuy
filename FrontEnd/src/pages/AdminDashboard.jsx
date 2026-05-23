@@ -406,31 +406,16 @@ if (error) {
           <p>₹{stats.TotalRevanue}</p>
         </div>
 
-        <div className="dashboard-card">
-          <h2>Monthly Revenue</h2>
-          <p>₹{stats.monthlyRevanue}</p>
-        </div>
-
-        <div className="dashboard-card">
-          <h2>Yearly Revenue</h2>
-          <p>₹{stats.yearlyRevanue}</p>
-        </div>
+       
 
         <div className="dashboard-card">
           <h2>Delivered Orders</h2>
           <p>{stats.deliveredOrders}</p>
         </div>
 
-        <div className="dashboard-card">
-          <h2>Cancelled Orders</h2>
-          <p>{stats.cancelledOrders}</p>
-        </div>
+       
 
-        <div className="dashboard-card">
-          <h2>Pending Orders</h2>
-          <p>{stats.pendingOrders}</p>
-        </div>
-
+        
         <div className="dashboard-card">
           <h2>Low Stock Products</h2>
           <p>{stats.TotallowStockProducts}</p>
