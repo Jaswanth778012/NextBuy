@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.CategorySalesDTO;
+import com.nextbuy.demo.dto.MonthlyOrderCountDTO;
 import com.nextbuy.demo.dto.MonthlyStatsDTO;
 import com.nextbuy.demo.dto.TopSellingProductDTO;
 import com.nextbuy.demo.service.AdminStatsService;
@@ -59,5 +60,10 @@ public class AdminStatsController {
    public List< CategorySalesDTO> getSubCategoryStatsByCategoryId(@PathVariable Long categoryId){
 	   return adminStatsService.getSubCategoryStatsByCategoryId(categoryId);
    }
-
+   
+   @GetMapping("/monthlyOrderCount")
+   public List<MonthlyOrderCountDTO> monthlyOrderCount(){
+	   return adminStatsService.monthlyOrderCount();
+	   
+   }
 }

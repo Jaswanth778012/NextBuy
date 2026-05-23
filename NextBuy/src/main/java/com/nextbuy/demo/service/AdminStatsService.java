@@ -1,6 +1,7 @@
 package com.nextbuy.demo.service;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
 
 import com.nextbuy.demo.dto.CategorySalesDTO;
+import com.nextbuy.demo.dto.MonthlyOrderCountDTO;
 import com.nextbuy.demo.dto.MonthlyStatsDTO;
 import com.nextbuy.demo.dto.TopSellingProductDTO;
 import com.nextbuy.demo.entity.Order;
@@ -219,6 +221,35 @@ public class AdminStatsService {
 	          }
 	          return list;
    }
+     
+    public List<MonthlyOrderCountDTO> monthlyOrderCount(){
+    	LocalDate now = LocalDate.now();
+    	int year = now.getYear();
+    	ArrayList<String> months = new ArrayList<>();
+    	 months.add("January");
+    	 months.add("February");
+    	 months.add("March");
+    	 months.add("April");
+    	 months.add("May");
+    	 months.add("Jun");
+    	 months.add("July");
+    	 months.add("August");
+    	 months.add("September");
+    	 months.add("October");
+    	 months.add("November");
+    	 months.add("December");
+    	 
+    List<MonthlyOrderCountDTO> list = new ArrayList<>();
+     for(int i = 1; i <= 12; i++) {
+    long month = orderRepo.findByMonthAndYear(i, year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED).count();
+    MonthlyOrderCountDTO mc = new MonthlyOrderCountDTO();
+       
+         mc.setMonth(months.get(i-1));
+         mc.setCount(month);
+         list.add(mc);
+     }
+     return list;
+    }
    
    
 
