@@ -1,7 +1,14 @@
-import React from "react";
+import React, {
+  useEffect,
+  useState
+} from "react";
 
 import { useNavigate }
 from "react-router-dom";
+
+import {
+  getTotalStats
+} from "../services/AdminStatsService";
 
 import "../App.css";
 
@@ -9,9 +16,48 @@ function AdminDashboard() {
 
   const navigate = useNavigate();
 
+  // STATE
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalProducts: 0,
+    TotalRevanue: 0,
+    monthlyRevanue: 0,
+    yearlyRevanue: 0,
+    deliveredOrders: 0,
+    cancelledOrders: 0,
+    pendingOrders: 0,
+    TotallowStockProducts: 0,
+    TotalHighStockProducts: 0
+  });
+
   // CHECK TOKEN
   const token =
     localStorage.getItem("token");
+
+  // FETCH STATS
+  useEffect(() => {
+
+    fetchStats();
+
+  }, []);
+
+  const fetchStats = async () => {
+
+    try {
+
+      const response =
+        await getTotalStats();
+
+      console.log(response.data);
+
+      setStats(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
 
   // LOGIN
   const handleLogin = () => {
@@ -63,22 +109,56 @@ function AdminDashboard() {
 
       </div>
 
-
       <div className="dashboard-cards">
 
         <div className="dashboard-card">
           <h2>Total Users</h2>
-          <p>1,245</p>
+          <p>{stats.totalUsers}</p>
         </div>
 
         <div className="dashboard-card">
-          <h2>Total Orders</h2>
-          <p>560</p>
+          <h2>Total Products</h2>
+          <p>{stats.totalProducts}</p>
         </div>
 
         <div className="dashboard-card">
-          <h2>Revenue</h2>
-          <p>₹2.4L</p>
+          <h2>Total Revenue</h2>
+          <p>₹{stats.TotalRevanue}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>Monthly Revenue</h2>
+          <p>₹{stats.monthlyRevanue}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>Yearly Revenue</h2>
+          <p>₹{stats.yearlyRevanue}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>Delivered Orders</h2>
+          <p>{stats.deliveredOrders}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>Cancelled Orders</h2>
+          <p>{stats.cancelledOrders}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>Pending Orders</h2>
+          <p>{stats.pendingOrders}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>Low Stock Products</h2>
+          <p>{stats.TotallowStockProducts}</p>
+        </div>
+
+        <div className="dashboard-card">
+          <h2>High Stock Products</h2>
+          <p>{stats.TotalHighStockProducts}</p>
         </div>
 
       </div>
