@@ -1,6 +1,10 @@
 import React from "react";
 
-function SearchDropdown({ searchResults }) {
+function SearchDropdown({
+  searchResults,
+  setSelectedResult,
+  setSelectedType,
+}) {
   if (!searchResults) return null;
 
   return (
@@ -11,7 +15,14 @@ function SearchDropdown({ searchResults }) {
           <h4>Users</h4>
 
           {searchResults.users.map((user, index) => (
-            <div key={index} className="search-item">
+            <div
+              key={index}
+              className="search-item"
+              onClick={() => {
+                setSelectedResult(user);
+                setSelectedType("user");
+              }}
+            >
               👤 {user.username}
             </div>
           ))}
@@ -24,7 +35,14 @@ function SearchDropdown({ searchResults }) {
           <h4>Products</h4>
 
           {searchResults.products.map((product, index) => (
-            <div key={index} className="search-item">
+            <div
+              key={index}
+              className="search-item"
+              onClick={() => {
+                setSelectedResult(product);
+                setSelectedType("product");
+              }}
+            >
               📦 {product.name}
             </div>
           ))}
@@ -37,7 +55,14 @@ function SearchDropdown({ searchResults }) {
           <h4>Brands</h4>
 
           {searchResults.brands.map((brand, index) => (
-            <div key={index} className="search-item">
+            <div
+              key={index}
+              className="search-item"
+              onClick={() => {
+                setSelectedResult(brand);
+                setSelectedType("brand");
+              }}
+            >
               🏷️ {brand.name}
             </div>
           ))}
@@ -50,8 +75,15 @@ function SearchDropdown({ searchResults }) {
           <h4>Orders</h4>
 
           {searchResults.orders.map((order, index) => (
-            <div key={index} className="search-item">
-              🧾 Order ID: {order.id}
+            <div
+              key={index}
+              className="search-item"
+              onClick={() => {
+                setSelectedResult(order);
+                setSelectedType("order");
+              }}
+            >
+              🧾 {order.orderNumber}
             </div>
           ))}
         </div>
@@ -63,7 +95,14 @@ function SearchDropdown({ searchResults }) {
           <h4>Categories</h4>
 
           {searchResults.categories.map((category, index) => (
-            <div key={index} className="search-item">
+            <div
+              key={index}
+              className="search-item"
+              onClick={() => {
+                setSelectedResult(category);
+                setSelectedType("category");
+              }}
+            >
               📂 {category.name}
             </div>
           ))}
@@ -76,7 +115,14 @@ function SearchDropdown({ searchResults }) {
           <h4>Sub Categories</h4>
 
           {searchResults.subCategories.map((subCategory, index) => (
-            <div key={index} className="search-item">
+            <div
+              key={index}
+              className="search-item"
+              onClick={() => {
+                setSelectedResult(subCategory);
+                setSelectedType("subCategory");
+              }}
+            >
               🗂️ {subCategory.name}
             </div>
           ))}
@@ -90,7 +136,9 @@ function SearchDropdown({ searchResults }) {
         searchResults.brands?.length === 0 &&
         searchResults.categories?.length === 0 &&
         searchResults.subCategories?.length === 0 && (
-          <div className="empty-search">No Results Found</div>
+          <div className="empty-search">
+            No Results Found
+          </div>
         )}
     </div>
   );

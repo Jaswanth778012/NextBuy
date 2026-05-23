@@ -7,6 +7,7 @@ import { globalSearch } from "../services/adminService";
 import AdminSidebar from "../components/adminDashboard/AdminSidebar";
 import AdminHeader from "../components/adminDashboard/AdminHeader";
 import DashboardCards from "../components/adminDashboard/DashboardCards";
+import SearchResultModal from "../components/adminDashboard/SearchResultModal";
 
 import "../styles/AdminDashboard.css";
 
@@ -22,6 +23,10 @@ function AdminDashboard() {
 
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchResults, setSearchResults] = useState(null);
+
+  const [selectedResult, setSelectedResult] = useState(null);
+
+  const [selectedType, setSelectedType] = useState("");
 
   const searchTimeoutRef = useRef(null);
 
@@ -143,9 +148,17 @@ function AdminDashboard() {
           searchKeyword={searchKeyword}
           handleGlobalSearch={handleGlobalSearch}
           searchResults={searchResults}
+          setSelectedResult={setSelectedResult}
+          setSelectedType={setSelectedType}
         />
 
         <DashboardCards stats={stats} />
+
+        <SearchResultModal
+        selectedResult={selectedResult}
+        selectedType={selectedType}
+        setSelectedResult={setSelectedResult}
+      />
       </div>
     </div>
   );

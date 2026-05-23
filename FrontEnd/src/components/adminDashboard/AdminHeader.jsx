@@ -8,6 +8,8 @@ function AdminHeader({
   searchKeyword,
   handleGlobalSearch,
   searchResults,
+  setSelectedResult,
+  setSelectedType,
 }) {
   return (
     <header className="admin-header">
@@ -25,7 +27,11 @@ function AdminHeader({
           <span className="shortcut">⌘ K</span>
         </div>
 
-        <SearchDropdown searchResults={searchResults} />
+        <SearchDropdown
+  searchResults={searchResults}
+  setSelectedResult={setSelectedResult}
+  setSelectedType={setSelectedType}
+/>
       </div>
 
       <div className="header-right">
