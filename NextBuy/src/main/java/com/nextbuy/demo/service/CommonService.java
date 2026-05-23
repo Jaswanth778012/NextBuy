@@ -62,10 +62,8 @@ public class CommonService {
 	
 	public List<UserResponceDTO> searchCategory(String category){
 
-	    return productRepo.findAll()
+	    return productRepo.findByCategoryNameLike(category)
 	            .stream()
-	            .filter(p -> p.getCategory().getName()
-	                    .equalsIgnoreCase(category))
 	            .map(this::mapToResponseDto)
 	            .toList();
 	}

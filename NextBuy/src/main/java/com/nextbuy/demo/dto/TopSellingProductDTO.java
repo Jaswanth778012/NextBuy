@@ -16,7 +16,7 @@ public class TopSellingProductDTO {
 	    private String productName;
 	    private Long totalSold;
 	    private Category category;
-	    private SubCategory subCategory;
+	    private String subCategory;
 	    private String img;
 	    private Integer stockQuantity;
 }

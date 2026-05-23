@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextbuy.demo.dto.CategorySalesDTO;
 import com.nextbuy.demo.dto.MonthlyStatsDTO;
 import com.nextbuy.demo.dto.TopSellingProductDTO;
 import com.nextbuy.demo.service.AdminStatsService;
@@ -48,6 +49,15 @@ public class AdminStatsController {
    public List<TopSellingProductDTO> HighStockProducts(){
 	   return adminStatsService.HighStockProducts();
 	   
+   }
+   @GetMapping("/getCategoryStats")
+   public List< CategorySalesDTO> getCategoryStats() {
+	   return adminStatsService.getCategoryStats();
+			   
+   }
+   @GetMapping("/getSubCatagoryStats/{categoryId}")
+   public List< CategorySalesDTO> getSubCategoryStatsByCategoryId(@PathVariable Long categoryId){
+	   return adminStatsService.getSubCategoryStatsByCategoryId(categoryId);
    }
 
 }

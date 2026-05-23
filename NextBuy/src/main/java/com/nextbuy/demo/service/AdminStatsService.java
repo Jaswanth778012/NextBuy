@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import com.nextbuy.demo.dto.CategorySalesDTO;
 import com.nextbuy.demo.dto.MonthlyStatsDTO;
 import com.nextbuy.demo.dto.TopSellingProductDTO;
 import com.nextbuy.demo.entity.Order;
@@ -83,7 +84,13 @@ public class AdminStatsService {
 
 	        dto.setProductName(product.getName());
             dto.setCategory(product.getCategory());
-            dto.setSubCategory(product.getSubCategory());
+            if(product.getSubCategory() != null){
+
+                dto.setSubCategory(
+                    product.getSubCategory().getName()
+                );
+
+            }
             dto.setImg(product.getImageUrl());
 	        dto.setTotalSold(totalSold);
             
@@ -179,5 +186,40 @@ public class AdminStatsService {
 	   
 	   
    }
+   
+   public List< CategorySalesDTO> getCategoryStats() {
+	       List<Object[]> categorys = orderItemRepo.getCategoryWiseSales();
+	       List<CategorySalesDTO> list = new ArrayList<>();
+	       for(Object[] obj : categorys) {
+	    	   Long id =(Long)obj[0];
+	    	   String name = (String)obj[1];
+	    	   Long sold =(Long)obj[2];
+	    	   CategorySalesDTO csd = new CategorySalesDTO();
+	    	   csd.setCategoryId(id);
+	    	   csd.setCategoryName(name);
+	    	   csd.setTotalSold(sold);
+	    	   list.add(csd);
+	       }
+	       return list;
+   }
+   
+    public List< CategorySalesDTO> getSubCategoryStatsByCategoryId(Long categoryId){
+	          List<Object[]> result = orderItemRepo.getSubCategorySalesByCategory(categoryId);
+	          List<CategorySalesDTO> list =new ArrayList<>();
+	          for(Object[] obj: result) {
+	        	  Long id =(Long) obj[0];
+	        	  String name =  (String)obj[1];
+	        	  Long sold =(Long) obj[2];
+	        	  CategorySalesDTO csd = new CategorySalesDTO();
+	        	  csd.setCategoryId(id);
+	        	  csd.setCategoryName(name);
+	        	  csd.setTotalSold(sold);
+	        	  list.add(csd);
+	        	  
+	          }
+	          return list;
+   }
+   
+   
 
 }
