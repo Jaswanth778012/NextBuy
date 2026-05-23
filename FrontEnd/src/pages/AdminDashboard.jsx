@@ -1,16 +1,31 @@
 import React, {
   useEffect,
-  useState
+  useRef,
+  useState,
 } from "react";
 
-import { useNavigate }
-from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   getTotalStats
 } from "../services/AdminStatsService";
 
-import "../App.css";
+import {
+  FaSearch,
+  FaBell,
+  FaMoon,
+  FaTachometerAlt,
+  FaUsers,
+  FaBoxOpen,
+  FaChartLine,
+  FaSignOutAlt,
+} from "react-icons/fa";
+
+import {
+  globalSearch,
+} from "../services/adminService";
+
+import "../styles/AdminDashboard.css";
 
 function AdminDashboard() {
 
@@ -30,16 +45,12 @@ function AdminDashboard() {
     TotalHighStockProducts: 0
   });
 
-  // CHECK TOKEN
-  const token =
-    localStorage.getItem("token");
-
   // FETCH STATS
   useEffect(() => {
-
-    fetchStats();
-
-  }, []);
+  if (!token) {
+    navigate("/login");
+  }
+}, [token, navigate]);
 
   const fetchStats = async () => {
 
@@ -59,13 +70,35 @@ function AdminDashboard() {
     }
   };
 
-  // LOGIN
-  const handleLogin = () => {
+  // ===============================
+  // STATES
+  // ===============================
 
-    navigate("/login");
-  };
+  const [sidebarOpen, setSidebarOpen] =
+    useState(true);
 
+  const [searchKeyword, setSearchKeyword] =
+    useState("");
+
+  const [searchResults, setSearchResults] =
+    useState(null);
+
+  // SEARCH TIMER REF
+
+  const searchTimeoutRef =
+    useRef(null);
+
+  // ===============================
+  // TOKEN
+  // ===============================
+
+  const token =
+    localStorage.getItem("token");
+
+  // ===============================
   // LOGOUT
+  // ===============================
+
   const handleLogout = () => {
 
     localStorage.removeItem("token");
@@ -75,42 +108,271 @@ function AdminDashboard() {
     navigate("/login");
   };
 
-  return (
+  // ===============================
+  // GLOBAL SEARCH
+  // ===============================
 
-    <div className="admin-dashboard">
+  const handleGlobalSearch = (
+    e
+  ) => {
 
-      {/* TOP BAR */}
-      <div className="admin-header">
+    const keyword = e.target.value;
 
-        <h1 className="admin-title">
-          Admin Dashboard 👑
-        </h1>
+    setSearchKeyword(keyword);
 
-        {/* LOGIN / LOGOUT BUTTON */}
-        {!token ? (
+    // EMPTY SEARCH
 
-          <button
-            className="admin-btn"
-            onClick={handleLogin}
-          >
-            Login
-          </button>
+    if (!keyword.trim()) {
 
-        ) : (
+      setSearchResults(null);
 
-          <button
-            className="admin-btn"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+      return;
+    }
 
-        )}
+    // CLEAR OLD TIMER
 
+    if (searchTimeoutRef.current) {
+
+      clearTimeout(
+        searchTimeoutRef.current
+      );
+    }
+
+    // NEW TIMER
+
+    searchTimeoutRef.current =
+      setTimeout(async () => {
+
+        try {
+
+          const data =
+            await globalSearch(keyword);
+
+          console.log(
+            "SEARCH DATA",
+            data
+          );
+
+          setSearchResults(data);
+
+        } catch (error) {
+
+          console.log(error);
+        }
+
+      }, 400);
+  };
+
+  // ===============================
+  // CLOSE SEARCH DROPDOWN
+  // ===============================
+
+  useEffect(() => {
+
+    const closeSearch = (e) => {
+
+      if (
+        !e.target.closest(
+          ".search-container"
+        )
+      ) {
+
+        setSearchResults(null);
+      }
+    };
+
+    document.addEventListener(
+      "click",
+      closeSearch
+    );
+
+    return () => {
+
+      document.removeEventListener(
+        "click",
+        closeSearch
+      );
+    };
+
+  }, []);
+
+ return (
+  <div className="admin-layout">
+    {/* SIDEBAR */}
+    <aside
+      className={`admin-sidebar ${
+        sidebarOpen ? "open" : "closed"
+      }`}
+    >
+      <div
+        className="sidebar-toggle-arrow"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? "‹" : "›"}
       </div>
 
-      <div className="dashboard-cards">
+      <div className="sidebar-logo">
+        <h2>{sidebarOpen ? "NextBuy" : "NB"}</h2>
+      </div>
 
+      <nav className="sidebar-nav">
+        <button className="nav-item active">
+          <FaTachometerAlt />
+          {sidebarOpen && <span>Dashboard</span>}
+        </button>
+
+        <button className="nav-item">
+          <FaUsers />
+          {sidebarOpen && <span>Users</span>}
+        </button>
+
+        <button className="nav-item">
+          <FaBoxOpen />
+          {sidebarOpen && <span>Orders</span>}
+        </button>
+
+        <button className="nav-item">
+          <FaChartLine />
+          {sidebarOpen && <span>Analytics</span>}
+        </button>
+
+        <button
+          className="nav-item logout-nav"
+          onClick={handleLogout}
+        >
+          <FaSignOutAlt />
+          {sidebarOpen && <span>Logout</span>}
+        </button>
+      </nav>
+    </aside>
+
+    {/* MAIN */}
+    <div className="admin-main">
+      {/* HEADER */}
+      <header className="admin-header">
+        {/* SEARCH */}
+        <div className="search-container">
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+
+            <input
+              type="text"
+              placeholder="Search users, products, brands..."
+              value={searchKeyword}
+              onChange={handleGlobalSearch}
+            />
+
+            <span className="shortcut">⌘ K</span>
+          </div>
+
+          {searchResults && (
+            <div className="search-results">
+              {/* USERS */}
+              {searchResults.users?.length > 0 && (
+                <div className="search-section">
+                  <h4>Users</h4>
+
+                  {searchResults.users.map((user, index) => (
+                    <div
+                      key={index}
+                      className="search-item"
+                    >
+                      👤 {user.username}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* PRODUCTS */}
+              {searchResults.products?.length > 0 && (
+                <div className="search-section">
+                  <h4>Products</h4>
+
+                  {searchResults.products.map(
+                    (product, index) => (
+                      <div
+                        key={index}
+                        className="search-item"
+                      >
+                        📦 {product.name}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+
+              {/* BRANDS */}
+              {searchResults.brands?.length > 0 && (
+                <div className="search-section">
+                  <h4>Brands</h4>
+
+                  {searchResults.brands.map(
+                    (brand, index) => (
+                      <div
+                        key={index}
+                        className="search-item"
+                      >
+                        🏷️ {brand.name}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+
+              {/* ORDERS */}
+              {searchResults.orders?.length > 0 && (
+                <div className="search-section">
+                  <h4>Orders</h4>
+
+                  {searchResults.orders.map(
+                    (order, index) => (
+                      <div
+                        key={index}
+                        className="search-item"
+                      >
+                        🧾 Order ID: {order.id}
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+
+              {/* EMPTY */}
+              {searchResults.users?.length === 0 &&
+                searchResults.products?.length === 0 &&
+                searchResults.orders?.length === 0 &&
+                searchResults.brands?.length === 0 && (
+                  <div className="empty-search">
+                    No Results Found
+                  </div>
+                )}
+            </div>
+          )}
+        </div>
+
+        {/* RIGHT SIDE */}
+        <div className="header-right">
+          <button className="header-icon">
+            <FaMoon />
+          </button>
+
+          <button className="header-icon notification">
+            <FaBell />
+            <span className="dot"></span>
+          </button>
+
+          <div className="profile-box">
+            <img
+              src="https://i.pravatar.cc/100"
+              alt="profile"
+            />
+            <span>Musharof</span>
+          </div>
+        </div>
+      </header>
+
+      {/* DASHBOARD CARDS */}
+      <div className="dashboard-cards">
         <div className="dashboard-card">
           <h2>Total Users</h2>
           <p>{stats.totalUsers}</p>
@@ -160,11 +422,10 @@ function AdminDashboard() {
           <h2>High Stock Products</h2>
           <p>{stats.TotalHighStockProducts}</p>
         </div>
-
       </div>
-
     </div>
-  );
+  </div>
+);
 }
 
 export default AdminDashboard;
