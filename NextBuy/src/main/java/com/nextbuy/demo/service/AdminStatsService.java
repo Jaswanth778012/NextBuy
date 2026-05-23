@@ -53,6 +53,8 @@ public class AdminStatsService {
 	  long pendingOrders = orderRepo.countByStatus(OrderStatus.PENDING);
 	  long totalLowP = productRepo.findAll().stream().filter(p->p.getStockQuantity()<100).count();
 	  long totalHighP= productRepo.findAll().stream().filter(p->p.getStockQuantity()>100).count();
+	  long totalShipped = orderRepo.countByStatus(OrderStatus.SHIPPED);
+	  long totalReturns = orderRepo.countByStatus(OrderStatus.RETURNED);
 	  MonthlyStatsDTO  msd = new MonthlyStatsDTO ();
 	  msd.setTotalUsers(totalUsers);
 	  msd.setTotalProducts(totalProducts);
@@ -62,6 +64,8 @@ public class AdminStatsService {
 	  msd.setPendingOrders(pendingOrders);
 	  msd.setTotallowStockProducts(totalLowP);
 	  msd.setTotalHighStockProducts(totalHighP);
+	  msd.setShippedOrdes(totalShipped);
+	  msd.setReturnOrders(totalReturns);
 	 return msd;
 	}
 	
@@ -117,7 +121,9 @@ public class AdminStatsService {
 	 	                order.getStatus() == OrderStatus.DELIVERED)
 	 	        .mapToDouble(Order::getFinalPrice)
 	 	        .sum();
-	 	
+	    long totalShipped = stats.stream().filter(o->o.getStatus()==OrderStatus.SHIPPED).count();
+	              
+	    long totalreturneds = stats.stream().filter(o->o.getStatus()==OrderStatus.RETURNED).count();
 	Double MonthlyRevanue= orderRepo.findByMonthAndYear(month, year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED)
 	   .mapToDouble(Order::getFinalPrice).sum();
 	
@@ -137,6 +143,8 @@ public class AdminStatsService {
 	  msd.setPendingOrders(pendingOrders);
 	  msd.setMonthlyRevanue(MonthlyRevanue);
 	  msd.setYearlyRevanue(yearlyRevanue);
+	  msd.setShippedOrdes(totalShipped);
+	  msd.setReturnOrders(totalreturneds);
 	  return msd;
 	}
    public  MonthlyStatsDTO getYearlyStats(int year) {
@@ -145,6 +153,8 @@ public class AdminStatsService {
 	 	double yearlyRevanue = orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED).mapToDouble(Order::getFinalPrice).sum();
 	 	 long deliveredOrders= orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED).count();
 		  long cancelledOrders=orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.CANCELLED).count();
+		  long returnedOrders=orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.RETURNED).count();
+		  long ShippedOrders=orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.SHIPPED).count();
 		  double totalRevanue = orderRepo.findAll()
 		 	        .stream()
 		 	        .filter(order ->
@@ -160,6 +170,8 @@ public class AdminStatsService {
 		  msd.setCancelledOrders(cancelledOrders);
 		  msd.setPendingOrders(pendingOrders);
 		  msd.setYearlyRevanue(yearlyRevanue);
+		  msd.setShippedOrdes(ShippedOrders);
+		  msd.setReturnOrders(returnedOrders);
 		  return msd;
    }
    public List<TopSellingProductDTO> lowStockProducts(){
