@@ -39,4 +39,6 @@ public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpe
 		       """)
 		List<Product> findByCategoryNameLike(
 		        @Param("name") String name);
+	 
+	 List<Product> findByNameContainingIgnoreCase(String keyword);
 }

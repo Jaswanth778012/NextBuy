@@ -46,5 +46,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	    List<Order> findByYear(@Param("year") int year);
 	 
 	 long countByStatus(OrderStatus status);
+	 
+	 
+	 List<Order> findByOrderNumberContainingIgnoreCase(String keyword);
 }
 
