@@ -79,7 +79,7 @@ function LoginForm({ setShowForgot }) {
     <>
 
       <h2 className="login-title">
-           Shop Smarter With NextBuy
+           Shop Smarter With NextMart
       </h2>
 
       <p className="login-subtext">

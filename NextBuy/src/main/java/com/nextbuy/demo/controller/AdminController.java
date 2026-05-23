@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextbuy.demo.dto.AdminGlobalSearchResponse;
 import com.nextbuy.demo.dto.AdminUserResponceDto;
 import com.nextbuy.demo.dto.BroadcastEmailRequest;
 import com.nextbuy.demo.dto.BroadcastNotificationRequest;
-import com.nextbuy.demo.dto.SystemNotificationResponse;
+import com.nextbuy.demo.service.AdminSearchService;
 import com.nextbuy.demo.service.AdminService;
 import com.nextbuy.demo.service.BroadcastService;
 
@@ -29,13 +30,15 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/Admin")
 public class AdminController {
-	AdminService adminService;
-	BroadcastService broadcastService;
+	private AdminService adminService;
+	private BroadcastService broadcastService;
+	private  AdminSearchService adminSearchService;
 	
-  public AdminController(AdminService adminService, BroadcastService broadcastService) {
+  public AdminController(AdminService adminService, BroadcastService broadcastService, AdminSearchService adminSearchService) {
 		
 		this.adminService = adminService;
 		this.broadcastService = broadcastService;
+		this.adminSearchService = adminSearchService;
 	}
 
 
@@ -69,6 +72,15 @@ public class AdminController {
   public String updateAdmin(@PathVariable String username,@PathVariable String password,@RequestParam String newPass){
 	  return adminService.adminUpdate(username, password, newPass);
 	  
+  }
+  
+  @GetMapping("/globalSearch")
+  public ResponseEntity<AdminGlobalSearchResponse> search(
+          @RequestParam String keyword) {
+
+      return ResponseEntity.ok(
+              adminSearchService.search(keyword)
+      );
   }
   
   // Notifications
