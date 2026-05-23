@@ -31,7 +31,12 @@ function AdminDashboard() {
 
   const navigate = useNavigate();
 
-  // STATE
+  const token = localStorage.getItem("token");
+
+  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState("");
+
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalProducts: 0,
@@ -45,34 +50,36 @@ function AdminDashboard() {
     TotalHighStockProducts: 0
   });
 
-  // FETCH STATS
-  useEffect(() => {
-  if (!token) {
-    navigate("/login");
-  }
-}, [token, navigate]);
-
   const fetchStats = async () => {
-
     try {
+      setLoading(true);
 
-      const response =
-        await getTotalStats();
+      const response = await getTotalStats();
 
-      console.log(response.data);
+      console.log("Stats Response:", response);
 
       setStats(response.data);
 
-    } catch (error) {
+      setError("");
+    } catch (err) {
+      console.error(err);
 
-      console.log(error);
-
+      setError(
+        "Failed to load dashboard statistics"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ===============================
-  // STATES
-  // ===============================
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    fetchStats();
+  }, [token, navigate]);
 
   const [sidebarOpen, setSidebarOpen] =
     useState(true);
@@ -88,12 +95,7 @@ function AdminDashboard() {
   const searchTimeoutRef =
     useRef(null);
 
-  // ===============================
-  // TOKEN
-  // ===============================
 
-  const token =
-    localStorage.getItem("token");
 
   // ===============================
   // LOGOUT
@@ -195,6 +197,22 @@ function AdminDashboard() {
     };
 
   }, []);
+
+  if (loading) {
+  return (
+    <div className="admin-layout">
+      <h2>Loading Dashboard...</h2>
+    </div>
+  );
+}
+
+if (error) {
+  return (
+    <div className="admin-layout">
+      <h2>{error}</h2>
+    </div>
+  );
+}
 
  return (
   <div className="admin-layout">
