@@ -25,8 +25,6 @@ function AdminHeader({
             value={searchKeyword}
             onChange={handleGlobalSearch}
           />
-
-          <span className="shortcut">⌘ K</span> 
         </div>
 
         <SearchDropdown
