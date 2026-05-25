@@ -46,9 +46,9 @@ public class AdminStatsController {
 	   return adminStatsService.lowStockProducts();
 	   
    }
-   @GetMapping("/highStockProducts")
+   @GetMapping("/limitedStockProducts")
    public List<TopSellingProductDTO> HighStockProducts(){
-	   return adminStatsService.HighStockProducts();
+	   return adminStatsService.LimitedStockProducts();
 	   
    }
    @GetMapping("/getCategoryStats")
