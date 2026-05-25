@@ -50,6 +50,23 @@ function AdminDashboard() {
     TotalHighStockProducts: 0,
   });
 
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("adminTheme");
+    if (savedTheme === "dark" || savedTheme === "light") {
+      setTheme(savedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("adminTheme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((current) => (current === "light" ? "dark" : "light"));
+  };
+
   const fetchStats = async () => {
     try {
       setLoading(true);
@@ -160,7 +177,7 @@ const fetchTopProducts = async () => {
   }
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout ${theme === "dark" ? "dark-mode" : ""}`}>
       <AdminSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
@@ -174,6 +191,8 @@ const fetchTopProducts = async () => {
           searchResults={searchResults}
           setSelectedResult={setSelectedResult}
           setSelectedType={setSelectedType}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
 
         <DashboardCards stats={stats} />

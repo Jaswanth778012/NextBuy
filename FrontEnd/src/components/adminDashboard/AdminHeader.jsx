@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FaSearch, FaBell, FaMoon } from "react-icons/fa";
+import { FaSearch, FaBell, FaMoon, FaSun } from "react-icons/fa";
 
 import SearchDropdown from "./SearchDropdown";
 
@@ -10,6 +10,8 @@ function AdminHeader({
   searchResults,
   setSelectedResult,
   setSelectedType,
+  theme,
+  toggleTheme,
 }) {
   return (
     <header className="admin-header">
@@ -24,7 +26,7 @@ function AdminHeader({
             onChange={handleGlobalSearch}
           />
 
-          <span className="shortcut">⌘ K</span>
+          <span className="shortcut">⌘ K</span> 
         </div>
 
         <SearchDropdown
@@ -35,8 +37,12 @@ function AdminHeader({
       </div>
 
       <div className="header-right">
-        <button className="header-icon">
-          <FaMoon />
+        <button
+          className="header-icon theme-toggle"
+          onClick={toggleTheme}
+          aria-label="Toggle dark mode"
+        >
+          {theme === "light" ? <FaMoon /> : <FaSun />}
         </button>
 
         <button className="header-icon notification">
