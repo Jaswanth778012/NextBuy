@@ -238,18 +238,18 @@ public class AdminStatsService {
     	LocalDate now = LocalDate.now();
     	int year = now.getYear();
     	ArrayList<String> months = new ArrayList<>();
-    	 months.add("January");
-    	 months.add("February");
-    	 months.add("March");
-    	 months.add("April");
+    	 months.add("Jan");
+    	 months.add("Feb");
+    	 months.add("Mar");
+    	 months.add("Apr");
     	 months.add("May");
     	 months.add("Jun");
-    	 months.add("July");
-    	 months.add("August");
-    	 months.add("September");
-    	 months.add("October");
-    	 months.add("November");
-    	 months.add("December");
+    	 months.add("Jul");
+    	 months.add("Aug");
+    	 months.add("Sep");
+    	 months.add("Oct");
+    	 months.add("Nov");
+    	 months.add("Dec");
     	 
     List<MonthlyOrderCountDTO> list = new ArrayList<>();
      for(int i = 1; i <= 12; i++) {
