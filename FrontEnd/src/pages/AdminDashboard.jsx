@@ -8,6 +8,8 @@ import AdminSidebar from "../components/adminDashboard/AdminSidebar";
 import AdminHeader from "../components/adminDashboard/AdminHeader";
 import DashboardCards from "../components/adminDashboard/DashboardCards";
 import SearchResultModal from "../components/adminDashboard/SearchResultModal";
+import MonthlyOrdersChart
+from "../components/adminDashboard/MonthlyOrdersChart";
 
 import "../styles/AdminDashboard.css";
 
@@ -153,7 +155,7 @@ function AdminDashboard() {
         />
 
         <DashboardCards stats={stats} />
-
+         <MonthlyOrdersChart />
         <SearchResultModal
         selectedResult={selectedResult}
         selectedType={selectedType}
