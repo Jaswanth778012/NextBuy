@@ -21,18 +21,13 @@ const COLORS = [
   "#EC4899",
   "#14B8A6",
   "#F97316",
-  "#6366F1",
-  "#06B6D4",
-  "#F43F5E"
+  "#6366F1"
 ];
 
 function CategorySalesPieChart() {
 
   const [chartData, setChartData] =
     useState([]);
-
-  const [showAll, setShowAll] =
-    useState(false);
 
   useEffect(() => {
 
@@ -48,7 +43,50 @@ function CategorySalesPieChart() {
         const response =
           await getCategoryStats();
 
-        setChartData(response.data);
+        const data =
+          response.data;
+
+        // SORT HIGH TO LOW
+
+        const sortedData =
+          [...data].sort(
+            (a, b) =>
+              b.totalSold - a.totalSold
+          );
+
+        // TOP 5
+
+        const topFive =
+          sortedData.slice(0, 5);
+
+        // REMAINING
+
+        const remaining =
+          sortedData.slice(5);
+
+        // OTHERS TOTAL
+
+        const othersTotal =
+          remaining.reduce(
+            (sum, item) =>
+              sum + item.totalSold,
+            0
+          );
+
+        // FINAL DATA
+
+        const finalData =
+          othersTotal > 0
+          ? [
+              ...topFive,
+              {
+                categoryName: "Others",
+                totalSold: othersTotal
+              }
+            ]
+          : topFive;
+
+        setChartData(finalData);
 
       } catch (error) {
 
@@ -56,13 +94,6 @@ function CategorySalesPieChart() {
 
       }
     };
-
-  // SHOW ONLY 5 INITIALLY
-
-  const visibleCategories =
-    showAll
-    ? chartData
-    : chartData.slice(0, 5);
 
   return (
 
@@ -77,16 +108,16 @@ function CategorySalesPieChart() {
         </h2>
 
         <p className="chart-subtitle">
-          Product sales overview
+          Top selling categories
         </p>
 
       </div>
 
-      {/* PIE + CATEGORYS */}
+      {/* CONTENT */}
 
       <div className="pie-layout">
 
-        {/* PIE CHART */}
+        {/* PIE GRAPH */}
 
         <div className="pie-graph">
 
@@ -103,23 +134,25 @@ function CategorySalesPieChart() {
                 nameKey="categoryName"
                 cx="50%"
                 cy="50%"
-                outerRadius={75}
+                outerRadius={78}
                 innerRadius={42}
                 paddingAngle={3}
               >
 
-                {chartData.map((entry, index) => (
+                {chartData.map(
+                  (entry, index) => (
 
-                  <Cell
-                    key={index}
-                    fill={
-                      COLORS[
-                        index % COLORS.length
-                      ]
-                    }
-                  />
+                    <Cell
+                      key={index}
+                      fill={
+                        COLORS[
+                          index % COLORS.length
+                        ]
+                      }
+                    />
 
-                ))}
+                  )
+                )}
 
               </Pie>
 
@@ -135,60 +168,43 @@ function CategorySalesPieChart() {
 
         <div className="category-list">
 
-          {visibleCategories.map((item, index) => (
+          {chartData.map(
+            (item, index) => (
 
-            <div
-              className="category-row"
-              key={index}
-            >
+              <div
+                className="category-row"
+                key={index}
+              >
 
-              <div className="category-left">
+                <div className="category-left">
 
-                <span
-                  className="category-dot"
-                  style={{
-                    background:
-                    COLORS[
-                      index % COLORS.length
-                    ]
-                  }}
-                />
+                  <span
+                    className="category-dot"
+                    style={{
+                      background:
+                      COLORS[
+                        index % COLORS.length
+                      ]
+                    }}
+                  />
 
-                <span className="category-text">
+                  <span className="category-text">
 
-                  {item.categoryName}
+                    {item.categoryName}
+
+                  </span>
+
+                </div>
+
+                <span className="category-count">
+
+                  {item.totalSold}
 
                 </span>
 
               </div>
 
-              <span className="category-count">
-
-                {item.totalSold}
-
-              </span>
-
-            </div>
-
-          ))}
-
-          {/* MORE BUTTON */}
-
-          {chartData.length > 5 && (
-
-            <button
-              className="more-btn"
-              onClick={() =>
-                setShowAll(!showAll)
-              }
-            >
-
-              {showAll
-                ? "Show Less"
-                : "More"}
-
-            </button>
-
+            )
           )}
 
         </div>
