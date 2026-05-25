@@ -30,3 +30,13 @@ export const getMonthlyOrderCount =
       "/AdminStats/monthlyOrderCount"
     );
 };
+
+// TOP SELLING PRODUCTS
+
+export const getTopSellingProducts = 
+  async () => {
+
+      return await API.get(
+        "/AdminStats/getTopSellingProducts"
+      );
+  };

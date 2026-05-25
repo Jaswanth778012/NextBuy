@@ -8,8 +8,8 @@ import AdminSidebar from "../components/adminDashboard/AdminSidebar";
 import AdminHeader from "../components/adminDashboard/AdminHeader";
 import DashboardCards from "../components/adminDashboard/DashboardCards";
 import SearchResultModal from "../components/adminDashboard/SearchResultModal";
-import MonthlyOrdersChart
-from "../components/adminDashboard/MonthlyOrdersChart";
+import MonthlyOrdersChart from "../components/adminDashboard/MonthlyOrdersChart";
+import TopSellingProductsTable from "../components/adminDashboard/TopSellingProductsTable";
 
 import "../styles/AdminDashboard.css";
 
@@ -29,6 +29,8 @@ function AdminDashboard() {
   const [selectedResult, setSelectedResult] = useState(null);
 
   const [selectedType, setSelectedType] = useState("");
+
+  const [topProducts, setTopProducts] = useState([]);
 
   const searchTimeoutRef = useRef(null);
 
@@ -63,6 +65,20 @@ function AdminDashboard() {
     }
   };
 
+  const fetchTopProducts = async () => {
+  try {
+    const response = await getTopSellingProducts();
+
+    const top5 = response.data
+      .sort((a, b) => b.totalSold - a.totalSold)
+      .slice(0, 5);
+
+    setTopProducts(top5);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -70,6 +86,7 @@ function AdminDashboard() {
     }
 
     fetchStats();
+    fetchTopProducts();
   }, [token, navigate]);
 
   // LOGOUT
@@ -156,6 +173,10 @@ function AdminDashboard() {
 
         <DashboardCards stats={stats} />
          <MonthlyOrdersChart />
+
+         <TopSellingProductsTable
+  products={topProducts} />
+  
         <SearchResultModal
         selectedResult={selectedResult}
         selectedType={selectedType}
