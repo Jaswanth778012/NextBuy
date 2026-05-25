@@ -22,6 +22,7 @@ function LoginForm({ setShowForgot }) {
 
   const [username, setUsername] =
     useState("");
+    const [loading, setLoading] = useState(false);
 
   const [password, setPassword] =
     useState("");
@@ -30,53 +31,42 @@ function LoginForm({ setShowForgot }) {
     useState(false);
 
   const handleLogin = async (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
+  setLoading(true); // ✅ START LOADING
 
-    try {
+  try {
+    const response = await loginUser({
+      username,
+      password,
+    });
 
-      const response = await loginUser({
-        username,
-        password,
-      });
+    const role = response.data.role;
 
-      const role = response.data.role;
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("role", role);
 
-      localStorage.setItem(
-        "token",
-        response.data.token
-      );
+    toast.success("Login Successful 🚀");
 
-      localStorage.setItem(
-        "role",
-        role
-      );
+    setTimeout(() => {
+      if (role === "ADMIN") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
+    }, 1200);
 
-      toast.success(
-        "Login Successful 🚀"
-      );
+  } catch (error) {
+    toast.error("Invalid Credentials");
 
-      setTimeout(() => {
-
-        if (role === "ADMIN") {
-
-          navigate("/admin/dashboard");
-
-        } else {
-
-          navigate("/");
-        }
-
-      }, 1200);
-
-    } catch (error) {
-
-      toast.error("Invalid Credentials");
-    }
-  };
+  } finally {
+    setLoading(false); // ✅ STOP LOADING
+  }
+};
 
   return (
     <>
+      
 
       <h2 className="login-title">
            Shop Smarter With NextMart
@@ -135,11 +125,19 @@ function LoginForm({ setShowForgot }) {
         </div>
 
         <button
-          className="login-btn"
-          type="submit"
-        >
-          Login →
-        </button>
+  className="login-btn"
+  type="submit"
+  disabled={loading}
+>
+  {loading ? (
+    <>
+      <span className="login-spinner"></span>
+      Logging in...
+    </>
+  ) : (
+    "Login →"
+  )}
+</button>
         <div className="input-boxx">
            <GiThink className="input-iconn" />
         <button
