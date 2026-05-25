@@ -40,3 +40,13 @@ export const getTopSellingProducts =
         "/AdminStats/getTopSellingProducts"
       );
   };
+
+
+  // CATEGORY SALES STATS
+export const getCategoryStats =
+  async () => {
+
+    return await API.get(
+      "/AdminStats/getCategoryStats"
+    );
+};

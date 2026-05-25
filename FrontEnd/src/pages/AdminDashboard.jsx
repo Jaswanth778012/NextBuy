@@ -13,6 +13,9 @@ import TopSellingProductsTable from "../components/adminDashboard/TopSellingProd
 
 import "../styles/AdminDashboard.css";
 
+import CategorySalesPieChart
+from "../components/adminDashboard/CategorySalesPieChart";
+
 function AdminDashboard() {
   const navigate = useNavigate();
 
@@ -172,7 +175,13 @@ function AdminDashboard() {
         />
 
         <DashboardCards stats={stats} />
-         <MonthlyOrdersChart />
+         <div className="charts-wrapper">
+
+  <MonthlyOrdersChart />
+
+  <CategorySalesPieChart />
+
+</div>
 
          <TopSellingProductsTable
   products={topProducts} />
