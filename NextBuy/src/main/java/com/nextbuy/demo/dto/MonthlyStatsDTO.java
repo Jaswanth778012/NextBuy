@@ -21,7 +21,7 @@ public class MonthlyStatsDTO {
 	 private Long shippedOrdes;
 	 private Long returnOrders;
 	  private Long TotallowStockProducts;
-	  private Long TotalHighStockProducts;
+	  private Long TotalLimitedStockProducts;
 	
 
 }

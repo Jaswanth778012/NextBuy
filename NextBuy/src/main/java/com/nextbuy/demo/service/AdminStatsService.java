@@ -51,8 +51,8 @@ public class AdminStatsService {
 	  long deliveredOrders = orderRepo.countByStatus(OrderStatus.DELIVERED);
 	  long cancelledOrders = orderRepo.countByStatus(OrderStatus.CANCELLED);
 	  long pendingOrders = orderRepo.countByStatus(OrderStatus.PENDING);
-	  long totalLowP = productRepo.findAll().stream().filter(p->p.getStockQuantity()<100).count();
-	  long totalHighP= productRepo.findAll().stream().filter(p->p.getStockQuantity()>100).count();
+	  long totalLowP = productRepo.findAll().stream().filter(p->p.getStockQuantity()<=50).count();
+	  long totalHighP= productRepo.findAll().stream().filter(p->p.getStockQuantity()<100 && p.getStockQuantity()>50).count();
 	  long totalShipped = orderRepo.countByStatus(OrderStatus.SHIPPED);
 	  long totalReturns = orderRepo.countByStatus(OrderStatus.RETURNED);
 	  MonthlyStatsDTO  msd = new MonthlyStatsDTO ();
@@ -63,7 +63,7 @@ public class AdminStatsService {
 	  msd.setCancelledOrders(cancelledOrders);
 	  msd.setPendingOrders(pendingOrders);
 	  msd.setTotallowStockProducts(totalLowP);
-	  msd.setTotalHighStockProducts(totalHighP);
+	  msd.setTotalLimitedStockProducts(totalHighP);
 	  msd.setShippedOrdes(totalShipped);
 	  msd.setReturnOrders(totalReturns);
 	 return msd;
@@ -90,13 +90,12 @@ public class AdminStatsService {
 
 	        dto.setProductName(product.getName());
             dto.setCategory(product.getCategory());
-            if(product.getSubCategory() != null){
-
+            
                 dto.setSubCategory(
-                    product.getSubCategory().getName()
+                    product.getSubCategory()
                 );
 
-            }
+            
             dto.setImg(product.getImageUrl());
 	        dto.setTotalSold(totalSold);
             
@@ -177,14 +176,14 @@ public class AdminStatsService {
    public List<TopSellingProductDTO> lowStockProducts(){
 	   List<Product> product = productRepo.findAll();
 	   return product.stream()
-			   .filter(p->p.getStockQuantity()<100)
+			   .filter(p->p.getStockQuantity()<=50)
                .map(this::mapToResponceDto)
                .toList();
    }
-   public List<TopSellingProductDTO> HighStockProducts(){
+   public List<TopSellingProductDTO> LimitedStockProducts(){
 	   List<Product> product = productRepo.findAll();
 	   return product.stream()
-			   .filter(p->p.getStockQuantity()>100)
+			   .filter(p->p.getStockQuantity()<100 && p.getStockQuantity()>50)
                .map(this::mapToResponceDto)
                .toList();
    }
@@ -195,6 +194,7 @@ public class AdminStatsService {
 	   t.setProductName(product.getName());
 	   t.setImg(product.getImageUrl());
 	   t.setCategory(product.getCategory());
+	   t.setSubCategory(product.getSubCategory());
 	   t.setStockQuantity(product.getStockQuantity());
 	   return t;
 	   
