@@ -1668,9 +1668,9 @@
 
     flex: 2;
 
-    min-width: 520px;
+    min-width: 480px;
     
-    height: 390px;
+    height: 340px;
 }
 
 /* =========================
@@ -1681,9 +1681,9 @@
 
     flex: 1;
     
-    min-width: 360px;
+    min-width: 480px;
     margin-top: 1.5%;
-    height: 390px;
+    height: 340px;
 }
 
 /* =========================
@@ -1737,13 +1737,13 @@
 
 .chart-title{
 
-    font-size: 30px;
+    font-size: 22px;
 
     font-weight: 800;
 
     color: #1e293b;
 
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 /* =========================
