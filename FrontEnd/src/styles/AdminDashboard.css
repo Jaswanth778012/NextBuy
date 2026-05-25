@@ -1327,7 +1327,7 @@
     max-width: 680px;
 
     padding: 16px 18px;
-
+    
     margin-top: 20px;
 
     border-radius: 20px;
@@ -1351,7 +1351,7 @@
 /* HOVER */
 
 .chart-container:hover{
-
+    
     transform: translateY(-2px);
 
     box-shadow:
@@ -1361,7 +1361,7 @@
 /* HEADER */
 
 .chart-header{
-
+   padding-top: 20px;
     margin-bottom: 8px;
 }
 
@@ -1528,24 +1528,7 @@
 
 
 
-/* =========================
-   CHARTS WRAPPER
-========================= */
 
-.charts-wrapper{
-
-    display: flex;
-
-    align-items: stretch;
-
-    gap: 20px;
-
-    margin-top: 25px;
-
-    width: 100%;
-
-    flex-wrap: wrap;
-}
 
 /* =========================
    CHARTS SECTION
@@ -1634,9 +1617,9 @@
 .pie-chart-container{
 
     flex: 1;
-
+    
     min-width: 360px;
-    margin-top: 2%;
+    margin-top: 1.5%;
     height: 390px;
 }
 
@@ -1718,16 +1701,13 @@
 ========================= */
 
 .pie-layout{
-
     display: flex;
-
-    align-items: center;
-
+    align-items: stretch;
     justify-content: space-between;
-
     gap: 18px;
+    height: calc(100% - 90px);
 
-    height: calc(100% - 70px);
+    overflow: hidden;   /* IMPORTANT */
 }
 
 /* =========================
@@ -1752,18 +1732,20 @@
 ========================= */
 
 .category-list{
-
     width: 52%;
-
+    margin-top: 1px;
     display: flex;
-
     flex-direction: column;
-
     gap: 12px;
 
+    max-height: 100%;      /* IMPORTANT */
     overflow-y: auto;
-
+    
     padding-right: 6px;
+}
+.pie-graph,
+.category-list{
+    min-height: 0;   /* CRITICAL FIX for flex overflow */
 }
 
 /* =========================
@@ -1902,4 +1884,13 @@
 
         width: 100%;
     }
+}
+
+.category-row{
+    height: 52px;
+    box-sizing: border-box;
+}
+.category-list{
+    max-height: 208px;
+    overflow-y: auto;
 }
