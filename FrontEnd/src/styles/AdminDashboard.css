@@ -742,6 +742,206 @@
   color: #1e293b;
 }
 
+/* =========================
+   LOADING & ERROR SCREEN
+========================= */
+
+.dashboard-status-card {
+
+  width: 420px;
+
+  padding: 40px 30px;
+
+  margin: auto;
+
+  text-align: center;
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(25px);
+
+  -webkit-backdrop-filter: blur(25px);
+
+  border:
+    1px solid rgba(255,255,255,0.35);
+
+  box-shadow:
+    0 20px 45px rgba(31,38,135,0.15);
+
+  animation:
+    fadeUp 0.4s ease;
+}
+
+.dashboard-status-card h2 {
+
+  font-size: 26px;
+
+  font-weight: 700;
+
+  color: #1e293b;
+
+  margin-bottom: 10px;
+}
+
+.dashboard-status-card p {
+
+  color: #64748b;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.dashboard-loader {
+
+  width: 70px;
+
+  height: 70px;
+
+  margin: 0 auto 25px;
+
+  border-radius: 50%;
+
+  border: 5px solid rgba(59,130,246,0.15);
+
+  border-top: 5px solid #3b82f6;
+
+  border-right: 5px solid #8b5cf6;
+
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   ERROR CARD
+========================= */
+
+.error-card {
+
+  background:
+    rgba(255,255,255,0.22);
+}
+
+.error-icon {
+
+  font-size: 60px;
+
+  margin-bottom: 15px;
+}
+
+.retry-btn {
+
+  margin-top: 20px;
+
+  padding: 12px 24px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #8b5cf6
+    );
+
+  transition: 0.3s ease;
+}
+
+.retry-btn:hover {
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 12px 25px rgba(59,130,246,0.25);
+}
+
+/* =========================
+   DARK MODE SUPPORT
+========================= */
+
+.admin-layout.dark-mode .dashboard-status-card {
+
+  background:
+    rgba(15,23,42,0.75);
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.35);
+}
+
+.admin-layout.dark-mode .dashboard-status-card h2 {
+
+  color: #f1f5f9;
+}
+
+.admin-layout.dark-mode .dashboard-status-card p {
+
+  color: #cbd5e1;
+}
+
+.admin-layout.dark-mode .retry-btn {
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
+}
+
+/* =========================
+   ENTRY ANIMATION
+========================= */
+
+@keyframes fadeUp {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(20px);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
 /* ===============================
    DASHBOARD CARDS
 ================================ */

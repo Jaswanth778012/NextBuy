@@ -161,20 +161,35 @@ const fetchTopProducts = async () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="admin-layout">
-        <h2>Loading Dashboard...</h2>
+  return (
+    <div className="admin-layout">
+      <div className="dashboard-status-card">
+        <div className="dashboard-loader"></div>
+        <h2>Loading Dashboard</h2>
+        <p>Fetching latest statistics...</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  if (error) {
-    return (
-      <div className="admin-layout">
-        <h2>{error}</h2>
+if (error) {
+  return (
+    <div className="admin-layout">
+      <div className="dashboard-status-card error-card">
+        <div className="error-icon">⚠️</div>
+        <h2>Failed to Load Statistics</h2>
+        <p>{error}</p>
+
+        <button
+          className="retry-btn"
+          onClick={fetchStats}
+        >
+          Retry
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className={`admin-layout ${theme === "dark" ? "dark-mode" : ""}`}>
