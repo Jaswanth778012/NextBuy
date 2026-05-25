@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getTotalStats } from "../services/AdminStatsService";
+import { getTotalStats, getTopSellingProducts } from "../services/AdminStatsService";
 import { globalSearch } from "../services/adminService";
 
 import AdminSidebar from "../components/adminDashboard/AdminSidebar";
@@ -68,15 +68,17 @@ function AdminDashboard() {
     }
   };
 
-  const fetchTopProducts = async () => {
+const fetchTopProducts = async () => {
   try {
     const response = await getTopSellingProducts();
 
-    const top5 = response.data
-      .sort((a, b) => b.totalSold - a.totalSold)
-      .slice(0, 5);
+    console.log("API DATA:", response.data);
 
-    setTopProducts(top5);
+    setTopProducts(
+      [...response.data]
+        .sort((a, b) => b.totalSold - a.totalSold)
+        .slice(0, 5)
+    );
   } catch (error) {
     console.error(error);
   }
@@ -185,7 +187,7 @@ function AdminDashboard() {
 
          <TopSellingProductsTable
   products={topProducts} />
-  
+
         <SearchResultModal
         selectedResult={selectedResult}
         selectedType={selectedType}
