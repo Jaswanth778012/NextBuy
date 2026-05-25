@@ -22,6 +22,94 @@
 }
 
 /* ===============================
+   ADMIN LAYOUT - DARK MODE
+================================ */
+
+.admin-layout.dark-mode {
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1e293b,
+      #111827
+    );
+}
+
+.admin-layout.dark-mode .admin-sidebar,
+.admin-layout.dark-mode .admin-header,
+.admin-layout.dark-mode .dashboard-card,
+.admin-layout.dark-mode .profile-box,
+.admin-layout.dark-mode .search-box,
+.admin-layout.dark-mode .search-results,
+.admin-layout.dark-mode .header-icon {
+  background: rgba(15, 23, 42, 0.88);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+.admin-layout.dark-mode .admin-sidebar {
+  border-right: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.admin-layout.dark-mode .admin-header {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.admin-layout.dark-mode .search-box {
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.admin-layout.dark-mode .search-box input,
+.admin-layout.dark-mode .search-results,
+.admin-layout.dark-mode .profile-box span,
+.admin-layout.dark-mode .dashboard-card h2,
+.admin-layout.dark-mode .search-section h4,
+.admin-layout.dark-mode .search-item,
+.admin-layout.dark-mode .shortcut,
+.admin-layout.dark-mode .header-icon,
+.admin-layout.dark-mode .profile-box {
+  color: #e2e8f0;
+}
+
+.admin-layout.dark-mode .search-results {
+  background: rgba(15, 23, 42, 0.92);
+}
+
+.admin-layout.dark-mode .search-item:hover {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+.admin-layout.dark-mode .profile-box {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.admin-layout.dark-mode .dot {
+  background: #f59e0b;
+}
+
+.admin-layout.dark-mode .sidebar-logo h2,
+.admin-layout.dark-mode .nav-item,
+.admin-layout.dark-mode .dashboard-card p {
+  color: #e2e8f0;
+}
+
+.admin-layout.dark-mode .nav-item {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.admin-layout.dark-mode .nav-item:hover,
+.admin-layout.dark-mode .nav-item.active {
+  background: linear-gradient(135deg, #2563eb, #8b5cf6);
+  color: #fff;
+}
+
+.admin-layout.dark-mode .logout-nav:hover {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.22);
+}
+
+/* ===============================
    SIDEBAR
 ================================ */
 
@@ -203,6 +291,13 @@
 .logout-nav {
 
   margin-top: 20px;
+}
+
+.logout-nav:hover {
+  transform: translateX(5px);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.22);
 }
 
 /* ===============================
@@ -735,6 +830,7 @@
       #8b5cf6
     );
 
+  background-clip: text;
   -webkit-background-clip: text;
 
   -webkit-text-fill-color: transparent;

@@ -20,7 +20,6 @@ function TopSellingProductsTable({ products = [] }) {
               <th>Total Sold</th>
               <th>Category</th>
               <th>Sub Category</th>
-              <th>Stock</th>
             </tr>
           </thead>
 
@@ -68,10 +67,6 @@ function TopSellingProductsTable({ products = [] }) {
 
                   <td>
                     {product.subCategory?.name || "-"}
-                  </td>
-
-                  <td>
-                    {product.stockQuantity ?? "N/A"}
                   </td>
                 </tr>
               ))
