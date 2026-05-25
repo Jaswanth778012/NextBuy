@@ -1139,6 +1139,21 @@
 
   max-height: 520px;
 
+  overflow-y: auto;
+
+  border-radius: 20px;
+
+  padding: 0px;
+
+  background:
+    rgba(255,255,255,0.12);
+
+  backdrop-filter: blur(18px);
+}
+
+.table-wrap {
+   max-height: 520px;
+
   overflow-y: hidden;
 
   border-radius: 20px;

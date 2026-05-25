@@ -11,7 +11,7 @@ function TopSellingProductsTable({ products = [] }) {
         </div>
       </div>
 
-      <div className="table-wrapper">
+      <div className="table-wrap">
         <table className="product-table">
           <thead>
             <tr>
