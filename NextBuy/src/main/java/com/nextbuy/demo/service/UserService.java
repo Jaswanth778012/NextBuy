@@ -52,8 +52,8 @@ public class UserService {
 		   return "Successfully Saved !!";
 	}
 	//deleteProfile
-	public String deleteProfile(String userName,String username,String oldpassword) {
-		      Optional<User> u = userRepo.findByUsername(userName);
+	public String deleteProfile(String username,String oldpassword) {
+		      Optional<User> u = userRepo.findByUsername(username);
 		      if(u.isEmpty()) {
 		    	  return "User not Found !!";
 		      }

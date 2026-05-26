@@ -56,10 +56,10 @@ public class UserController {
 		   return userService.updateProfile(username, userDTO);
 	   }
      @DeleteMapping("/deleteProfile/{username}/{oldpassword}")
-     public String deleteProfile(HttpServletRequest request,@PathVariable String username,@PathVariable String oldpassword) {
-    	 String token = request.getHeader("Authorization").substring(7);
-    	 String userName = jwtService.extractUsername(token);
-    	 return userService.deleteProfile(userName, username, oldpassword);
+     public String deleteProfile(@PathVariable String username,@PathVariable String oldpassword) {
+    	
+    	
+    	 return userService.deleteProfile(username, oldpassword);
     	
      }
      @PatchMapping("/passwordUpdated/{oldpassword}/{newpassword}/{Confirm}")
