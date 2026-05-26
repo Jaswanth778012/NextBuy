@@ -50,3 +50,12 @@ export const getCategoryStats =
       "/AdminStats/getCategoryStats"
     );
 };
+
+// GET SUB CATEGORY STATS
+export const getSubCategoryStats =
+  async (categoryId) => {
+
+    return await API.get(
+      `/AdminStats/getSubCatagoryStats/${categoryId}`
+    );
+};
