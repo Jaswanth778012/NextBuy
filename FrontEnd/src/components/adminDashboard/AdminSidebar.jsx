@@ -23,7 +23,7 @@ function AdminSidebar({
       </div>
 
       <div className="sidebar-logo">
-        <h2>{sidebarOpen ? "NextBuy" : "NB"}</h2>
+        <h2>{sidebarOpen ? "NestBuy" : "NB"}</h2>
       </div>
 
       <nav className="sidebar-nav">

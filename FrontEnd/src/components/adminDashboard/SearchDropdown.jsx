@@ -4,6 +4,8 @@ function SearchDropdown({
   searchResults,
   setSelectedResult,
   setSelectedType,
+  setSearchResults,
+  setSearchKeyword,
 }) {
   if (!searchResults) return null;
 
@@ -21,6 +23,8 @@ function SearchDropdown({
               onClick={() => {
                 setSelectedResult(user);
                 setSelectedType("user");
+                setSearchResults(null);
+                setSearchKeyword("");
               }}
             >
               👤 {user.username}
@@ -41,6 +45,8 @@ function SearchDropdown({
               onClick={() => {
                 setSelectedResult(product);
                 setSelectedType("product");
+                setSearchResults(null);
+                setSearchKeyword("");
               }}
             >
               📦 {product.name}
@@ -61,6 +67,8 @@ function SearchDropdown({
               onClick={() => {
                 setSelectedResult(brand);
                 setSelectedType("brand");
+                setSearchResults(null);
+                setSearchKeyword("");
               }}
             >
               🏷️ {brand.name}
@@ -81,6 +89,8 @@ function SearchDropdown({
               onClick={() => {
                 setSelectedResult(order);
                 setSelectedType("order");
+                setSearchResults(null);
+                setSearchKeyword("");
               }}
             >
               🧾 {order.orderNumber}
@@ -101,6 +111,8 @@ function SearchDropdown({
               onClick={() => {
                 setSelectedResult(category);
                 setSelectedType("category");
+                setSearchResults(null);
+                setSearchKeyword("");
               }}
             >
               📂 {category.name}
@@ -121,6 +133,8 @@ function SearchDropdown({
               onClick={() => {
                 setSelectedResult(subCategory);
                 setSelectedType("subCategory");
+                setSearchResults(null);
+                setSearchKeyword("");
               }}
             >
               🗂️ {subCategory.name}
@@ -136,9 +150,7 @@ function SearchDropdown({
         searchResults.brands?.length === 0 &&
         searchResults.categories?.length === 0 &&
         searchResults.subCategories?.length === 0 && (
-          <div className="empty-search">
-            No Results Found
-          </div>
+          <div className="empty-search">No Results Found</div>
         )}
     </div>
   );

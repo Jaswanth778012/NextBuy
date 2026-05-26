@@ -2,6 +2,7 @@ package com.nextbuy.demo.controller;
 
 
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import com.nextbuy.demo.dto.AdminGlobalSearchResponse;
 import com.nextbuy.demo.dto.AdminUserResponceDto;
 import com.nextbuy.demo.dto.BroadcastEmailRequest;
 import com.nextbuy.demo.dto.BroadcastNotificationRequest;
+import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.service.AdminSearchService;
 import com.nextbuy.demo.service.AdminService;
 import com.nextbuy.demo.service.BroadcastService;
@@ -56,9 +58,9 @@ public class AdminController {
 
   
   
-  @PatchMapping("/updateUser/{username}")
-  public String updateUser(@PathVariable String username ,@RequestParam String password) {
-      return  adminService.updateUser(username,password);
+  @PatchMapping("/updateUserPassword/{username}")
+  public String updateUserPassword(@PathVariable String username ,@RequestParam String password) {
+      return  adminService.updateUserPassword(username,password);
   }
 
   @DeleteMapping("/deleteUser")
@@ -70,7 +72,7 @@ public class AdminController {
   //AdminPasswordUpdate
   @PatchMapping("/adminUpdate/{username}/{password}")
   public String updateAdmin(@PathVariable String username,@PathVariable String password,@RequestParam String newPass){
-	  return adminService.adminUpdate(username, password, newPass);
+	  return adminService.UpdateAdminPassword(username, password, newPass);
 	  
   }
   
@@ -98,14 +100,24 @@ public class AdminController {
       return ResponseEntity.ok("Email sent to all registered users");
   }
 
- @PatchMapping("/addAdmin/{email}")
+ @PatchMapping("/makeUserToAdmin/{email}")
  public String addAdmin(@PathVariable String email,@RequestParam String username,@RequestParam String password) {
-	 return adminService.addAdmin(email, username, password);
+	 return adminService.makeUserToAdmin(email, username, password);
 	 
  }
  
  @DeleteMapping("/deleteAdmin/{username}/{password}")
  public String deleteAdmin(@PathVariable String username, @PathVariable String password) {
 	 return adminService.deleteAdmin(username, password);
+ }
+ @GetMapping("/profile")
+ public userProfileDTO profile(Principal principal) {
+	  String adminName = principal.getName();
+	  return adminService.profile(adminName);
+ }
+ @PatchMapping("editProfile")
+ public String EditProfile(Principal principal, userProfileDTO userDTO) {
+	 String adimin = principal.getName();
+	 return adminService.EditProfile(adimin, userDTO);
  }
 }
