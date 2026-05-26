@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getTotalStats, getTopSellingProducts } from "../services/AdminStatsService";
+import { useLocation } from "react-router-dom";
+
+import { toast } from "react-toastify";
+
+import {
+  getTotalStats,
+  getTopSellingProducts,
+} from "../services/AdminStatsService";
+
 import { globalSearch } from "../services/adminService";
 
 import AdminSidebar from "../components/adminDashboard/AdminSidebar";
@@ -13,11 +21,12 @@ import TopSellingProductsTable from "../components/adminDashboard/TopSellingProd
 
 import "../styles/AdminDashboard.css";
 
-import CategorySalesPieChart
-from "../components/adminDashboard/CategorySalesPieChart";
+import CategorySalesPieChart from "../components/adminDashboard/CategorySalesPieChart";
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const toastShown = useRef(false);
 
   const token = localStorage.getItem("token");
 
@@ -63,6 +72,19 @@ function AdminDashboard() {
     localStorage.setItem("adminTheme", theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (location.state?.loginSuccess && !toastShown.current) {
+      toastShown.current = true;
+
+      toast.success("Welcome Admin 🚀");
+
+      navigate(location.pathname, {
+        replace: true,
+        state: {},
+      });
+    }
+  }, [location, navigate]);
+
   const toggleTheme = () => {
     setTheme((current) => (current === "light" ? "dark" : "light"));
   };
@@ -85,21 +107,21 @@ function AdminDashboard() {
     }
   };
 
-const fetchTopProducts = async () => {
-  try {
-    const response = await getTopSellingProducts();
+  const fetchTopProducts = async () => {
+    try {
+      const response = await getTopSellingProducts();
 
-    console.log("API DATA:", response.data);
+      console.log("API DATA:", response.data);
 
-    setTopProducts(
-      [...response.data]
-        .sort((a, b) => b.totalSold - a.totalSold)
-        .slice(0, 5)
-    );
-  } catch (error) {
-    console.error(error);
-  }
-};
+      setTopProducts(
+        [...response.data]
+          .sort((a, b) => b.totalSold - a.totalSold)
+          .slice(0, 5),
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (!token) {
@@ -161,35 +183,32 @@ const fetchTopProducts = async () => {
   }, []);
 
   if (loading) {
-  return (
-    <div className="admin-layout">
-      <div className="dashboard-status-card">
-        <div className="dashboard-loader"></div>
-        <h2>Loading Dashboard</h2>
-        <p>Fetching latest statistics...</p>
+    return (
+      <div className="admin-layout">
+        <div className="dashboard-status-card">
+          <div className="dashboard-loader"></div>
+          <h2>Loading Dashboard</h2>
+          <p>Fetching latest statistics...</p>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-if (error) {
-  return (
-    <div className="admin-layout">
-      <div className="dashboard-status-card error-card">
-        <div className="error-icon">⚠️</div>
-        <h2>Failed to Load Statistics</h2>
-        <p>{error}</p>
+  if (error) {
+    return (
+      <div className="admin-layout">
+        <div className="dashboard-status-card error-card">
+          <div className="error-icon">⚠️</div>
+          <h2>Failed to Load Statistics</h2>
+          <p>{error}</p>
 
-        <button
-          className="retry-btn"
-          onClick={fetchStats}
-        >
-          Retry
-        </button>
+          <button className="retry-btn" onClick={fetchStats}>
+            Retry
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className={`admin-layout ${theme === "dark" ? "dark-mode" : ""}`}>
@@ -211,22 +230,19 @@ if (error) {
         />
 
         <DashboardCards stats={stats} />
-         <div className="charts-wrapper">
+        <div className="charts-wrapper">
+          <MonthlyOrdersChart />
 
-  <MonthlyOrdersChart />
+          <CategorySalesPieChart />
+        </div>
 
-  <CategorySalesPieChart />
-
-</div>
-
-         <TopSellingProductsTable
-  products={topProducts} />
+        <TopSellingProductsTable products={topProducts} />
 
         <SearchResultModal
-        selectedResult={selectedResult}
-        selectedType={selectedType}
-        setSelectedResult={setSelectedResult}
-      />
+          selectedResult={selectedResult}
+          selectedType={selectedType}
+          setSelectedResult={setSelectedResult}
+        />
       </div>
     </div>
   );
