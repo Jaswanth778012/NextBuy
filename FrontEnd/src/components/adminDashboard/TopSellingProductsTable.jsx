@@ -11,7 +11,7 @@ function TopSellingProductsTable({ products = [] }) {
         </div>
       </div>
 
-      <div className="table-wrapper">
+      <div className="table-wrap">
         <table className="product-table">
           <thead>
             <tr>
@@ -20,7 +20,6 @@ function TopSellingProductsTable({ products = [] }) {
               <th>Total Sold</th>
               <th>Category</th>
               <th>Sub Category</th>
-              <th>Stock</th>
             </tr>
           </thead>
 
@@ -68,10 +67,6 @@ function TopSellingProductsTable({ products = [] }) {
 
                   <td>
                     {product.subCategory?.name || "-"}
-                  </td>
-
-                  <td>
-                    {product.stockQuantity ?? "N/A"}
                   </td>
                 </tr>
               ))
