@@ -225,6 +225,8 @@ function AdminDashboard() {
           searchResults={searchResults}
           setSelectedResult={setSelectedResult}
           setSelectedType={setSelectedType}
+          setSearchResults={setSearchResults}
+          setSearchKeyword={setSearchKeyword}
           theme={theme}
           toggleTheme={toggleTheme}
         />

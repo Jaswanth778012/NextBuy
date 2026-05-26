@@ -10,30 +10,43 @@ function AdminHeader({
   searchResults,
   setSelectedResult,
   setSelectedType,
+  setSearchResults,
+  setSearchKeyword,
   theme,
   toggleTheme,
 }) {
   return (
     <header className="admin-header">
-      <div className="search-container">
-        <div className="search-box">
-          <FaSearch className="search-icon" />
-
-          <input
-            type="text"
-            placeholder="Search users, products, brands..."
-            value={searchKeyword}
-            onChange={handleGlobalSearch}
-          />
-        </div>
-
-        <SearchDropdown
-  searchResults={searchResults}
-  setSelectedResult={setSelectedResult}
-  setSelectedType={setSelectedType}
-/>
+      {/* LEFT LOGO */}
+      <div className="company-logo">
+        <img src="/logo.png" alt="company-logo" />
       </div>
 
+      {/* CENTER SEARCH */}
+      <div className="header-center">
+        <div className="search-container">
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+
+            <input
+              type="text"
+              placeholder="Search users, products, brands..."
+              value={searchKeyword}
+              onChange={handleGlobalSearch}
+            />
+          </div>
+
+          <SearchDropdown
+            searchResults={searchResults}
+            setSelectedResult={setSelectedResult}
+            setSelectedType={setSelectedType}
+            setSearchResults={setSearchResults}
+            setSearchKeyword={setSearchKeyword}
+          />
+        </div>
+      </div>
+
+      {/* RIGHT SECTION */}
       <div className="header-right">
         <button
           className="header-icon theme-toggle"
