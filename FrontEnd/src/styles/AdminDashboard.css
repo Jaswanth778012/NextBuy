@@ -1936,18 +1936,11 @@
     color: #000000;
 
     text-transform: capitalize;
-<<<<<<< HEAD
-}
-/* =========================
-   COUNT
-========================= */
-=======
   }
 
   /* =========================
     COUNT
   ========================= */
->>>>>>> 738f1f364dc3030ee465be59fd2cd8783d342a91
 
   .category-count {
 
@@ -2008,7 +2001,6 @@
   .category-row {
     height: 52px;
     box-sizing: border-box;
-<<<<<<< HEAD
 }
 .category-list{
 
@@ -2169,8 +2161,6 @@
     border-radius: 10px;
 }
 
-=======
-  }
 
   .category-list {
     max-height: 208px;
@@ -2351,4 +2341,3 @@
 
   color: #cbd5e1;
 }
->>>>>>> 738f1f364dc3030ee465be59fd2cd8783d342a91
