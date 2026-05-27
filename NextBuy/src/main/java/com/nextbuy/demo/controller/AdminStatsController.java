@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.CategorySalesDTO;
@@ -28,8 +29,19 @@ public class AdminStatsController {
 	}
    
    @GetMapping("/getTopSellingProducts")
-   public List<TopSellingProductDTO> getTopSellingProducts() {
-	   return adminStatsService.getTopSellingProducts();
+   public List<TopSellingProductDTO> getTopSellingProducts(
+
+           @RequestParam(required = false)
+           String category,
+
+           @RequestParam(required = false)
+           String subCategory
+   ) {
+
+       return adminStatsService.getTopSellingProducts(
+               category,
+               subCategory
+       );
    }
    
    @GetMapping("/getMonthlyStats/{month}/{year}")

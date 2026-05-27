@@ -47,7 +47,7 @@ public class BrandController {
 		
 		return ResponseEntity.ok(Map.of("message", result));
 	}
-	
+
 	@GetMapping("/brand/{brandId}")
 	public Brand getBrandById(@PathVariable Long brandId) {
 		return brandService.getBrandById(brandId);
