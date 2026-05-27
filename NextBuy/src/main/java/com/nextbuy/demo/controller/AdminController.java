@@ -115,8 +115,8 @@ public class AdminController {
 	  String adminName = principal.getName();
 	  return adminService.profile(adminName);
  }
- @PatchMapping("editProfile")
- public String EditProfile(Principal principal, userProfileDTO userDTO) {
+ @PatchMapping("/editProfile")
+ public String EditProfile(Principal principal, @RequestBody userProfileDTO userDTO) {
 	 String adimin = principal.getName();
 	 return adminService.EditProfile(adimin, userDTO);
  }

@@ -139,6 +139,7 @@ public class AdminService {
 		  ur.setCountry(admin.getCountry());
 		  ur.setMobileNumber(admin.getMobileNumber());
 		  ur.setState(admin.getState());
+		  ur.setEmail(admin.getEmail());
 		  return ur;
 	}
 	
@@ -155,6 +156,7 @@ public class AdminService {
 	   u.setCountry(userDTO.getCountry());
 	   u.setState(userDTO.getState());
 	   u.setDpUrl(userDTO.getDpUrl());
+	   
 	   userRepo.save(u);
 	   return "Successfully Saved !!";
 }
