@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.AdminUserResponceDto;
 import com.nextbuy.demo.dto.userProfileDTO;
@@ -18,19 +18,20 @@ import com.nextbuy.demo.repository.UserRepository;
 @Service
 public class AdminService {
 	
-	UserRepository  userRepo;
-	PasswordEncoder passwordEncoder;
-	EmailService emailSevice;
-	
+	private UserRepository  userRepo;
+	private PasswordEncoder passwordEncoder;
+	private EmailService emailSevice;
+	private CloudinaryService cludinaryService;
 
 	
 
 
-	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice) {
+	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice, CloudinaryService cloudinaryService) {
 		super();
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 		this.emailSevice = emailSevice;
+		this.cludinaryService = cloudinaryService;
 	}
 
 	public AdminUserResponceDto searchUser(String username) {
@@ -139,10 +140,11 @@ public class AdminService {
 		  ur.setCountry(admin.getCountry());
 		  ur.setMobileNumber(admin.getMobileNumber());
 		  ur.setState(admin.getState());
+		  ur.setEmail(admin.getEmail());
 		  return ur;
 	}
 	
-	public String EditProfile(String userName , userProfileDTO userDTO) {
+	public String EditProfile(String userName , userProfileDTO userDTO, MultipartFile imgUrl) {
 	     Optional<User> user = userRepo.findByUsername(userName);
 	    if(user.isEmpty()) {
 	    	return "User Not found !!";
@@ -154,7 +156,13 @@ public class AdminService {
 	   u.setCity(userDTO.getCity());
 	   u.setCountry(userDTO.getCountry());
 	   u.setState(userDTO.getState());
-	   u.setDpUrl(userDTO.getDpUrl());
+	   
+	   if(imgUrl != null && !imgUrl.isEmpty())
+	   {
+		   String profileUrl = cludinaryService.uploadDpUrl(imgUrl);
+		   u.setDpUrl(profileUrl);
+	   }
+	   
 	   userRepo.save(u);
 	   return "Successfully Saved !!";
 }

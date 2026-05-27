@@ -7,7 +7,10 @@ import {
   getHighStockProducts
 } from "../../services/AdminStatsService";
 
-function DashboardCards({ stats }) {
+function DashboardCards({
+  stats,
+  sidebarOpen,
+}) {
 
   // MODAL STATE
   const [showModal, setShowModal] =
@@ -130,10 +133,13 @@ function DashboardCards({ stats }) {
         >
 
           <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-
+  className={`modal-content ${
+    sidebarOpen
+      ? "sidebar-open"
+      : "sidebar-closed"
+  }`}
+  onClick={(e) => e.stopPropagation()}
+>
             {/* HEADER */}
             <div className="modal-header">
 

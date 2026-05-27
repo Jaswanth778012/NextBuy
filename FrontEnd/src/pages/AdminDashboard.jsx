@@ -231,7 +231,7 @@ function AdminDashboard() {
           toggleTheme={toggleTheme}
         />
 
-        <DashboardCards stats={stats} />
+        <DashboardCards stats={stats} sidebarOpen={sidebarOpen}/>
         <div className="charts-wrapper">
           <MonthlyOrdersChart />
 
@@ -244,6 +244,7 @@ function AdminDashboard() {
           selectedResult={selectedResult}
           selectedType={selectedType}
           setSelectedResult={setSelectedResult}
+          sidebarOpen={sidebarOpen}
         />
       </div>
     </div>

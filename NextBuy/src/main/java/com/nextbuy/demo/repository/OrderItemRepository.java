@@ -10,14 +10,19 @@ import com.nextbuy.demo.entity.OrderItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	@Query("""
-		       SELECT oi.product, SUM(oi.quantity)
-		       FROM OrderItem oi
-		       WHERE oi.order.status =
-		       com.nextbuy.demo.enums.OrderStatus.DELIVERED
-		       GROUP BY oi.product
-		       ORDER BY SUM(oi.quantity) DESC
-		       """)
-		List<Object[]> getTopSellingProducts();
+		    SELECT oi.product, SUM(oi.quantity)
+		    FROM OrderItem oi
+		    WHERE (:category IS NULL
+		           OR oi.product.category.name = :category)
+		    AND (:subCategory IS NULL
+		         OR oi.product.subCategory.name = :subCategory)
+		    GROUP BY oi.product
+		    ORDER BY SUM(oi.quantity) DESC
+		""")
+		List<Object[]> getTopSellingProductsWithFilter(
+		        @Param("category") String category,
+		        @Param("subCategory") String subCategory
+		);
 		
 		@Query("""
 			       SELECT

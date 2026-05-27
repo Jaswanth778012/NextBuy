@@ -15,7 +15,7 @@ import com.nextbuy.demo.repository.UserRepository;
 @Service
 public class UserService {
 	
-	  UserRepository userRepo;
+	UserRepository userRepo;
 
 	ProductRepository productRepo;
 

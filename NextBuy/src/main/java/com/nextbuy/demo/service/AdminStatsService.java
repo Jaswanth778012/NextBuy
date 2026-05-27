@@ -69,15 +69,21 @@ public class AdminStatsService {
 	 return msd;
 	}
 	
-	public List<TopSellingProductDTO> getTopSellingProducts() {
+	public List<TopSellingProductDTO> getTopSellingProducts(
+	        String category,
+	        String subCategory
+	) {
 
 	    List<Object[]> results =
-	            orderItemRepo.getTopSellingProducts();
+	            orderItemRepo.getTopSellingProductsWithFilter(
+	                    category,
+	                    subCategory
+	            );
 
 	    List<TopSellingProductDTO> list =
 	            new ArrayList<>();
 
-	    for(Object[] obj : results) {
+	    for (Object[] obj : results) {
 
 	        Product product = (Product) obj[0];
 
@@ -87,18 +93,12 @@ public class AdminStatsService {
 	                new TopSellingProductDTO();
 
 	        dto.setProductId(product.getId());
-
 	        dto.setProductName(product.getName());
-            dto.setCategory(product.getCategory());
-            
-                dto.setSubCategory(
-                    product.getSubCategory()
-                );
-
-            
-            dto.setImg(product.getImageUrl());
+	        dto.setCategory(product.getCategory());
+	        dto.setSubCategory(product.getSubCategory());
+	        dto.setImg(product.getImageUrl());
 	        dto.setTotalSold(totalSold);
-            
+
 	        list.add(dto);
 	    }
 
