@@ -132,7 +132,7 @@
 
     position: relative;
 
-    z-index: 100;
+    z-index: 50;
   }
 
   .admin-sidebar.closed {
@@ -299,7 +299,8 @@
 
     padding: 30px;
 
-    overflow: visible;
+     overflow-x: hidden;
+     overflow-y: visible;
 
     position: relative;
 
@@ -343,7 +344,7 @@
 
     overflow: visible;
 
-    z-index: 999999;
+    z-index: 40;
   }
 
   .header-left {
@@ -411,16 +412,6 @@
     width: 100%;
   }
 
-  .search-container {
-
-    position: relative;
-
-    width: 100%;
-
-    max-width: 620px;
-
-    z-index: 999999;
-  }
 
   /* ===============================
     SEARCH CONTAINER
@@ -432,9 +423,9 @@
 
     width: 100%;
 
-    max-width: 520px;
+    max-width: 620px;
 
-    z-index: 99999;
+    z-index: 20;
   }
 
   /* ===============================
@@ -520,7 +511,7 @@
     box-shadow:
       0 22px 50px rgba(31, 38, 135, 0.18);
 
-    z-index: 1000;
+    z-index: 200;
 
   }
 
@@ -653,39 +644,82 @@
   }
 
   .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.55);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-  }
 
-  .result-modal {
-    width: 800px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    animation: popup 0.25s ease;
-  }
+  position: fixed;
 
-  @keyframes popup {
-    from {
-      transform: scale(0.9);
-      opacity: 0;
-    }
+  inset: 0;
 
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(15, 23, 42, 0.55);
+
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  z-index: 9999;
+
+  isolation: isolate;
+}
+
+.result-modals {
+
+  position: fixed;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: min(1100px, calc(100vw - 80px));
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
+  padding: 28px;
+
+  border-radius: 28px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.96),
+      rgba(255,255,255,0.88)
+    );
+
+  backdrop-filter: blur(30px);
+
+  border:
+    1px solid rgba(255,255,255,0.25);
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.22);
+
+  transition: all 0.35s ease;
+}
+
+.result-modals.sidebar-open {
+
+  width: min(1000px, calc(100vw - 340px));
+
+  margin-left: 110px;
+}
+
+.result-modals.sidebar-closed {
+
+  width: min(1150px, calc(100vw - 120px));
+
+  margin-left: 30px;
+}
 
   .modal-header {
     display: flex;
@@ -1240,7 +1274,7 @@
 
     top: 0;
 
-    z-index: 10;
+    z-index: 1;
 
     padding: 18px;
 
@@ -1324,31 +1358,92 @@
     MODAL IMPROVEMENT
   ========================= */
 
-  .modal-content {
+.modal-content {
 
-    width: 95%;
+  position: fixed;
 
-    max-width: 1100px;
+  top: 50%;
+  left: 50%;
 
-    max-height: 90vh;
+  transform: translate(-50%, -50%);
 
-    overflow: hidden;
+  width: calc(100vw - 140px);
 
-    border-radius: 24px;
+  max-width: 1250px;
 
-    padding: 28px;
+  max-height: 90vh;
 
-    background:
-      rgba(255, 255, 255, 0.14);
+  overflow-y: auto;
 
-    backdrop-filter: blur(30px);
+  border-radius: 28px;
 
-    border:
-      1px solid rgba(255, 255, 255, 0.25);
+  padding: 28px;
 
-    box-shadow:
-      0 25px 60px rgba(0, 0, 0, 0.2);
-  }
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.92),
+      rgba(255,255,255,0.78)
+    );
+
+  backdrop-filter: blur(30px);
+
+  border:
+    1px solid rgba(255,255,255,0.25);
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.2);
+
+  transition: all 0.35s ease;
+
+  isolation: isolate;
+}
+
+.modal-contents {
+
+   width: 100%;
+
+  overflow-x: hidden;
+
+  color: #111827;
+
+  border-radius: 28px;
+
+  padding: 28px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.92),
+      rgba(255,255,255,0.78)
+    );
+
+  backdrop-filter: blur(30px);
+
+  border:
+    1px solid rgba(255,255,255,0.25);
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.2);
+
+  transition: all 0.35s ease;
+
+  isolation: isolate;
+}
+
+.modal-content.sidebar-open {
+
+  width: calc(100vw - 360px);
+
+  margin-left: 120px;
+}
+
+.modal-content.sidebar-closed {
+
+  width: calc(100vw - 150px);
+
+  margin-left: 40px;
+}
 
   /* =========================
     MOBILE

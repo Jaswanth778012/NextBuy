@@ -4,12 +4,15 @@ function SearchResultModal({
   selectedResult,
   selectedType,
   setSelectedResult,
+  sidebarOpen,
 }) {
   if (!selectedResult) return null;
 
   return (
     <div className="modal-overlay">
-      <div className="result-modal">
+      <div  className={`result-modals ${
+      sidebarOpen ? "sidebar-open" : "sidebar-closed"
+    }`}>
         {/* HEADER */}
         <div className="modal-header">
           <h2>{selectedType.toUpperCase()} DETAILS</h2>
@@ -24,7 +27,7 @@ function SearchResultModal({
 
         {/* PRODUCT */}
         {selectedType === "product" && (
-          <div className="modal-content">
+          <div className="modal-contents">
             <img
               src={selectedResult.imageUrl}
               alt={selectedResult.name}
@@ -81,7 +84,7 @@ function SearchResultModal({
 
         {/* USER */}
         {selectedType === "user" && (
-          <div className="modal-content">
+          <div className="modal-contents">
             <img
               src={selectedResult.dpUrl}
               alt={selectedResult.username}
@@ -130,7 +133,7 @@ function SearchResultModal({
 
         {/* BRAND */}
         {selectedType === "brand" && (
-          <div className="modal-content">
+          <div className="modal-contents">
             <img
               src={selectedResult.logoUrl}
               alt={selectedResult.name}
@@ -165,7 +168,7 @@ function SearchResultModal({
 
         {/* CATEGORY */}
         {selectedType === "category" && (
-          <div className="modal-content">
+          <div className="modal-contents">
             <h3>{selectedResult.name}</h3>
 
             <div className="detail-grid">
@@ -178,7 +181,7 @@ function SearchResultModal({
 
         {/* SUB CATEGORY */}
         {selectedType === "subCategory" && (
-          <div className="modal-content">
+          <div className="modal-contents">
             <h3>{selectedResult.name}</h3>
 
             <div className="detail-grid">
@@ -196,7 +199,7 @@ function SearchResultModal({
 
         {/* ORDER */}
         {selectedType === "order" && (
-          <div className="modal-content">
+          <div className="modal-contents">
             <h3>{selectedResult.orderNumber}</h3>
 
             <div className="detail-grid">
