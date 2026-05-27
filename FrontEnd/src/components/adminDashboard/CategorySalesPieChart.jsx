@@ -11,9 +11,12 @@ import {
   ResponsiveContainer
 } from "recharts";
 
+
 import {
-  getCategoryStats
+  getCategoryStats,
+  getSubCategoryStats
 } from "../../services/AdminStatsService";
+
 
 const COLORS = [
   "#8B5CF6",
@@ -34,7 +37,14 @@ function CategorySalesPieChart() {
     fetchCategoryStats();
 
   }, []);
+  const [subCategoryData, setSubCategoryData] =
+  useState([]);
 
+const [showPopup, setShowPopup] =
+  useState(false);
+
+const [selectedCategory, setSelectedCategory] =
+  useState("");
   const fetchCategoryStats =
     async () => {
 
@@ -95,6 +105,35 @@ function CategorySalesPieChart() {
       }
     };
 
+    const handleCategoryClick =
+  async (data) => {
+
+    try {
+
+      const response =
+        await getSubCategoryStats(
+          data.categoryId
+        );
+
+      setSubCategoryData(
+        response.data
+      );
+
+      setSelectedCategory(
+        data.categoryName
+      );
+
+      setShowPopup(true);
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+    
+
   return (
 
     <div className="pie-chart-container">
@@ -129,16 +168,16 @@ function CategorySalesPieChart() {
             <PieChart>
 
               <Pie
-                data={chartData}
-                dataKey="totalSold"
-                nameKey="categoryName"
-                cx="50%"
-                cy="50%"
-                outerRadius={78}
-                innerRadius={42}
-                paddingAngle={3}
-              >
-
+  data={chartData}
+  dataKey="totalSold"
+  nameKey="categoryName"
+  cx="50%"
+  cy="50%"
+  outerRadius={78}
+  innerRadius={42}
+  paddingAngle={3}
+  onClick={handleCategoryClick}
+>
                 {chartData.map(
                   (entry, index) => (
 
@@ -163,6 +202,64 @@ function CategorySalesPieChart() {
           </ResponsiveContainer>
 
         </div>
+
+{
+  showPopup && (
+
+    <div
+      className="subcategory-popup"
+      onClick={() =>
+        setShowPopup(false)
+      }
+    >
+
+      <div
+        className="popup-content"
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+      >
+
+        <div className="popup-header">
+
+          <h3>
+            {selectedCategory} Subcategories
+          </h3>
+
+        </div>
+
+        <div className="subcategory-list">
+
+          {
+            subCategoryData.map(
+              (item, index) => (
+
+                <div
+                  className="subcategory-row"
+                  key={index}
+                >
+
+                  <span>
+                    {item.categoryName}
+                  </span>
+
+                  <span>
+                    {item.totalSold}
+                  </span>
+
+                </div>
+
+              )
+            )
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+  )
+}
 
         {/* CATEGORY LIST */}
 
