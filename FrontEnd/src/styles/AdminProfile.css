@@ -519,6 +519,7 @@
     box-shadow:
     0 12px 24px rgba(42, 179, 42, 0.12);
 }
+
 /* =========================
    EDIT POPUP
 ========================= */
@@ -581,7 +582,6 @@
 
     gap: 18px;
 }
-
 /* INPUT */
 
 .edit-grid input{
@@ -737,7 +737,7 @@
    PASSWORD POPUP
 ========================= */
 
-.edit-popup-overlay{
+.edit-popup-overlay1{
 
     position: fixed;
 
@@ -755,7 +755,7 @@
     z-index: 999;
 }
 
-.edit-popup{
+.edit-popup1{
 
     width: 500px;
 
@@ -778,7 +778,7 @@
     popupFade 0.3s ease;
 }
 
-.edit-popup h2{
+.edit-popup1 h2{
 
     font-size: 26px;
 
@@ -787,7 +787,7 @@
     color: #222;
 }
 
-.edit-grid{
+.edit-grid1{
 
     display: grid;
 
@@ -796,7 +796,7 @@
     gap: 18px;
 }
 
-.edit-grid input{
+.edit-grid1 input{
 
     padding: 14px 16px;
 
@@ -813,7 +813,7 @@
     transition: 0.3s ease;
 }
 
-.edit-grid input:focus{
+.edit-grid1 input:focus{
 
     border-color: #3D74E0;
 
