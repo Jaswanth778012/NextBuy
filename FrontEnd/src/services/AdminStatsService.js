@@ -34,13 +34,41 @@ export const getMonthlyOrderCount =
 
 // TOP SELLING PRODUCTS
 
-export const getTopSellingProducts = 
-  async () => {
+export const getTopSellingProducts =
+  async (
+    category = "",
+    subCategory = "",
+  ) => {
 
-      return await API.get(
-        "/AdminStats/getTopSellingProducts"
+    let url =
+      "/AdminStats/getTopSellingProducts";
+
+    const params =
+      new URLSearchParams();
+
+    if (category) {
+
+      params.append(
+        "category",
+        category
       );
-  };
+    }
+
+    if (subCategory) {
+
+      params.append(
+        "subCategory",
+        subCategory
+      );
+    }
+
+    if (params.toString()) {
+
+      url += `?${params.toString()}`;
+    }
+
+    return await API.get(url);
+};
 
 
   // CATEGORY SALES STATS
@@ -62,3 +90,22 @@ export const getSubCategoryStats =
 };
 
 
+// GET ALL CATEGORIES
+
+export const getAllCategories =
+  async () => {
+
+    return await API.get(
+      "/Categories/allCategories"
+    );
+};
+
+// GET SUBCATEGORIES BY CATEGORY
+
+export const getSubCategoriesByCategory =
+  async (categoryId) => {
+
+    return await API.get(
+      `/Subcategories/subCategoryByCategory/${categoryId}`
+    );
+};

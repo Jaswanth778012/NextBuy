@@ -8,6 +8,9 @@ import { toast } from "react-toastify";
 import {
   getTotalStats,
   getTopSellingProducts,
+  getAllCategories,
+
+  getSubCategoriesByCategory,
 } from "../services/AdminStatsService";
 
 import { globalSearch } from "../services/adminService";
@@ -43,6 +46,18 @@ function AdminDashboard() {
   const [selectedType, setSelectedType] = useState("");
 
   const [topProducts, setTopProducts] = useState([]);
+
+  const [categories, setCategories] =
+  useState([]);
+
+const [subCategories, setSubCategories] =
+  useState([]);
+
+const [selectedCategory,
+  setSelectedCategory] = useState(null);
+
+const [selectedSubCategory,
+  setSelectedSubCategory] = useState("");
 
   const searchTimeoutRef = useRef(null);
 
@@ -107,21 +122,68 @@ function AdminDashboard() {
     }
   };
 
-  const fetchTopProducts = async () => {
+  const fetchCategories = async () => {
+
+  try {
+
+    const response =
+      await getAllCategories();
+
+    setCategories(response.data);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+};
+
+const fetchSubCategoriesByCategory =
+  async (categoryId) => {
+
     try {
-      const response = await getTopSellingProducts();
 
-      console.log("API DATA:", response.data);
+      const response =
+        await getSubCategoriesByCategory(
+          categoryId
+        );
 
-      setTopProducts(
-        [...response.data]
-          .sort((a, b) => b.totalSold - a.totalSold)
-          .slice(0, 5),
-      );
+      setSubCategories(response.data);
+
     } catch (error) {
+
       console.error(error);
+
     }
-  };
+};
+
+ const fetchTopProducts = async (
+  category = "",
+  subCategory = "",
+) => {
+
+  try {
+
+    const response =
+      await getTopSellingProducts(
+        category,
+        subCategory
+      );
+
+    setTopProducts(
+      [...response.data]
+        .sort((a, b) =>
+          b.totalSold - a.totalSold
+        )
+        .slice(0, 5)
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+};
 
   useEffect(() => {
     if (!token) {
@@ -130,8 +192,37 @@ function AdminDashboard() {
     }
 
     fetchStats();
-    fetchTopProducts();
+    fetchCategories();
   }, [token, navigate]);
+
+  useEffect(() => {
+
+  if (selectedCategory?.id) {
+
+    fetchSubCategoriesByCategory(
+      selectedCategory.id
+    );
+
+  } else {
+
+    setSubCategories([]);
+  }
+
+  setSelectedSubCategory("");
+
+}, [selectedCategory]);
+
+useEffect(() => {
+
+  fetchTopProducts(
+    selectedCategory?.name || "",
+    selectedSubCategory
+  );
+
+}, [
+  selectedCategory,
+  selectedSubCategory,
+]);
 
   // LOGOUT
   const handleLogout = () => {
@@ -238,7 +329,27 @@ function AdminDashboard() {
           <CategorySalesPieChart />
         </div>
 
-        <TopSellingProductsTable products={topProducts} />
+        <TopSellingProductsTable
+
+  products={topProducts}
+
+  categories={categories}
+
+  subCategories={subCategories}
+
+  selectedCategory={selectedCategory}
+  setSelectedCategory={
+    setSelectedCategory
+  }
+
+  selectedSubCategory={
+    selectedSubCategory
+  }
+
+  setSelectedSubCategory={
+    setSelectedSubCategory
+  }
+/>
 
         <SearchResultModal
           selectedResult={selectedResult}
