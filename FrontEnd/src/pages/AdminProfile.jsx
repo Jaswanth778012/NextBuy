@@ -5,13 +5,6 @@ import React,
 } from "react";
 
 import {
-  FaUserEdit,
-  FaEye,
-  FaEyeSlash,
-  FaUserEdit,FaLongArrowAltLeft,
-} from "react-icons/fa";
-
-import {
 
   getAdminProfile,
 
@@ -21,15 +14,41 @@ import {
 
 } from "../services/adminService";
 
+import ProfileSidebar
+from "../components/adminProfile/ProfileSidebar";
+
+import ProfileInfo
+from "../components/adminProfile/ProfileInfo";
+
+import EditProfilePopup
+from "../components/adminProfile/EditProfilePopup";
+
+import ChangePasswordPopup
+from "../components/adminProfile/ChangePasswordPopup";
+
 function AdminProfile() {
 
-  const [profile, setProfile] =
-    useState(null);
+  // PROFILE
+  const [profile,
+  setProfile] =
+  useState(null);
 
+  // EDIT POPUP
   const [showEditPopup,
   setShowEditPopup] =
   useState(false);
 
+  // PASSWORD POPUP
+  const [showPasswordPopup,
+  setShowPasswordPopup] =
+  useState(false);
+
+  // IMAGE
+  const [selectedImage,
+  setSelectedImage] =
+  useState(null);
+
+  // EDIT FORM
   const [editForm,
   setEditForm] =
   useState({
@@ -49,31 +68,7 @@ function AdminProfile() {
     email: "",
   });
 
-  const [selectedImage,
-  setSelectedImage] =
-  useState(null);
-
-  // PASSWORD STATES
-  const [showPasswordPopup,
-  setShowPasswordPopup] =
-  useState(false);
-
-  const [isVerified,
-  setIsVerified] =
-  useState(false);
-
-  const [showOldPassword,
-setShowOldPassword] =
-useState(false);
-
-const [showNewPassword,
-setShowNewPassword] =
-useState(false);
-
-const [showConfirmPassword,
-setShowConfirmPassword] =
-useState(false);
-
+  // PASSWORD FORM
   const [passwordForm,
   setPasswordForm] =
   useState({
@@ -90,31 +85,31 @@ useState(false);
   // FETCH PROFILE
   useEffect(() => {
 
-    const fetchProfile =
-      async () => {
-
-        try {
-
-          const response =
-            await getAdminProfile();
-
-          setProfile(
-            response.data
-          );
-
-          setEditForm(
-            response.data
-          );
-
-        } catch (error) {
-
-          console.log(error);
-        }
-      };
-
     fetchProfile();
 
   }, []);
+
+  const fetchProfile =
+    async () => {
+
+      try {
+
+        const response =
+          await getAdminProfile();
+
+        setProfile(
+          response.data
+        );
+
+        setEditForm(
+          response.data
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+  };
 
   // HANDLE INPUT
   const handleChange =
@@ -127,15 +122,6 @@ useState(false);
         [e.target.name]:
         e.target.value,
       });
-  };
-
-  // HANDLE IMAGE
-  const handleImageChange =
-    (e) => {
-
-      setSelectedImage(
-        e.target.files[0]
-      );
   };
 
   // HANDLE PASSWORD INPUT
@@ -151,6 +137,15 @@ useState(false);
       });
   };
 
+  // HANDLE IMAGE
+  const handleImageChange =
+    (e) => {
+
+      setSelectedImage(
+        e.target.files[0]
+      );
+  };
+
   // SAVE PROFILE
   const handleSave =
     async () => {
@@ -160,7 +155,6 @@ useState(false);
         const formData =
           new FormData();
 
-        // JSON DATA
         formData.append(
 
           "profile",
@@ -179,7 +173,6 @@ useState(false);
           )
         );
 
-        // IMAGE FILE
         if(selectedImage){
 
           formData.append(
@@ -236,8 +229,6 @@ useState(false);
           passwordForm.oldPassword
         );
 
-        setIsVerified(true);
-
         alert(
           "Verified Successfully"
         );
@@ -290,8 +281,6 @@ useState(false);
 
         setShowPasswordPopup(false);
 
-        setIsVerified(false);
-
         setPasswordForm({
 
           username: "",
@@ -313,6 +302,7 @@ useState(false);
       }
   };
 
+  // LOADING
   if (!profile) {
 
     return <h2>Loading...</h2>;
@@ -322,485 +312,80 @@ useState(false);
 
     <div className="admin-profile-container">
 
-      {/* LEFT SIDEBAR */}
-      <div className="profile-sidebar">
+      {/* SIDEBAR */}
+      <ProfileSidebar
 
-        <img
-          src={
-            profile.dpUrl
-              ? profile.dpUrl
-              : "https://i.pravatar.cc/150"
-          }
-          alt="profile"
-        />
+        profile={profile}
 
-        <h2>
-          {profile.name}
-        </h2>
+        setShowEditPopup={
+          setShowEditPopup
+        }
 
-        <p>
-          Administrator
-        </p>
+        setShowPasswordPopup={
+          setShowPasswordPopup
+        }
 
-        <div className="profile-btn-group">
+      />
 
-          <button
-            className="edit-profile-btn"
-            onClick={() =>
-              setShowEditPopup(true)
-            }
-          >
-
-            <FaUserEdit />
-
-            Edit Profile
-
-          </button>
-
-          <button
-            className="change-password-btn"
-            onClick={() =>
-              setShowPasswordPopup(true)
-            }
-          >
-
-            Change Password
-
-          </button>
-
-          <button
-  className="back-btn"
-  onClick={() =>
-    navigate("/admin/dashboard")
-  }
->
-<FaLongArrowAltLeft />
-  Back To Board
-
-</button>
-
-        </div>
-
-      </div>
-
-      {/* RIGHT CONTENT */}
-      <div className="profile-content-area">
-
-        <div className="profile-section">
-
-          <h3>
-            Personal Information
-          </h3>
-
-          <div className="profile-grid">
-
-            <div className="profile-item">
-
-              <label>
-                Full Name
-              </label>
-
-              <p>
-                {profile.name}
-              </p>
-
-            </div>
-
-            <div className="profile-item">
-
-              <label>
-                Mobile
-              </label>
-
-              <p>
-                {profile.mobileNumber}
-              </p>
-
-            </div>
-
-            <div className="profile-item">
-
-              <label>
-                Email
-              </label>
-
-              <p>
-                {profile.email || "N/A"}
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <div className="profile-section">
-
-          <h3>
-            Address Information
-          </h3>
-
-          <div className="profile-grid">
-
-            <div className="profile-item">
-
-              <label>
-                Address
-              </label>
-
-              <p>
-                {profile.addressLine1}
-              </p>
-
-            </div>
-
-            <div className="profile-item">
-
-              <label>
-                City
-              </label>
-
-              <p>
-                {profile.city || "N/A"}
-              </p>
-
-            </div>
-
-            <div className="profile-item">
-
-              <label>
-                State
-              </label>
-
-              <p>
-                {profile.state || "N/A"}
-              </p>
-
-            </div>
-
-            <div className="profile-item">
-
-              <label>
-                Country
-              </label>
-
-              <p>
-                {profile.country || "India"}
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
+      {/* PROFILE INFO */}
+      <ProfileInfo
+        profile={profile}
+      />
 
       {/* EDIT POPUP */}
       {showEditPopup && (
 
-      <div
-        className="edit-popup-overlay"
-        onClick={() =>
-          setShowEditPopup(false)
-        }
-      >
+        <EditProfilePopup
 
-        <div
-          className="edit-popup"
-          onClick={(e) =>
-            e.stopPropagation()
+          editForm={editForm}
+
+          handleChange={
+            handleChange
           }
-        >
 
-          <h2>
-            Edit Profile
-          </h2>
+          handleImageChange={
+            handleImageChange
+          }
 
-          <div className="edit-grid">
+          handleSave={
+            handleSave
+          }
 
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={editForm.name}
-              onChange={handleChange}
-            />
+          setShowEditPopup={
+            setShowEditPopup
+          }
 
-            <input
-              type="text"
-              name="mobileNumber"
-              placeholder="Mobile"
-              value={editForm.mobileNumber}
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="email"
-              placeholder="Email"
-              value={editForm.email}
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="addressLine1"
-              placeholder="Address"
-              value={editForm.addressLine1}
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              value={editForm.city}
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="state"
-              placeholder="State"
-              value={editForm.state}
-              onChange={handleChange}
-            />
-
-            <input
-              type="text"
-              name="country"
-              placeholder="Country"
-              value={editForm.country}
-              onChange={handleChange}
-            />
-
-            <div className="file-upload-box">
-
-              <label>
-                Choose Profile Image
-              </label>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-
-            </div>
-
-          </div>
-
-          <div className="popup-buttons">
-
-            <button
-              className="cancel-btn"
-              onClick={() =>
-                setShowEditPopup(false)
-              }
-            >
-              Cancel
-            </button>
-
-            <button
-              className="save-btn"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-      )}
-
-     
-     {/* CHANGE PASSWORD POPUP */}
-{showPasswordPopup && (
-
-<div
-  className="edit-popup-overlay"
-  onClick={() => {
-
-    setShowPasswordPopup(false);
-
-    setIsVerified(false);
-  }}
->
-
-  <div
-    className="edit-popup"
-    onClick={(e) =>
-      e.stopPropagation()
-    }
-  >
-
-    <h2>
-      Change Password
-    </h2>
-
-    <div className="edit-grid">
-
-      {/* BEFORE VERIFY */}
-      {!isVerified && (
-
-      <>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={passwordForm.username}
-          onChange={handlePasswordChange}
         />
-
-        {/* OLD PASSWORD */}
-        <div className="password-input-box">
-
-          <input
-            type={
-              showOldPassword
-                ? "text"
-                : "password"
-            }
-            name="oldPassword"
-            placeholder="Old Password"
-            value={passwordForm.oldPassword}
-            onChange={handlePasswordChange}
-          />
-
-          <span
-            className="password-eye"
-            onClick={() =>
-              setShowOldPassword(
-                !showOldPassword
-              )
-            }
-          >
-
-            {showOldPassword
-              ? <FaEyeSlash />
-              : <FaEye />}
-
-          </span>
-
-        </div>
-      </>
       )}
 
-      {/* AFTER VERIFY */}
-      {isVerified && (
+      {/* PASSWORD POPUP */}
+      {showPasswordPopup && (
 
-      <>
-        {/* NEW PASSWORD */}
-        <div className="password-input-box">
+        <ChangePasswordPopup
 
-          <input
-            type={
-              showNewPassword
-                ? "text"
-                : "password"
-            }
-            name="newPassword"
-            placeholder="New Password"
-            value={passwordForm.newPassword}
-            onChange={handlePasswordChange}
-          />
+          passwordForm={
+            passwordForm
+          }
 
-          <span
-            className="password-eye"
-            onClick={() =>
-              setShowNewPassword(
-                !showNewPassword
-              )
-            }
-          >
+          handlePasswordChange={
+            handlePasswordChange
+          }
 
-            {showNewPassword
-              ? <FaEyeSlash />
-              : <FaEye />}
+          handlePasswordSave={
+            handlePasswordSave
+          }
 
-          </span>
+          handleVerifyPassword={
+            handleVerifyPassword
+          }
 
-        </div>
+          setShowPasswordPopup={
+            setShowPasswordPopup
+          }
 
-        {/* CONFIRM PASSWORD */}
-        <div className="password-input-box">
-
-          <input
-            type={
-              showConfirmPassword
-                ? "text"
-                : "password"
-            }
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={passwordForm.confirmPassword}
-            onChange={handlePasswordChange}
-          />
-
-          <span
-            className="password-eye"
-            onClick={() =>
-              setShowConfirmPassword(
-                !showConfirmPassword
-              )
-            }
-          >
-
-            {showConfirmPassword
-              ? <FaEyeSlash />
-              : <FaEye />}
-
-          </span>
-
-        </div>
-      </>
+        />
       )}
 
-    </div>
-
-    <div className="popup-buttons">
-
-      <button
-        className="cancel-btn"
-        onClick={() => {
-
-          setShowPasswordPopup(false);
-
-          setIsVerified(false);
-        }}
-      >
-        Cancel
-      </button>
-
-      {!isVerified ? (
-
-      <button
-        className="save-btn"
-        onClick={handleVerifyPassword}
-      >
-        Verify
-      </button>
-
-      ) : (
-
-      <button
-        className="save-btn"
-        onClick={handlePasswordSave}
-      >
-        Update Password
-      </button>
-
-      )}
-
-    </div>
-
-  </div>
-
-</div>
-)}
     </div>
   );
 }
