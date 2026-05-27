@@ -23,6 +23,7 @@ import MonthlyOrdersChart from "../components/adminDashboard/MonthlyOrdersChart"
 import TopSellingProductsTable from "../components/adminDashboard/TopSellingProductsTable";
 
 import "../styles/AdminDashboard.css";
+import "../styles/AdminProfile.css";
 
 import CategorySalesPieChart from "../components/adminDashboard/CategorySalesPieChart";
 

@@ -8,6 +8,7 @@ import {
   FaUserEdit,
   FaEye,
   FaEyeSlash,
+  FaUserEdit,FaLongArrowAltLeft,
 } from "react-icons/fa";
 
 import {
@@ -366,6 +367,17 @@ useState(false);
             Change Password
 
           </button>
+
+          <button
+  className="back-btn"
+  onClick={() =>
+    navigate("/admin/dashboard")
+  }
+>
+<FaLongArrowAltLeft />
+  Back To Board
+
+</button>
 
         </div>
 

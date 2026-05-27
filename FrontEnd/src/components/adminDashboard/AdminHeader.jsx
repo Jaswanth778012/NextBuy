@@ -1,7 +1,7 @@
 
 
 import React, { useState, useRef, useEffect } from "react";
-
+import clogo from "../../assets/clogo.png"
 import {
   FaSearch,
   FaBell,
@@ -100,7 +100,7 @@ useEffect(() => {
 
       {/* LEFT LOGO */}
       <div className="company-logo">
-        <img src="/logo.png" alt="company-logo" />
+        <img src={clogo} alt="company-logo" />
       </div>
 
       {/* CENTER SEARCH */}
