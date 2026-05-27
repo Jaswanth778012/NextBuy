@@ -28,3 +28,20 @@ export const editAdminProfile =
       profileData
     );
 };
+
+
+
+// CHANGE PASSWORD
+export const changeAdminPassword =
+  async (
+    username,
+    password,
+    newPass
+  ) => {
+
+    return await API.patch(
+
+      `/Admin/adminUpdate/${username}/${password}?newPass=${newPass}`
+
+    );
+};

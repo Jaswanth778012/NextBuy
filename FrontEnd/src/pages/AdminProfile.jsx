@@ -6,11 +6,18 @@ import React,
 
 import {
   FaUserEdit,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 
 import {
+
   getAdminProfile,
+
   editAdminProfile,
+
+  changeAdminPassword,
+
 } from "../services/adminService";
 
 function AdminProfile() {
@@ -44,6 +51,40 @@ function AdminProfile() {
   const [selectedImage,
   setSelectedImage] =
   useState(null);
+
+  // PASSWORD STATES
+  const [showPasswordPopup,
+  setShowPasswordPopup] =
+  useState(false);
+
+  const [isVerified,
+  setIsVerified] =
+  useState(false);
+
+  const [showOldPassword,
+setShowOldPassword] =
+useState(false);
+
+const [showNewPassword,
+setShowNewPassword] =
+useState(false);
+
+const [showConfirmPassword,
+setShowConfirmPassword] =
+useState(false);
+
+  const [passwordForm,
+  setPasswordForm] =
+  useState({
+
+    username: "",
+
+    oldPassword: "",
+
+    newPassword: "",
+
+    confirmPassword: "",
+  });
 
   // FETCH PROFILE
   useEffect(() => {
@@ -94,6 +135,19 @@ function AdminProfile() {
       setSelectedImage(
         e.target.files[0]
       );
+  };
+
+  // HANDLE PASSWORD INPUT
+  const handlePasswordChange =
+    (e) => {
+
+      setPasswordForm({
+
+        ...passwordForm,
+
+        [e.target.name]:
+        e.target.value,
+      });
   };
 
   // SAVE PROFILE
@@ -152,37 +206,109 @@ function AdminProfile() {
               : profile.dpUrl
         });
 
-        // CLEAR FORM
-setEditForm({
+        setSelectedImage(null);
 
-  name: "",
+        setShowEditPopup(false);
 
-  mobileNumber: "",
-
-  addressLine1: "",
-
-  city: "",
-
-  state: "",
-
-  country: "",
-
-  email: "",
-});
-
-// CLEAR IMAGE
-setSelectedImage(null);
-
-// CLOSE POPUP
-setShowEditPopup(false);
-
-alert(
-  "Profile Updated"
-);
+        alert(
+          "Profile Updated"
+        );
 
       } catch (error) {
 
         console.log(error);
+      }
+  };
+
+  // VERIFY PASSWORD
+  const handleVerifyPassword =
+    async () => {
+
+      try {
+
+        await changeAdminPassword(
+
+          passwordForm.username,
+
+          passwordForm.oldPassword,
+
+          passwordForm.oldPassword
+        );
+
+        setIsVerified(true);
+
+        alert(
+          "Verified Successfully"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Wrong Username or Password"
+        );
+      }
+  };
+
+  // UPDATE PASSWORD
+  const handlePasswordSave =
+    async () => {
+
+      try {
+
+        if(
+
+          passwordForm.newPassword !==
+          passwordForm.confirmPassword
+
+        ){
+
+          alert(
+            "Passwords Not Matching"
+          );
+
+          return;
+        }
+
+        const response =
+          await changeAdminPassword(
+
+            passwordForm.username,
+
+            passwordForm.oldPassword,
+
+            passwordForm.newPassword
+          );
+
+        console.log(response);
+
+        alert(
+          "Password Updated"
+        );
+
+        setShowPasswordPopup(false);
+
+        setIsVerified(false);
+
+        setPasswordForm({
+
+          username: "",
+
+          oldPassword: "",
+
+          newPassword: "",
+
+          confirmPassword: "",
+        });
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Password Update Failed"
+        );
       }
   };
 
@@ -232,6 +358,9 @@ alert(
 
           <button
             className="change-password-btn"
+            onClick={() =>
+              setShowPasswordPopup(true)
+            }
           >
 
             Change Password
@@ -245,7 +374,6 @@ alert(
       {/* RIGHT CONTENT */}
       <div className="profile-content-area">
 
-        {/* PERSONAL */}
         <div className="profile-section">
 
           <h3>
@@ -294,7 +422,6 @@ alert(
 
         </div>
 
-        {/* ADDRESS */}
         <div className="profile-section">
 
           <h3>
@@ -360,9 +487,19 @@ alert(
       {/* EDIT POPUP */}
       {showEditPopup && (
 
-      <div className="edit-popup-overlay">
+      <div
+        className="edit-popup-overlay"
+        onClick={() =>
+          setShowEditPopup(false)
+        }
+      >
 
-        <div className="edit-popup">
+        <div
+          className="edit-popup"
+          onClick={(e) =>
+            e.stopPropagation()
+          }
+        >
 
           <h2>
             Edit Profile
@@ -426,7 +563,6 @@ alert(
               onChange={handleChange}
             />
 
-            {/* FILE INPUT */}
             <div className="file-upload-box">
 
               <label>
@@ -443,7 +579,6 @@ alert(
 
           </div>
 
-          {/* BUTTONS */}
           <div className="popup-buttons">
 
             <button
@@ -469,6 +604,191 @@ alert(
       </div>
       )}
 
+     
+     {/* CHANGE PASSWORD POPUP */}
+{showPasswordPopup && (
+
+<div
+  className="edit-popup-overlay"
+  onClick={() => {
+
+    setShowPasswordPopup(false);
+
+    setIsVerified(false);
+  }}
+>
+
+  <div
+    className="edit-popup"
+    onClick={(e) =>
+      e.stopPropagation()
+    }
+  >
+
+    <h2>
+      Change Password
+    </h2>
+
+    <div className="edit-grid">
+
+      {/* BEFORE VERIFY */}
+      {!isVerified && (
+
+      <>
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={passwordForm.username}
+          onChange={handlePasswordChange}
+        />
+
+        {/* OLD PASSWORD */}
+        <div className="password-input-box">
+
+          <input
+            type={
+              showOldPassword
+                ? "text"
+                : "password"
+            }
+            name="oldPassword"
+            placeholder="Old Password"
+            value={passwordForm.oldPassword}
+            onChange={handlePasswordChange}
+          />
+
+          <span
+            className="password-eye"
+            onClick={() =>
+              setShowOldPassword(
+                !showOldPassword
+              )
+            }
+          >
+
+            {showOldPassword
+              ? <FaEyeSlash />
+              : <FaEye />}
+
+          </span>
+
+        </div>
+      </>
+      )}
+
+      {/* AFTER VERIFY */}
+      {isVerified && (
+
+      <>
+        {/* NEW PASSWORD */}
+        <div className="password-input-box">
+
+          <input
+            type={
+              showNewPassword
+                ? "text"
+                : "password"
+            }
+            name="newPassword"
+            placeholder="New Password"
+            value={passwordForm.newPassword}
+            onChange={handlePasswordChange}
+          />
+
+          <span
+            className="password-eye"
+            onClick={() =>
+              setShowNewPassword(
+                !showNewPassword
+              )
+            }
+          >
+
+            {showNewPassword
+              ? <FaEyeSlash />
+              : <FaEye />}
+
+          </span>
+
+        </div>
+
+        {/* CONFIRM PASSWORD */}
+        <div className="password-input-box">
+
+          <input
+            type={
+              showConfirmPassword
+                ? "text"
+                : "password"
+            }
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={passwordForm.confirmPassword}
+            onChange={handlePasswordChange}
+          />
+
+          <span
+            className="password-eye"
+            onClick={() =>
+              setShowConfirmPassword(
+                !showConfirmPassword
+              )
+            }
+          >
+
+            {showConfirmPassword
+              ? <FaEyeSlash />
+              : <FaEye />}
+
+          </span>
+
+        </div>
+      </>
+      )}
+
+    </div>
+
+    <div className="popup-buttons">
+
+      <button
+        className="cancel-btn"
+        onClick={() => {
+
+          setShowPasswordPopup(false);
+
+          setIsVerified(false);
+        }}
+      >
+        Cancel
+      </button>
+
+      {!isVerified ? (
+
+      <button
+        className="save-btn"
+        onClick={handleVerifyPassword}
+      >
+        Verify
+      </button>
+
+      ) : (
+
+      <button
+        className="save-btn"
+        onClick={handlePasswordSave}
+      >
+        Update Password
+      </button>
+
+      )}
+
+    </div>
+
+  </div>
+
+</div>
+)}
     </div>
   );
 }
