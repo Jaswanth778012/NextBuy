@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -116,7 +117,8 @@ public class AdminController {
 	  return adminService.profile(adminName);
  }
  @PatchMapping("/editProfile")
- public String EditProfile(Principal principal, @RequestBody userProfileDTO userDTO) {
+ public String EditProfile(Principal principal,  @ModelAttribute
+		    userProfileDTO userDTO) {
 	 String adimin = principal.getName();
 	 return adminService.EditProfile(adimin, userDTO);
  }
