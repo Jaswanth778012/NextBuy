@@ -1,6 +1,6 @@
 package com.nextbuy.demo.dto;
 
-import org.springframework.web.multipart.MultipartFile;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class userProfileDTO {
 
-private String name;
-	
-	
-	
-	
+	private String name;
 	
 	private Long mobileNumber;
 	
@@ -32,10 +28,9 @@ private String name;
 	private String country;
 	
 	
-	private MultipartFile dpUrl;
+	private String dpUrl;
 	
 	private String email;
-	
 	
 	
 }

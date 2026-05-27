@@ -86,4 +86,15 @@ public class CloudinaryService {
                 .map(this::uploadImage)
                 .toList();
     }
+    
+    public String uploadDpUrl(MultipartFile file) {
+    	try {
+    		Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "profile_pictures"));
+    		
+    		return uploadResult.get("secure_url").toString();
+    	}
+    	catch(IOException e) {
+    		throw new RuntimeException("Failed to upload brand logo to Cloudinary", e);
+    	}
+    }
 }

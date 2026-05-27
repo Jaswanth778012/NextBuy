@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.AdminGlobalSearchResponse;
 import com.nextbuy.demo.dto.AdminUserResponceDto;
@@ -117,9 +119,9 @@ public class AdminController {
 	  return adminService.profile(adminName);
  }
  @PatchMapping("/editProfile")
- public String EditProfile(Principal principal,  @ModelAttribute
-		    userProfileDTO userDTO) {
+ public String EditProfile(Principal principal,  @RequestPart("profile")
+		    userProfileDTO userDTO, @RequestPart(value = "img", required = false) MultipartFile img) {
 	 String adimin = principal.getName();
-	 return adminService.EditProfile(adimin, userDTO);
+	 return adminService.EditProfile(adimin, userDTO, img);
  }
 }
