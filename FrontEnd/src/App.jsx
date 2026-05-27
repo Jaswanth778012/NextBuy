@@ -11,6 +11,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home"
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminProfile
+from "./pages/AdminProfile";
 
 function App() {
 
@@ -39,6 +41,10 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         <Route path="/" element={<Home />} />
+        <Route
+  path="/admin/profile"
+  element={<AdminProfile />}
+/>
 
       </Routes>
 

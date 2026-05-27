@@ -10,3 +10,21 @@ export const globalSearch = async (
 
   return response.data;
 };
+
+// GET ADMIN PROFILE
+export const getAdminProfile =
+  async () => {
+
+    return await API.get(
+      "/Admin/profile"
+    );
+};
+
+export const editAdminProfile =
+  async (profileData) => {
+
+    return await API.patch(
+      "Admin/editProfile",
+      profileData
+    );
+};
