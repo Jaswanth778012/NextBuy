@@ -42,10 +42,12 @@ public class ProductController {
     public String deleteProduct(@PathVariable String name, @PathVariable Long id) {
     	return productService.deleteproduct(name,id);
     }
+    // User can view all not drafted
     @GetMapping("/viewAllProducts")
     public List<Product> viewAllProducts(){
     	return productService.viewAllProducts();
     }
+    
     @PatchMapping("/updateProduct/{id}")
     public String updateProduct(@PathVariable Long id , @RequestPart("product") ProductDTO productDto, @RequestPart(value = "image", required = false) MultipartFile image) {
     	return productService.updateProduct(id,productDto, image);
