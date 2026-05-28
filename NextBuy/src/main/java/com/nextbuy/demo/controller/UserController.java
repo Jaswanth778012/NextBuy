@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.entity.User;
@@ -50,10 +51,10 @@ public class UserController {
 	        return ResponseEntity.ok("Logout successful");
 	    }
 	   @PatchMapping("/updateProfile")
-	   public String updateProfile(HttpServletRequest request ,@RequestBody userProfileDTO userDTO) {
+	   public String updateProfile(HttpServletRequest request ,@RequestPart("user") userProfileDTO userDTO, @RequestPart(value="img", required = false) MultipartFile img) {
 		   String token = request.getHeader("Authorization").substring(7);
 		   String username = jwtService.extractUsername(token);
-		   return userService.updateProfile(username, userDTO);
+		   return userService.updateProfile(username, userDTO, img);
 	   }
      @DeleteMapping("/deleteProfile/{username}/{oldpassword}")
      public String deleteProfile(@PathVariable String username,@PathVariable String oldpassword) {

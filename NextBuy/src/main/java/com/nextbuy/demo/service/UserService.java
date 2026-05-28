@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.entity.User;
@@ -15,19 +16,22 @@ import com.nextbuy.demo.repository.UserRepository;
 @Service
 public class UserService {
 	
-	UserRepository userRepo;
+	private UserRepository userRepo;
 
-	ProductRepository productRepo;
+	private ProductRepository productRepo;
 
-	PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
+	
+	private CloudinaryService cloudinaryService;
 	
 	
 	
-	public UserService(UserRepository userRepo, ProductRepository productRepo, PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository userRepo, ProductRepository productRepo, PasswordEncoder passwordEncoder, CloudinaryService cloudinaryService) {
 		super();
 		this.userRepo = userRepo;
 		this.productRepo = productRepo;
 		this.passwordEncoder = passwordEncoder;
+		this.cloudinaryService = cloudinaryService;
 	 }
 
 	//getProfile
@@ -35,7 +39,7 @@ public class UserService {
         return userRepo.findByUsername(username);
     }
 	//updateProfile
-	public String updateProfile(String userName , userProfileDTO userDTO) {
+	public String updateProfile(String userName , userProfileDTO userDTO, MultipartFile file) {
 		     Optional<User> user = userRepo.findByUsername(userName);
 		    if(user.isEmpty()) {
 		    	return "User Not found !!";
@@ -47,7 +51,11 @@ public class UserService {
 		   u.setCity(userDTO.getCity());
 		   u.setCountry(userDTO.getCountry());
 		   u.setState(userDTO.getState());
-		   u.setDpUrl(userDTO.getDpUrl());
+		   if(file !=null && !file.isEmpty())
+		   {
+			   String imgeUrl = cloudinaryService.uploadImage(file);
+			   u.setDpUrl(imgeUrl);
+		   }
 		   userRepo.save(u);
 		   return "Successfully Saved !!";
 	}
