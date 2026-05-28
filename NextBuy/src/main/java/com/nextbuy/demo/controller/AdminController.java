@@ -103,8 +103,8 @@ public class AdminController {
       return ResponseEntity.ok("Email sent to all registered users");
   }
 
- @PatchMapping("/makeUserToAdmin/{email}")
- public String addAdmin(@PathVariable String email,@RequestParam String username,@RequestParam String password) {
+ @PatchMapping("/makeUserToAdmin/{email}/{username}/{password}")
+ public String addAdmin(@PathVariable String email,@PathVariable String username,@PathVariable String password) {
 	 return adminService.makeUserToAdmin(email, username, password);
 	 
  }

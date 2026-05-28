@@ -133,7 +133,7 @@ public class AdminService {
 	public userProfileDTO profile(String username) {
 		  User admin = userRepo.findByUsername(username).get();
 		  userProfileDTO ur = new userProfileDTO();
-		  ur.setName(admin.getUsername());
+		  ur.setName(admin.getName());
 		  ur.setDpUrl(admin.getDpUrl());
 		  ur.setAddressLine1(admin.getAddressLine1());
 		  ur.setCity(admin.getCity());
