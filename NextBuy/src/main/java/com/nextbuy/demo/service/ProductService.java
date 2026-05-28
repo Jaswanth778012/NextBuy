@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.ComparisionProductDto;
 import com.nextbuy.demo.dto.ProductDTO;
+import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.ProductStatus;
@@ -134,16 +135,14 @@ public class ProductService {
 		
 	}
 	//VIEW_ALL_PRODUCTS
-	public List<Product> viewAllProducts() {
-		 List<Product> allproducts = productRepo.findAll();
-		 if(allproducts.isEmpty()) {
-			 throw new RuntimeException("No products found");
+	public List<UserResponceDTO> viewAllProducts(){
+		
+		 List<Product> pr = productRepo.findAll();
+		 if(pr.isEmpty()) {
+			 throw new RuntimeException("Username is required");
 		 }
-		return allproducts.stream()
-				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
-				   .sorted((a,b) ->
-			        a.getName().compareTo(b.getName()))
-				   .toList();
+		return pr.stream().map(this::mapToResponseDto).toList();
+		
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
@@ -340,4 +339,22 @@ public class ProductService {
 	    );
 	}
 	
+	public UserResponceDTO mapToResponseDto(Product product) {
+		UserResponceDTO userDto = new UserResponceDTO ();
+		  userDto.setName(product.getName());
+	        userDto.setDescription(product.getDescription());
+	        userDto.setCategory(product.getCategory());
+	        userDto.setSubCategory(product.getSubCategory());
+	        userDto.setPrice(product.getMrp_price());
+	        userDto.setDiscountPercentage(product.getDiscountPercentage());
+	        userDto.setImageUrl(product.getImageUrl());
+	        userDto .setAttributes(product.getAttributes());
+	        userDto.setAverageRating(product.getAverageRating());
+	        userDto.setBrand(product.getBrand());
+	        userDto.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
+	        userDto.setFinalPrice(product.getFinalPrice());
+	        return userDto;
+	     
+	      
+	  }
 }
