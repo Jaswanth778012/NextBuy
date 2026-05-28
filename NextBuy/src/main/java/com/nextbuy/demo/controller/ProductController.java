@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.ProductDTO;
-import com.nextbuy.demo.entity.Product;
+import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.enums.ProductStatus;
+import com.nextbuy.demo.service.CommonService;
 import com.nextbuy.demo.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ import jakarta.validation.Valid;
 public class ProductController {
 	
 	ProductService productService;
-	
+
 	public ProductController(ProductService productService) {
 		
 		this.productService = productService;
@@ -42,11 +43,11 @@ public class ProductController {
     public String deleteProduct(@PathVariable String name, @PathVariable Long id) {
     	return productService.deleteproduct(name,id);
     }
-    // User can view all not drafted
+    
     @GetMapping("/viewAllProducts")
-    public List<Product> viewAllProducts(){
-    	return productService.viewAllProducts();
-    }
+	public List<UserResponceDTO> viewAllProducts(){
+		return productService.viewAllProducts();
+	}
     
     @PatchMapping("/updateProduct/{id}")
     public String updateProduct(@PathVariable Long id , @RequestPart("product") ProductDTO productDto, @RequestPart(value = "image", required = false) MultipartFile image) {

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.Product;
-
+import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.ProductRepository;
 
 import jakarta.persistence.criteria.Predicate;
@@ -27,14 +27,16 @@ public class CommonService {
 		this.productRepo = productRepo;
 	}
 
-	public List<UserResponceDTO> viewAllProducts(){
-		
-		 List<Product> pr = productRepo.findAll();
-		 if(pr.isEmpty()) {
-			 throw new RuntimeException("Username is required");
+	public List<Product> viewAllProducts() {
+		 List<Product> allproducts = productRepo.findAll();
+		 if(allproducts.isEmpty()) {
+			 throw new RuntimeException("No products found");
 		 }
-		return pr.stream().map(this::mapToResponseDto).toList();
-		
+		return allproducts.stream()
+				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
+				   .sorted((a,b) ->
+			        a.getName().compareTo(b.getName()))
+				   .toList();
 	}
 	
 	public List<UserResponceDTO> searchByName(String name){

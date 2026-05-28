@@ -32,12 +32,12 @@ public class CommonController {
 		this.broadcastService = broadcastService;
 	}
 	
-	
-	//Products
-	@GetMapping("/viewAllProducts")
-	public List<UserResponceDTO> viewAllProducts(){
-		return commonService.viewAllProducts();
-	}
+    // User can view all not drafted
+    @GetMapping("/viewAllProducts")
+    public List<Product> viewAllProducts(){
+    	return commonService.viewAllProducts();
+    }
+    
 	@GetMapping("/searchByName/{name}")
 	public List<UserResponceDTO> searchByName(@PathVariable String name){
 		return commonService.searchByName(name);

@@ -70,4 +70,6 @@ public class UserController {
 		   return userService.passwordUpdated(username, oldpassword, newpassword,Confirm);
      }
      
+     
+     
 }
