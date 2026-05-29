@@ -9,11 +9,7 @@ import {
   FaCog
 } from "react-icons/fa";
 
-<<<<<<< HEAD
-import { useNavigate } from "react-router-dom";
-=======
 import { useNavigate, useLocation } from "react-router-dom";
->>>>>>> f0c60e2918836391912e47267e1d0162b7325d2e
 
 function AdminSidebar({
   sidebarOpen,
@@ -21,14 +17,9 @@ function AdminSidebar({
   handleLogout,
 }) {
 
-<<<<<<< HEAD
-  // ✅ FIX ADDED HERE
-  const navigate = useNavigate();
-=======
     const navigate = useNavigate();
 
     const location = useLocation();
->>>>>>> f0c60e2918836391912e47267e1d0162b7325d2e
 
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
