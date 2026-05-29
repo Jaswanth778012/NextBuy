@@ -8,11 +8,18 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
+import { useNavigate, useLocation } from "react-router-dom";
+
 function AdminSidebar({
   sidebarOpen,
   setSidebarOpen,
   handleLogout,
 }) {
+
+    const navigate = useNavigate();
+
+    const location = useLocation();
+
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
       <div
@@ -27,12 +34,18 @@ function AdminSidebar({
       </div>
 
       <nav className="sidebar-nav">
-        <button className="nav-item active">
+        <button className={`nav-item ${
+            location.pathname === "/admin/dashboard" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/dashboard")}>
           <FaTachometerAlt />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
 
-        <button className="nav-item">
+        <button  className={`nav-item ${
+            location.pathname === "/admin/userManagement" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/userManagement")}>
           <FaUsers />
           {sidebarOpen && <span>Users</span>}
         </button>
