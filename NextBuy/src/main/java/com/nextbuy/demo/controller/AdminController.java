@@ -61,8 +61,8 @@ public class AdminController {
 
   
   
-  @PatchMapping("/updateUserPassword/{username}")
-  public String updateUserPassword(@PathVariable String username ,@RequestParam String password) {
+  @PatchMapping("/updateUserPassword/{username}/{password}")
+  public String updateUserPassword(@PathVariable String username ,@PathVariable String password) {
       return  adminService.updateUserPassword(username,password);
   }
 
@@ -103,12 +103,19 @@ public class AdminController {
       return ResponseEntity.ok("Email sent to all registered users");
   }
 
- @PatchMapping("/makeUserToAdmin/{email}/{username}/{password}")
- public String addAdmin(@PathVariable String email,@PathVariable String username,@PathVariable String password) {
-	 return adminService.makeUserToAdmin(email, username, password);
-	 
- }
- 
+  @PatchMapping("/makeUserToAdmin/{email}/{username}/{password}")
+  public String addAdmin(
+          @PathVariable String email,
+          @PathVariable String username,
+          @PathVariable String password
+  ) {
+
+      return adminService.makeUserToAdmin(
+              email,
+              username,
+              password
+      );
+  }
  @DeleteMapping("/deleteAdmin/{username}/{password}")
  public String deleteAdmin(@PathVariable String username, @PathVariable String password) {
 	 return adminService.deleteAdmin(username, password);
