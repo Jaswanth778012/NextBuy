@@ -4,15 +4,65 @@ const API = axios.create({
   baseURL: "http://localhost:9090",
 });
 
-API.interceptors.request.use((config) => {
+// =========================
+// REQUEST INTERCEPTOR
+// =========================
 
-  const token = localStorage.getItem("token");
+API.interceptors.request.use(
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  (config) => {
+
+    const token =
+      localStorage.getItem("token");
+
+    if (token) {
+
+      config.headers.Authorization =
+        `Bearer ${token}`;
+    }
+
+    return config;
+  },
+
+  (error) => {
+
+    return Promise.reject(error);
   }
+);
 
-  return config;
-});
+// =========================
+// RESPONSE INTERCEPTOR
+// =========================
+
+API.interceptors.response.use(
+
+  (response) => {
+
+    return response;
+  },
+
+  (error) => {
+
+    // TOKEN EXPIRED / UNAUTHORIZED
+
+    if (
+      error.response &&
+      error.response.status === 401
+    ) {
+
+      // CLEAR STORAGE
+
+      localStorage.removeItem("token");
+
+      localStorage.removeItem("user");
+
+      // REDIRECT TO LOGIN
+
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default API;
