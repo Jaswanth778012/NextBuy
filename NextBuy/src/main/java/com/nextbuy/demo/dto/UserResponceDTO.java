@@ -6,6 +6,7 @@ import java.util.Map;
 import com.nextbuy.demo.entity.Brand;
 import com.nextbuy.demo.entity.Category;
 import com.nextbuy.demo.entity.SubCategory;
+import com.nextbuy.demo.enums.ProductStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserResponceDTO {
   
-
+	private Long id;
 	
 	private String name;
 	
@@ -39,7 +40,11 @@ public class UserResponceDTO {
 	
 	private Map<String, String> attributes;
 	
+	private ProductStatus productStatus;
+	
 	private int deliveryTimeInDays;
+	
+	
 	
 	
 }
