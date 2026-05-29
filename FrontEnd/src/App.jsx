@@ -1,53 +1,74 @@
-import { BrowserRouter, Routes, Route }
-from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import {
-  ToastContainer,
-} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
+// =========================
+// PAGES
+// =========================
+
+import Home from "./pages/Home";
+
 import Login from "./pages/Login";
+
 import Register from "./pages/Register";
-import Home from "./pages/Home"
+
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminProfile
-from "./pages/AdminProfile";
+
+import AdminProfile from "./pages/AdminProfile";
+
+// =========================
+// LAYOUTS
+// =========================
+
+import AdminLayout from "./layout/AdminLayout";
 
 function App() {
-
   return (
-
     <BrowserRouter>
+      {/* TOAST */}
 
-         <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="light"
-      />
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+
+      {/* ROUTES */}
 
       <Routes>
-
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        {/* =========================
+            PUBLIC ROUTES
+        ========================== */}
 
         <Route path="/" element={<Home />} />
-        <Route
-  path="/admin/profile"
-  element={<AdminProfile />}
-/>
 
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        {/* =========================
+            ADMIN LAYOUT ROUTES
+        ========================== */}
+
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* DASHBOARD */}
+
+          <Route path="dashboard" element={<AdminDashboard />} />
+
+          {/* DEFAULT ADMIN ROUTE */}
+
+          <Route index element={<Navigate to="dashboard" replace />} />
+        </Route>
+
+          <Route
+          path="/admin/profile"
+          element={<AdminProfile />}
+        />
+
+        {/* =========================
+            UNKNOWN ROUTE
+        ========================== */}
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
     </BrowserRouter>
   );
 }

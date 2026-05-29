@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef, useEffect } from "react";
 import NestBuy from "../../assets/NestBuy.png"
 import {

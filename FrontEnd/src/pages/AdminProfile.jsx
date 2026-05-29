@@ -1,8 +1,11 @@
-import React,
-{
+import React, {
   useEffect,
   useState,
 } from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import {
 
@@ -14,11 +17,11 @@ import {
 
 } from "../services/adminService";
 
-import ProfileSidebar
-from "../components/adminProfile/ProfileSidebar";
-
 import ProfileInfo
 from "../components/adminProfile/ProfileInfo";
+
+import ProfileSidebar
+from "../components/adminProfile/ProfileSidebar";
 
 import EditProfilePopup
 from "../components/adminProfile/EditProfilePopup";
@@ -26,63 +29,103 @@ from "../components/adminProfile/EditProfilePopup";
 import ChangePasswordPopup
 from "../components/adminProfile/ChangePasswordPopup";
 
+import "../styles/AdminProfile.css";
+
 function AdminProfile() {
 
+  const navigate =
+    useNavigate();
+
+  // =========================
   // PROFILE
+  // =========================
+
   const [profile,
-  setProfile] =
-  useState(null);
+    setProfile] =
+    useState(null);
 
-  // EDIT POPUP
+  // =========================
+  // POPUPS
+  // =========================
+
   const [showEditPopup,
-  setShowEditPopup] =
-  useState(false);
+    setShowEditPopup] =
+    useState(false);
 
-  // PASSWORD POPUP
   const [showPasswordPopup,
-  setShowPasswordPopup] =
-  useState(false);
+    setShowPasswordPopup] =
+    useState(false);
 
+  // =========================
   // IMAGE
+  // =========================
+
   const [selectedImage,
-  setSelectedImage] =
-  useState(null);
+    setSelectedImage] =
+    useState(null);
 
+  // =========================
   // EDIT FORM
+  // =========================
+
   const [editForm,
-  setEditForm] =
-  useState({
+    setEditForm] =
+    useState({
 
-    name: "",
+      name: "",
 
-    mobileNumber: "",
+      mobileNumber: "",
 
-    addressLine1: "",
+      addressLine1: "",
 
-    city: "",
+      city: "",
 
-    state: "",
+      state: "",
 
-    country: "",
+      country: "",
 
-    email: "",
-  });
+      email: "",
+    });
 
+  // =========================
   // PASSWORD FORM
+  // =========================
+
   const [passwordForm,
-  setPasswordForm] =
-  useState({
+    setPasswordForm] =
+    useState({
 
-    username: "",
+      username: "",
 
-    oldPassword: "",
+      oldPassword: "",
 
-    newPassword: "",
+      newPassword: "",
 
-    confirmPassword: "",
-  });
+      confirmPassword: "",
+    });
 
+  // =========================
+  // AUTH CHECK
+  // =========================
+
+  useEffect(() => {
+
+    const token =
+      localStorage.getItem(
+        "token"
+      );
+
+    if (!token) {
+
+      navigate("/login");
+    }
+
+  }, [navigate]);
+
+  // =========================
   // FETCH PROFILE
+  // =========================
+
   useEffect(() => {
 
     fetchProfile();
@@ -111,7 +154,10 @@ function AdminProfile() {
       }
   };
 
+  // =========================
   // HANDLE INPUT
+  // =========================
+
   const handleChange =
     (e) => {
 
@@ -120,11 +166,14 @@ function AdminProfile() {
         ...editForm,
 
         [e.target.name]:
-        e.target.value,
+          e.target.value,
       });
   };
 
-  // HANDLE PASSWORD INPUT
+  // =========================
+  // PASSWORD INPUT
+  // =========================
+
   const handlePasswordChange =
     (e) => {
 
@@ -133,11 +182,14 @@ function AdminProfile() {
         ...passwordForm,
 
         [e.target.name]:
-        e.target.value,
+          e.target.value,
       });
   };
 
-  // HANDLE IMAGE
+  // =========================
+  // IMAGE CHANGE
+  // =========================
+
   const handleImageChange =
     (e) => {
 
@@ -146,7 +198,10 @@ function AdminProfile() {
       );
   };
 
+  // =========================
   // SAVE PROFILE
+  // =========================
+
   const handleSave =
     async () => {
 
@@ -163,17 +218,17 @@ function AdminProfile() {
             [
               JSON.stringify(
                 editForm
-              )
+              ),
             ],
 
             {
               type:
-              "application/json"
+                "application/json",
             }
           )
         );
 
-        if(selectedImage){
+        if (selectedImage) {
 
           formData.append(
             "img",
@@ -181,12 +236,9 @@ function AdminProfile() {
           );
         }
 
-        const response =
-          await editAdminProfile(
-            formData
-          );
-
-        console.log(response);
+        await editAdminProfile(
+          formData
+        );
 
         setProfile({
 
@@ -197,24 +249,35 @@ function AdminProfile() {
               ? URL.createObjectURL(
                   selectedImage
                 )
-              : profile.dpUrl
+              : profile.dpUrl,
         });
 
-        setSelectedImage(null);
+        setSelectedImage(
+          null
+        );
 
-        setShowEditPopup(false);
+        setShowEditPopup(
+          false
+        );
 
         alert(
-          "Profile Updated"
+          "Profile Updated Successfully 🚀"
         );
 
       } catch (error) {
 
         console.log(error);
+
+        alert(
+          "Profile Update Failed ❌"
+        );
       }
   };
 
+  // =========================
   // VERIFY PASSWORD
+  // =========================
+
   const handleVerifyPassword =
     async () => {
 
@@ -230,7 +293,7 @@ function AdminProfile() {
         );
 
         alert(
-          "Verified Successfully"
+          "Verified Successfully ✅"
         );
 
       } catch (error) {
@@ -238,48 +301,51 @@ function AdminProfile() {
         console.log(error);
 
         alert(
-          "Wrong Username or Password"
+          "Wrong Username or Password ❌"
         );
       }
   };
 
+  // =========================
   // UPDATE PASSWORD
+  // =========================
+
   const handlePasswordSave =
     async () => {
 
       try {
 
-        if(
+        if (
 
           passwordForm.newPassword !==
+
           passwordForm.confirmPassword
 
-        ){
+        ) {
 
           alert(
-            "Passwords Not Matching"
+            "Passwords Not Matching ❌"
           );
 
           return;
         }
 
-        const response =
-          await changeAdminPassword(
+        await changeAdminPassword(
 
-            passwordForm.username,
+          passwordForm.username,
 
-            passwordForm.oldPassword,
+          passwordForm.oldPassword,
 
-            passwordForm.newPassword
-          );
-
-        console.log(response);
-
-        alert(
-          "Password Updated"
+          passwordForm.newPassword
         );
 
-        setShowPasswordPopup(false);
+        alert(
+          "Password Updated Successfully 🔐"
+        );
+
+        setShowPasswordPopup(
+          false
+        );
 
         setPasswordForm({
 
@@ -297,42 +363,74 @@ function AdminProfile() {
         console.log(error);
 
         alert(
-          "Password Update Failed"
+          "Password Update Failed ❌"
         );
       }
   };
 
+  // =========================
   // LOADING
+  // =========================
+
   if (!profile) {
 
-    return <h2>Loading...</h2>;
+    return (
+
+      <div className="admin-profile-page">
+
+        <div className="dashboard-status-card">
+
+          <div className="dashboard-loader"></div>
+
+          <h2>
+            Loading Profile
+          </h2>
+
+          <p>
+            Fetching admin details...
+          </p>
+
+        </div>
+
+      </div>
+    );
   }
+
+  // =========================
+  // MAIN UI
+  // =========================
 
   return (
 
-    <div className="admin-profile-container">
+    <div className="admin-profile-page">
 
-      {/* SIDEBAR */}
-      <ProfileSidebar
+      <div className="admin-profile-container">
 
-        profile={profile}
+        {/* PROFILE SIDEBAR */}
 
-        setShowEditPopup={
-          setShowEditPopup
-        }
+        <ProfileSidebar
 
-        setShowPasswordPopup={
-          setShowPasswordPopup
-        }
+          profile={profile}
 
-      />
+          setShowEditPopup={
+            setShowEditPopup
+          }
 
-      {/* PROFILE INFO */}
-      <ProfileInfo
-        profile={profile}
-      />
+          setShowPasswordPopup={
+            setShowPasswordPopup
+          }
+        />
 
-      {/* EDIT POPUP */}
+        {/* PROFILE INFO */}
+
+        <ProfileInfo
+          profile={profile}
+        />
+
+      </div>
+
+      {/* EDIT PROFILE POPUP */}
+
       {showEditPopup && (
 
         <EditProfilePopup
@@ -354,11 +452,11 @@ function AdminProfile() {
           setShowEditPopup={
             setShowEditPopup
           }
-
         />
       )}
 
       {/* PASSWORD POPUP */}
+
       {showPasswordPopup && (
 
         <ChangePasswordPopup
@@ -382,7 +480,6 @@ function AdminProfile() {
           setShowPasswordPopup={
             setShowPasswordPopup
           }
-
         />
       )}
 
