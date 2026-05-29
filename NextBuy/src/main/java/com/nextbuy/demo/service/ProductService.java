@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.ComparisionProductDto;
 import com.nextbuy.demo.dto.ProductDTO;
+import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.ProductStatus;
@@ -32,7 +33,7 @@ public class ProductService {
 		this.brandRepo = brandRepo;
 		this.cloudinaryService = cloudinaryService;
 	}
-	//ADDPRODUCT
+
 	public String addProduct(ProductDTO Pdto, MultipartFile imageFile) {
 		Product p = new Product();
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
@@ -43,6 +44,7 @@ public class ProductService {
     	p.setName(Pdto.getName());
     	p.setDescription(Pdto.getDescription());
     	p.setCategory(Pdto.getCategory());
+    	p.setSubCategory(Pdto.getSubCategory());
     	p.setMrp_price(Pdto.getMrp_price());
     	p.setDiscountPercentage(0.0);
     	p.setStockQuantity(Pdto.getStockQuantity());
@@ -103,7 +105,6 @@ public class ProductService {
 		return "Product Added Successfully";
 	}
 	
-	//UPDATEDIS-COUNT
 	public String updateDisCount(Long id ,Double disCount) {
 		 Product product = productRepo.findById(id).get();
 		 product.setDiscountPercentage(disCount);
@@ -134,16 +135,14 @@ public class ProductService {
 		
 	}
 	//VIEW_ALL_PRODUCTS
-	public List<Product> viewAllProducts() {
-		 List<Product> allproducts = productRepo.findAll();
-		 if(allproducts.isEmpty()) {
-			 throw new RuntimeException("No products found");
+	public List<UserResponceDTO> viewAllProducts(){
+		
+		 List<Product> pr = productRepo.findAll();
+		 if(pr.isEmpty()) {
+			 throw new RuntimeException("Username is required");
 		 }
-		return allproducts.stream()
-				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
-				   .sorted((a,b) ->
-			        a.getName().compareTo(b.getName()))
-				   .toList();
+		return pr.stream().map(this::mapToResponseDto).toList();
+		
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
@@ -253,12 +252,23 @@ public class ProductService {
 	    }
 
 	    Set<String> categories = products.stream()
-	            .map(Product::getCategory)
+	            .map(p -> p.getCategory().getName())
 	            .collect(Collectors.toSet());
 
 	    if(categories.size() > 1) {
 	        throw new RuntimeException(
 	                "Products must belong to same category"
+	        );
+	    }
+	    
+	    Set<String> subCategories = products.stream()
+	            .map(p -> p.getSubCategory().getName())
+	            .collect(Collectors.toSet());
+
+	    if(subCategories.size() > 1) {
+
+	        throw new RuntimeException(
+	                "Products must belong to same subcategory"
 	        );
 	    }
 
@@ -274,6 +284,7 @@ public class ProductService {
 	        dto.setFinalPrice(product.getFinalPrice());
 	        dto.setAverageRating(product.getAverageRating());
 	        dto.setCategory(product.getCategory());
+	        dto.setSubCategory(product.getSubCategory());
 	        dto.setBrand(product.getBrand());
 	        dto.setAttributes(product.getAttributes());
 
@@ -286,7 +297,7 @@ public class ProductService {
 	public  List<Product> searchCategory(String category) {
 		return productRepo.findAll()
 			   .stream()
-			   .filter(p->p.getCategory().equalsIgnoreCase(category))
+			   .filter(p->p.getCategory().getName().equalsIgnoreCase(category))
 			   .distinct()
 			   .sorted((a,b) ->
 		        a.getName().compareTo(b.getName()))
@@ -294,6 +305,8 @@ public class ProductService {
 		
 			  
 	}
+	
+	
 	//updateProductStatus
 	public String updateProductStatus(Long id,ProductStatus status) {
 		  Optional<Product> p = productRepo.findById(id);
@@ -326,4 +339,22 @@ public class ProductService {
 	    );
 	}
 	
+	public UserResponceDTO mapToResponseDto(Product product) {
+		UserResponceDTO userDto = new UserResponceDTO ();
+		  userDto.setName(product.getName());
+	        userDto.setDescription(product.getDescription());
+	        userDto.setCategory(product.getCategory());
+	        userDto.setSubCategory(product.getSubCategory());
+	        userDto.setPrice(product.getMrp_price());
+	        userDto.setDiscountPercentage(product.getDiscountPercentage());
+	        userDto.setImageUrl(product.getImageUrl());
+	        userDto .setAttributes(product.getAttributes());
+	        userDto.setAverageRating(product.getAverageRating());
+	        userDto.setBrand(product.getBrand());
+	        userDto.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
+	        userDto.setFinalPrice(product.getFinalPrice());
+	        return userDto;
+	     
+	      
+	  }
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.Product;
-
+import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.ProductRepository;
 
 import jakarta.persistence.criteria.Predicate;
@@ -27,14 +27,16 @@ public class CommonService {
 		this.productRepo = productRepo;
 	}
 
-	public List<UserResponceDTO> viewAllProducts(){
-		
-		 List<Product> pr = productRepo.findAll();
-		 if(pr.isEmpty()) {
-			 throw new RuntimeException("Username is required");
+	public List<Product> viewAllProducts() {
+		 List<Product> allproducts = productRepo.findAll();
+		 if(allproducts.isEmpty()) {
+			 throw new RuntimeException("No products found");
 		 }
-		return pr.stream().map(this::mapToResponseDto).toList();
-		
+		return allproducts.stream()
+				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
+				   .sorted((a,b) ->
+			        a.getName().compareTo(b.getName()))
+				   .toList();
 	}
 	
 	public List<UserResponceDTO> searchByName(String name){
@@ -46,6 +48,7 @@ public class CommonService {
 		  userDto.setName(product.getName());
 	        userDto.setDescription(product.getDescription());
 	        userDto.setCategory(product.getCategory());
+	        userDto.setSubCategory(product.getSubCategory());
 	        userDto.setPrice(product.getMrp_price());
 	        userDto.setDiscountPercentage(product.getDiscountPercentage());
 	        userDto.setImageUrl(product.getImageUrl());
@@ -59,19 +62,25 @@ public class CommonService {
 	      
 	  }
 	
-   public   List<UserResponceDTO> searchCategory(String category){
-	          return productRepo.findAll()
+	public List<UserResponceDTO> searchCategory(String category){
+
+	    return productRepo.findByCategoryNameLike(category)
 	            .stream()
-	            .filter(p -> p.getCategory().equalsIgnoreCase(category))
 	            .map(this::mapToResponseDto)
-	            .distinct()
-	            .sorted()
 	            .toList();
+	}
 	
-	  
-   }
+	public List<UserResponceDTO> searchBySubCategory(String subCategory){
+
+	    return productRepo.findAll()
+	            .stream()
+	            .filter(p -> p.getSubCategory().getName()
+	                    .equalsIgnoreCase(subCategory))
+	            .map(this::mapToResponseDto)
+	            .toList();
+	}
    
-   public Page<Product> getProductsWithFilters(String search, String category,
+   public Page<Product> getProductsWithFilters(String search, String category, String subCategory,
            Double minPrice, Double maxPrice,
            String stockStatus, Long brandId,
            Pageable pageable) {
@@ -85,13 +94,27 @@ cb.like(cb.lower(root.get("description")), pattern)
 ));
 }
 if (category != null && !category.isEmpty()) {
-predicates.add(cb.equal(root.get("category"), category));
+	predicates.add(
+		    cb.equal(
+		        cb.lower(root.get("category").get("name")),
+		        category.toLowerCase()
+		    )
+		);
+}
+
+if(subCategory != null && !subCategory.isEmpty()) {
+	predicates.add(
+		    cb.equal(
+		        cb.lower(root.get("subCategory").get("name")),
+		        subCategory.toLowerCase()
+		    )
+		);
 }
 if (minPrice != null) {
-predicates.add(cb.greaterThanOrEqualTo(root.get("price"), minPrice));
+predicates.add(cb.greaterThanOrEqualTo(root.get("mrp_price"), minPrice));
 }
 if (maxPrice != null) {
-predicates.add(cb.lessThanOrEqualTo(root.get("price"), maxPrice));
+predicates.add(cb.lessThanOrEqualTo(root.get("mrp_price"), maxPrice));
 }
 if (stockStatus != null && !stockStatus.isEmpty()) {
 predicates.add(cb.equal(root.get("stockStatus").as(String.class), stockStatus));

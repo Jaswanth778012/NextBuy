@@ -3,6 +3,8 @@ package com.nextbuy.demo.dto;
 import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
+import com.nextbuy.demo.entity.Category;
+import com.nextbuy.demo.entity.SubCategory;
 
 import lombok.Data;
 
@@ -21,7 +23,9 @@ public class ComparisionProductDto {
 
     private Double averageRating;
 
-    private String category;
+    private Category category;
+    
+    private SubCategory subCategory;
 
     private Brand brand;
 

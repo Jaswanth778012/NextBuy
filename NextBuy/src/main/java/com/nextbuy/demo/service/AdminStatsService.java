@@ -1,12 +1,15 @@
 package com.nextbuy.demo.service;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import com.nextbuy.demo.dto.CategorySalesDTO;
+import com.nextbuy.demo.dto.MonthlyOrderCountDTO;
 import com.nextbuy.demo.dto.MonthlyStatsDTO;
 import com.nextbuy.demo.dto.TopSellingProductDTO;
 import com.nextbuy.demo.entity.Order;
@@ -48,8 +51,10 @@ public class AdminStatsService {
 	  long deliveredOrders = orderRepo.countByStatus(OrderStatus.DELIVERED);
 	  long cancelledOrders = orderRepo.countByStatus(OrderStatus.CANCELLED);
 	  long pendingOrders = orderRepo.countByStatus(OrderStatus.PENDING);
-	  long totalLowP = productRepo.findAll().stream().filter(p->p.getStockQuantity()<100).count();
-	  long totalHighP= productRepo.findAll().stream().filter(p->p.getStockQuantity()>100).count();
+	  long totalLowP = productRepo.findAll().stream().filter(p->p.getStockQuantity()<=50).count();
+	  long totalHighP= productRepo.findAll().stream().filter(p->p.getStockQuantity()<100 && p.getStockQuantity()>50).count();
+	  long totalShipped = orderRepo.countByStatus(OrderStatus.SHIPPED);
+	  long totalReturns = orderRepo.countByStatus(OrderStatus.RETURNED);
 	  MonthlyStatsDTO  msd = new MonthlyStatsDTO ();
 	  msd.setTotalUsers(totalUsers);
 	  msd.setTotalProducts(totalProducts);
@@ -58,19 +63,27 @@ public class AdminStatsService {
 	  msd.setCancelledOrders(cancelledOrders);
 	  msd.setPendingOrders(pendingOrders);
 	  msd.setTotallowStockProducts(totalLowP);
-	  msd.setTotalHighStockProducts(totalHighP);
+	  msd.setTotalLimitedStockProducts(totalHighP);
+	  msd.setShippedOrdes(totalShipped);
+	  msd.setReturnOrders(totalReturns);
 	 return msd;
 	}
 	
-	public List<TopSellingProductDTO> getTopSellingProducts() {
+	public List<TopSellingProductDTO> getTopSellingProducts(
+	        String category,
+	        String subCategory
+	) {
 
 	    List<Object[]> results =
-	            orderItemRepo.getTopSellingProducts();
+	            orderItemRepo.getTopSellingProductsWithFilter(
+	                    category,
+	                    subCategory
+	            );
 
 	    List<TopSellingProductDTO> list =
 	            new ArrayList<>();
 
-	    for(Object[] obj : results) {
+	    for (Object[] obj : results) {
 
 	        Product product = (Product) obj[0];
 
@@ -80,12 +93,12 @@ public class AdminStatsService {
 	                new TopSellingProductDTO();
 
 	        dto.setProductId(product.getId());
-
 	        dto.setProductName(product.getName());
-            dto.setCategory(product.getCategory());
-            dto.setImg(product.getImageUrl());
+	        dto.setCategory(product.getCategory());
+	        dto.setSubCategory(product.getSubCategory());
+	        dto.setImg(product.getImageUrl());
 	        dto.setTotalSold(totalSold);
-            
+
 	        list.add(dto);
 	    }
 
@@ -107,7 +120,9 @@ public class AdminStatsService {
 	 	                order.getStatus() == OrderStatus.DELIVERED)
 	 	        .mapToDouble(Order::getFinalPrice)
 	 	        .sum();
-	 	
+	    long totalShipped = stats.stream().filter(o->o.getStatus()==OrderStatus.SHIPPED).count();
+	              
+	    long totalreturneds = stats.stream().filter(o->o.getStatus()==OrderStatus.RETURNED).count();
 	Double MonthlyRevanue= orderRepo.findByMonthAndYear(month, year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED)
 	   .mapToDouble(Order::getFinalPrice).sum();
 	
@@ -127,6 +142,8 @@ public class AdminStatsService {
 	  msd.setPendingOrders(pendingOrders);
 	  msd.setMonthlyRevanue(MonthlyRevanue);
 	  msd.setYearlyRevanue(yearlyRevanue);
+	  msd.setShippedOrdes(totalShipped);
+	  msd.setReturnOrders(totalreturneds);
 	  return msd;
 	}
    public  MonthlyStatsDTO getYearlyStats(int year) {
@@ -135,6 +152,8 @@ public class AdminStatsService {
 	 	double yearlyRevanue = orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED).mapToDouble(Order::getFinalPrice).sum();
 	 	 long deliveredOrders= orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED).count();
 		  long cancelledOrders=orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.CANCELLED).count();
+		  long returnedOrders=orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.RETURNED).count();
+		  long ShippedOrders=orderRepo.findByYear(year).stream().filter(o->o.getStatus()==OrderStatus.SHIPPED).count();
 		  double totalRevanue = orderRepo.findAll()
 		 	        .stream()
 		 	        .filter(order ->
@@ -150,19 +169,21 @@ public class AdminStatsService {
 		  msd.setCancelledOrders(cancelledOrders);
 		  msd.setPendingOrders(pendingOrders);
 		  msd.setYearlyRevanue(yearlyRevanue);
+		  msd.setShippedOrdes(ShippedOrders);
+		  msd.setReturnOrders(returnedOrders);
 		  return msd;
    }
    public List<TopSellingProductDTO> lowStockProducts(){
 	   List<Product> product = productRepo.findAll();
 	   return product.stream()
-			   .filter(p->p.getStockQuantity()<100)
+			   .filter(p->p.getStockQuantity()<=50)
                .map(this::mapToResponceDto)
                .toList();
    }
-   public List<TopSellingProductDTO> HighStockProducts(){
+   public List<TopSellingProductDTO> LimitedStockProducts(){
 	   List<Product> product = productRepo.findAll();
 	   return product.stream()
-			   .filter(p->p.getStockQuantity()>100)
+			   .filter(p->p.getStockQuantity()<100 && p.getStockQuantity()>50)
                .map(this::mapToResponceDto)
                .toList();
    }
@@ -173,10 +194,75 @@ public class AdminStatsService {
 	   t.setProductName(product.getName());
 	   t.setImg(product.getImageUrl());
 	   t.setCategory(product.getCategory());
+	   t.setSubCategory(product.getSubCategory());
 	   t.setStockQuantity(product.getStockQuantity());
 	   return t;
 	   
 	   
    }
+   
+   public List< CategorySalesDTO> getCategoryStats() {
+	       List<Object[]> categorys = orderItemRepo.getCategoryWiseSales();
+	       List<CategorySalesDTO> list = new ArrayList<>();
+	       for(Object[] obj : categorys) {
+	    	   Long id =(Long)obj[0];
+	    	   String name = (String)obj[1];
+	    	   Long sold =(Long)obj[2];
+	    	   CategorySalesDTO csd = new CategorySalesDTO();
+	    	   csd.setCategoryId(id);
+	    	   csd.setCategoryName(name);
+	    	   csd.setTotalSold(sold);
+	    	   list.add(csd);
+	       }
+	       return list;
+   }
+   
+    public List< CategorySalesDTO> getSubCategoryStatsByCategoryId(Long categoryId){
+	          List<Object[]> result = orderItemRepo.getSubCategorySalesByCategory(categoryId);
+	          List<CategorySalesDTO> list =new ArrayList<>();
+	          for(Object[] obj: result) {
+	        	  Long id =(Long) obj[0];
+	        	  String name =  (String)obj[1];
+	        	  Long sold =(Long) obj[2];
+	        	  CategorySalesDTO csd = new CategorySalesDTO();
+	        	  csd.setCategoryId(id);
+	        	  csd.setCategoryName(name);
+	        	  csd.setTotalSold(sold);
+	        	  list.add(csd);
+	        	  
+	          }
+	          return list;
+   }
+     
+    public List<MonthlyOrderCountDTO> monthlyOrderCount(){
+    	LocalDate now = LocalDate.now();
+    	int year = now.getYear();
+    	ArrayList<String> months = new ArrayList<>();
+    	 months.add("Jan");
+    	 months.add("Feb");
+    	 months.add("Mar");
+    	 months.add("Apr");
+    	 months.add("May");
+    	 months.add("Jun");
+    	 months.add("Jul");
+    	 months.add("Aug");
+    	 months.add("Sep");
+    	 months.add("Oct");
+    	 months.add("Nov");
+    	 months.add("Dec");
+    	 
+    List<MonthlyOrderCountDTO> list = new ArrayList<>();
+     for(int i = 1; i <= 12; i++) {
+    long month = orderRepo.findByMonthAndYear(i, year).stream().filter(o->o.getStatus()==OrderStatus.DELIVERED).count();
+    MonthlyOrderCountDTO mc = new MonthlyOrderCountDTO();
+       
+         mc.setMonth(months.get(i-1));
+         mc.setCount(month);
+         list.add(mc);
+     }
+     return list;
+    }
+   
+   
 
 }

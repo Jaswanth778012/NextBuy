@@ -1,0 +1,981 @@
+
+
+.admin-profile-container{
+
+    display: flex;
+
+    gap: 28px;
+
+    padding: 35px;
+
+    min-height: 100vh;
+
+    background:
+    linear-gradient(
+      135deg,
+      #F7D7C3 0%,
+      #E5C7F7 50%,
+      #D6E6FF 100%
+    );
+}
+
+/* =========================
+   LEFT PROFILE SIDEBAR
+========================= */
+
+.profile-sidebar{
+
+    width: 320px;
+
+    padding: 35px 28px;
+
+    border-radius: 30px;
+
+    background:
+    rgba(255,255,255,0.35);
+
+    backdrop-filter: blur(18px);
+
+    border:
+    1px solid rgba(255,255,255,0.25);
+
+    box-shadow:
+    0 10px 35px rgba(0,0,0,0.08);
+
+    text-align: center;
+
+    position: sticky;
+
+    top: 25px;
+
+    height: fit-content;
+
+    overflow: hidden;
+}
+
+/* GLOW EFFECT */
+
+.profile-sidebar::before{
+
+    content: "";
+
+    position: absolute;
+
+    width: 220px;
+
+    height: 220px;
+
+    background:
+    rgba(255,255,255,0.25);
+
+    border-radius: 50%;
+
+    top: -80px;
+
+    right: -80px;
+
+    filter: blur(20px);
+}
+
+/* PROFILE IMAGE */
+
+.profile-sidebar img{
+
+    width: 135px;
+
+    height: 135px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 5px solid white;
+
+    box-shadow:
+    0 8px 25px rgba(0,0,0,0.15);
+
+    margin-bottom: 22px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.profile-sidebar h2{
+
+    font-size: 28px;
+
+    color: #222;
+
+    margin-bottom: 8px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.profile-sidebar p{
+
+    color: #666;
+
+    font-size: 15px;
+
+    margin-bottom: 30px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+/* EDIT BUTTON */
+
+.edit-profile-btn{
+
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    linear-gradient(
+      135deg,
+      #3D74E0,
+      #49A6F8
+    );
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    transition: 0.3s;
+
+    position: relative;
+
+    z-index: 2;
+
+    box-shadow:
+    0 10px 20px rgba(61,116,224,0.25);
+}
+
+.edit-profile-btn:hover{
+
+    transform:
+    translateY(-3px)
+    scale(1.02);
+}
+
+/* =========================
+   RIGHT CONTENT
+========================= */
+
+.profile-content-area{
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 28px;
+}
+
+/* SECTION */
+
+.profile-section{
+
+    padding: 30px;
+
+    border-radius: 28px;
+
+    background:
+    rgba(255,255,255,0.35);
+
+    backdrop-filter: blur(18px);
+
+    border:
+    1px solid rgba(255,255,255,0.25);
+
+    box-shadow:
+    0 10px 35px rgba(0,0,0,0.08);
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+/* SECTION GLOW */
+
+.profile-section::before{
+
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+
+    height: 250px;
+
+    background:
+    rgba(255,255,255,0.18);
+
+    border-radius: 50%;
+
+    top: -120px;
+
+    right: -120px;
+
+    filter: blur(25px);
+}
+
+.profile-section h3{
+
+    font-size: 24px;
+
+    color: #222;
+
+    margin-bottom: 28px;
+
+    position: relative;
+
+    padding-left: 18px;
+}
+
+.profile-section h3::before{
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 5px;
+
+    width: 6px;
+
+    height: 28px;
+
+    border-radius: 20px;
+
+    background:
+    linear-gradient(
+      180deg,
+      #3D74E0,
+      #49A6F8
+    );
+}
+
+/* GRID */
+
+.profile-grid{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(240px,1fr));
+
+    gap: 22px;
+}
+
+/* PROFILE ITEM */
+
+.profile-item{
+
+    padding: 22px;
+
+    border-radius: 22px;
+
+    background:
+    rgba(255,255,255,0.45);
+
+    border:
+    1px solid rgba(255,255,255,0.3);
+
+    transition: 0.3s;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.profile-item:hover{
+
+    transform:
+    translateY(-5px);
+
+    box-shadow:
+    0 12px 24px rgba(0,0,0,0.08);
+}
+
+/* CARD LIGHT */
+
+.profile-item::before{
+
+    content: "";
+
+    position: absolute;
+
+    width: 140px;
+
+    height: 140px;
+
+    background:
+    rgba(255,255,255,0.2);
+
+    border-radius: 50%;
+
+    top: -60px;
+
+    right: -60px;
+}
+
+.profile-item label{
+
+    display: block;
+
+    font-size: 14px;
+
+    color: #777;
+
+    margin-bottom: 10px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+.profile-item p{
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    color: #222;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:950px){
+
+    .admin-profile-container{
+
+        flex-direction: column;
+    }
+
+    .profile-sidebar{
+
+        width: 100%;
+
+        position: relative;
+    }
+}
+
+@media(max-width:600px){
+
+    .admin-profile-container{
+
+        padding: 18px;
+    }
+
+    .profile-section{
+
+        padding: 22px;
+    }
+
+    .profile-grid{
+
+        grid-template-columns: 1fr;
+    }
+}
+
+/* BUTTON GROUP */
+
+.profile-btn-group{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+/* CHANGE PASSWORD BUTTON */
+
+.change-password-btn{
+
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    rgba(255,255,255,0.6);
+
+    backdrop-filter: blur(10px);
+
+    color: #3D74E0;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    border:
+    1px solid rgba(255,255,255,0.4);
+
+    box-shadow:
+    0 8px 18px rgba(0,0,0,0.06);
+}
+
+.back-btn {
+
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+    rgba(255,255,255,0.6);
+
+    backdrop-filter: blur(10px);
+
+    color: #3D74E0;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+
+    border:
+    1px solid rgba(255,255,255,0.4);
+
+    box-shadow:
+    0 8px 18px rgba(0,0,0,0.06);
+
+    /* ADD THESE */
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+}
+
+
+/* CHANGE PASSWORD + BACK BUTTON HOVER */
+
+.back-btn:hover{
+
+    transform:
+    translateY(-3px);
+
+    background:
+    linear-gradient(
+      135deg,
+      #E3F0FF,
+      #D6E6FF
+    );
+
+    color: #db1f1f;
+
+    box-shadow:
+    0 12px 24px rgba(42, 179, 42, 0.12);
+}
+
+/* =========================
+   EDIT POPUP
+========================= */
+
+.edit-popup-overlay{
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+    rgba(0,0,0,0.35);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 999;
+}
+
+.edit-popup{
+
+    width: 700px;
+
+    max-width: 95%;
+
+    padding: 35px;
+
+    border-radius: 30px;
+
+    background:
+    rgba(255,255,255,0.35);
+
+    backdrop-filter: blur(18px);
+
+    border:
+    1px solid rgba(255,255,255,0.25);
+
+    box-shadow:
+    0 10px 35px rgba(0,0,0,0.15);
+}
+
+.edit-popup h2{
+
+    margin-bottom: 25px;
+
+    color: #222;
+}
+
+/* GRID */
+
+.edit-grid{
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(240px,1fr));
+
+    gap: 18px;
+}
+/* INPUT */
+
+.edit-grid input{
+
+    padding: 15px;
+
+    border-radius: 16px;
+
+    border: none;
+
+    outline: none;
+
+    background:
+    rgba(255,255,255,0.65);
+
+    font-size: 15px;
+
+    color: #222;
+}
+
+/* BUTTONS */
+
+.popup-buttons{
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 15px;
+
+    margin-top: 30px;
+}
+
+.cancel-btn{
+
+    padding: 13px 24px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #ddd;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.save-btn{
+
+    padding: 13px 24px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background:
+    linear-gradient(
+      135deg,
+      #3D74E0,
+      #49A6F8
+    );
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+/* FILE INPUT */
+
+.file-upload-box{
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    background:
+    rgba(255,255,255,0.5);
+
+    padding: 14px;
+
+    border-radius: 16px;
+}
+
+.file-upload-box label{
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #444;
+}
+
+.file-upload-box input{
+
+    background: white;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   CHANGE PASSWORD BUTTON
+========================= */
+
+.change-password-btn{
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background:
+    linear-gradient(
+      135deg,
+      #3D74E0,
+      #49A6F8
+    );
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+}
+
+.change-password-btn:hover{
+
+    transform: translateY(-2px);
+     color: black;
+    box-shadow:
+    0 10px 20px
+    rgba(61,116,224,0.25);
+}
+
+/* =========================
+   PASSWORD POPUP
+========================= */
+
+.edit-popup-overlay1{
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+    rgba(0,0,0,0.45);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 999;
+}
+
+.edit-popup1{
+
+    width: 500px;
+
+    max-width: 95%;
+
+    background:
+    rgba(255,255,255,0.78);
+
+    backdrop-filter: blur(20px);
+
+    border-radius: 24px;
+
+    padding: 30px;
+
+    box-shadow:
+    0 10px 40px
+    rgba(0,0,0,0.15);
+
+    animation:
+    popupFade 0.3s ease;
+}
+
+.edit-popup1 h2{
+
+    font-size: 26px;
+
+    margin-bottom: 25px;
+
+    color: #222;
+}
+
+.edit-grid1{
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+}
+
+.edit-grid1 input{
+
+    padding: 14px 16px;
+
+    border-radius: 14px;
+
+    border: 1px solid #ddd;
+
+    background: white;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.3s ease;
+}
+
+.edit-grid1 input:focus{
+
+    border-color: #3D74E0;
+
+    box-shadow:
+    0 0 0 4px
+    rgba(61,116,224,0.15);
+}
+
+.popup-buttons{
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 14px;
+
+    margin-top: 28px;
+}
+
+.cancel-btn{
+
+    padding: 12px 20px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #e4e4e4;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.save-btn{
+
+    padding: 12px 22px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+    linear-gradient(
+      135deg,
+      #3D74E0,
+      #49A6F8
+    );
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: 0.3s ease;
+}
+
+.save-btn:hover{
+
+    transform: translateY(-2px);
+
+    box-shadow:
+    0 10px 20px
+    rgba(61,116,224,0.25);
+}
+
+@keyframes popupFade{
+
+    from{
+
+        opacity: 0;
+
+        transform:
+        translateY(20px)
+        scale(0.95);
+    }
+
+    to{
+
+        opacity: 1;
+
+        transform:
+        translateY(0)
+        scale(1);
+    }
+}
+
+
+/* =========================
+   PASSWORD INPUT BOX
+========================= */
+
+.password-input-box{
+
+    position: relative;
+
+    width: 100%;
+}
+
+.password-input-box input{
+
+    width: 100%;
+
+    padding: 14px 50px 14px 16px;
+
+    border-radius: 14px;
+
+    border: 1px solid #dcdcdc;
+
+    background: rgba(255,255,255,0.9);
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.3s ease;
+}
+
+.password-input-box input:focus{
+
+    border-color: #3D74E0;
+
+    box-shadow:
+    0 0 0 4px
+    rgba(61,116,224,0.15);
+}
+
+/* =========================
+   EYE ICON
+========================= */
+
+.password-eye{
+
+    position: absolute;
+
+    right: 18px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    cursor: pointer;
+
+    color: #666;
+
+    font-size: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: 0.3s ease;
+}
+
+.password-eye:hover{
+
+    color: #3D74E0;
+
+    transform:
+    translateY(-50%)
+    scale(1.1);
+}

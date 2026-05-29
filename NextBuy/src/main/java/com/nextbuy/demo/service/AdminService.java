@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.AdminUserResponceDto;
-
+import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.enums.Role;
 import com.nextbuy.demo.repository.UserRepository;
@@ -18,18 +18,21 @@ import com.nextbuy.demo.repository.UserRepository;
 @Service
 public class AdminService {
 	
-	UserRepository  userRepo;
-	PasswordEncoder passwordEncoder;
-	
+	private UserRepository  userRepo;
+	private PasswordEncoder passwordEncoder;
+	private EmailService emailSevice;
+	private CloudinaryService cludinaryService;
+
 	
 
-	public AdminService(PasswordEncoder passwordEncoder,UserRepository userRepo) {
-		
-		this.passwordEncoder = passwordEncoder;
+
+	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice, CloudinaryService cloudinaryService) {
+		super();
 		this.userRepo = userRepo;
+		this.passwordEncoder = passwordEncoder;
+		this.emailSevice = emailSevice;
+		this.cludinaryService = cloudinaryService;
 	}
-
-
 
 	public AdminUserResponceDto searchUser(String username) {
         Optional<User> optionalUser = userRepo.findByUsername(username);
@@ -52,7 +55,7 @@ public class AdminService {
 	    }
 	
 	
-	 public String updateUser(String username, String password) {
+	 public String updateUserPassword(String username, String password) {
 
 		    if (username == null || username.isBlank()) {
 		        throw new RuntimeException("Username is required");
@@ -89,7 +92,7 @@ public class AdminService {
 	    }
 	 
 	 
-	 public String adminUpdate(String username,String password, String newPass) {
+	 public String UpdateAdminPassword(String username,String password, String newPass) {
 		 User userex = userRepo.findByUsername(username).get();
 		 if(!userex.getPassword() .equals(password) && !userex.getUsername().equals(username) ) {
 			 return "Admin not found!";
@@ -98,8 +101,8 @@ public class AdminService {
 		 userRepo.save(userex);
 		 return "Successfully updated!";
 	 }
-
-	 public String addAdmin(String email ,String username,String password) {
+	 
+	 public String makeUserToAdmin(String email ,String name,String password) {
 		   User user = userRepo.findByEmail(email).get();
 		   Optional<User> use = userRepo.findByEmail(email);
 		   if(!use.isPresent()) {
@@ -107,9 +110,14 @@ public class AdminService {
 		   }
 	
          user.setRole(Role.ADMIN);
-         user.setUsername(username);
+         user.setUsername(name);
          user.setPassword(passwordEncoder.encode(password));
          userRepo.save(user);
+         String body = "Welcome to NextBuy as a Admin \r\n"
+        		 +"AdminName : "+name +" \r\n"
+        		 +"password :" + password + "";
+         emailSevice.sendEmail(email, "FROM NEXTBUY",body );
+         
 		 return " ADDED NEW ADDMIN !"; 
 	 }
 
@@ -121,6 +129,44 @@ public class AdminService {
 		}
 		return "worng admin details !";
 	}
+	
+	public userProfileDTO profile(String username) {
+		  User admin = userRepo.findByUsername(username).get();
+		  userProfileDTO ur = new userProfileDTO();
+		  ur.setUsername(admin.getUsername());
+		  ur.setName(admin.getName());
+		  ur.setDpUrl(admin.getDpUrl());
+		  ur.setAddressLine1(admin.getAddressLine1());
+		  ur.setCity(admin.getCity());
+		  ur.setCountry(admin.getCountry());
+		  ur.setMobileNumber(admin.getMobileNumber());
+		  ur.setState(admin.getState());
+		  ur.setEmail(admin.getEmail());
+		  return ur;
+	}
+	
+	public String EditProfile(String userName , userProfileDTO userDTO, MultipartFile imgUrl) {
+	     Optional<User> user = userRepo.findByUsername(userName);
+	    if(user.isEmpty()) {
+	    	return "User Not found !!";
+	    }
+	   User u = user.get();
+	   u.setName(userDTO.getName());
+	   u.setMobileNumber(userDTO.getMobileNumber());
+	   u.setAddressLine1(userDTO.getAddressLine1());
+	   u.setCity(userDTO.getCity());
+	   u.setCountry(userDTO.getCountry());
+	   u.setState(userDTO.getState());
+	   
+	   if(imgUrl != null && !imgUrl.isEmpty())
+	   {
+		   String profileUrl = cludinaryService.uploadDpUrl(imgUrl);
+		   u.setDpUrl(profileUrl);
+	   }
+	   
+	   userRepo.save(u);
+	   return "Successfully Saved !!";
+}
 	 
 	 
 	 public AdminUserResponceDto mapToResponseDto(User user) {

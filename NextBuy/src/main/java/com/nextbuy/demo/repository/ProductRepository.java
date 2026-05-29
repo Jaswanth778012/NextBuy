@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.nextbuy.demo.entity.Brand;
 import com.nextbuy.demo.entity.Product;
@@ -28,5 +29,16 @@ public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpe
 	           OR LOWER(p.brand.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
 	           """)
 	    List<Product> searchProducts(String keyword);
-
+	 
+	 
+	 @Query("""
+		       SELECT p
+		       FROM Product p
+		       WHERE LOWER(p.category.name)
+		       LIKE LOWER(CONCAT('%', :name, '%'))
+		       """)
+		List<Product> findByCategoryNameLike(
+		        @Param("name") String name);
+	 
+	 List<Product> findByNameContainingIgnoreCase(String keyword);
 }

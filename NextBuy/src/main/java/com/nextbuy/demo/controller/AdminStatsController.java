@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nextbuy.demo.dto.CategorySalesDTO;
+import com.nextbuy.demo.dto.MonthlyOrderCountDTO;
 import com.nextbuy.demo.dto.MonthlyStatsDTO;
 import com.nextbuy.demo.dto.TopSellingProductDTO;
 import com.nextbuy.demo.service.AdminStatsService;
@@ -26,8 +29,19 @@ public class AdminStatsController {
 	}
    
    @GetMapping("/getTopSellingProducts")
-   public List<TopSellingProductDTO> getTopSellingProducts() {
-	   return adminStatsService.getTopSellingProducts();
+   public List<TopSellingProductDTO> getTopSellingProducts(
+
+           @RequestParam(required = false)
+           String category,
+
+           @RequestParam(required = false)
+           String subCategory
+   ) {
+
+       return adminStatsService.getTopSellingProducts(
+               category,
+               subCategory
+       );
    }
    
    @GetMapping("/getMonthlyStats/{month}/{year}")
@@ -44,10 +58,24 @@ public class AdminStatsController {
 	   return adminStatsService.lowStockProducts();
 	   
    }
-   @GetMapping("/highStockProducts")
+   @GetMapping("/limitedStockProducts")
    public List<TopSellingProductDTO> HighStockProducts(){
-	   return adminStatsService.HighStockProducts();
+	   return adminStatsService.LimitedStockProducts();
 	   
    }
-
+   @GetMapping("/getCategoryStats")
+   public List< CategorySalesDTO> getCategoryStats() {
+	   return adminStatsService.getCategoryStats();
+			   
+   }
+   @GetMapping("/getSubCatagoryStats/{categoryId}")
+   public List< CategorySalesDTO> getSubCategoryStatsByCategoryId(@PathVariable Long categoryId){
+	   return adminStatsService.getSubCategoryStatsByCategoryId(categoryId);
+   }
+   
+   @GetMapping("/monthlyOrderCount")
+   public List<MonthlyOrderCountDTO> monthlyOrderCount(){
+	   return adminStatsService.monthlyOrderCount();
+	   
+   }
 }

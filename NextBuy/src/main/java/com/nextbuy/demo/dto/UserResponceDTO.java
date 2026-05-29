@@ -4,6 +4,8 @@ package com.nextbuy.demo.dto;
 import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
+import com.nextbuy.demo.entity.Category;
+import com.nextbuy.demo.entity.SubCategory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +22,9 @@ public class UserResponceDTO {
 	
 	private String description;
 	
-	private String category;
+	private Category category;
+	
+	private SubCategory subCategory;
 	
 	private Double price;
 	

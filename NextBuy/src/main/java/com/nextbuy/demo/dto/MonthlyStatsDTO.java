@@ -18,8 +18,10 @@ public class MonthlyStatsDTO {
 	 private Long deliveredOrders;
 	 private Long cancelledOrders;
 	 private Long pendingOrders;
+	 private Long shippedOrdes;
+	 private Long returnOrders;
 	  private Long TotallowStockProducts;
-	  private Long TotalHighStockProducts;
+	  private Long TotalLimitedStockProducts;
 	
 
 }

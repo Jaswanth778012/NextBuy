@@ -44,7 +44,7 @@ public class SecurityConfig {
 						.requestMatchers("/Product/compare/**")
 						.hasRole("USER")
 						
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**").hasRole("ADMIN")
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**").hasRole("ADMIN")
 
 			            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**").hasRole("USER")
 			            

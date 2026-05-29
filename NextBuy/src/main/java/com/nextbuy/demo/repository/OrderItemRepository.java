@@ -4,16 +4,66 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.nextbuy.demo.entity.OrderItem;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 	@Query("""
-		       SELECT oi.product, SUM(oi.quantity)
-		       FROM OrderItem oi
-		       WHERE oi.status = 'DELIVERED'
-		       GROUP BY oi.product
-		       ORDER BY SUM(oi.quantity) DESC
-		       """)
-		List<Object[]> getTopSellingProducts();
+		    SELECT oi.product, SUM(oi.quantity)
+		    FROM OrderItem oi
+		    WHERE (:category IS NULL
+		           OR oi.product.category.name = :category)
+		    AND (:subCategory IS NULL
+		         OR oi.product.subCategory.name = :subCategory)
+		    GROUP BY oi.product
+		    ORDER BY SUM(oi.quantity) DESC
+		""")
+		List<Object[]> getTopSellingProductsWithFilter(
+		        @Param("category") String category,
+		        @Param("subCategory") String subCategory
+		);
+		
+		@Query("""
+			       SELECT
+			       oi.product.category.id,
+			       oi.product.category.name,
+			       SUM(oi.quantity)
+
+			       FROM OrderItem oi
+
+			       WHERE oi.order.status =
+			       com.nextbuy.demo.enums.OrderStatus.DELIVERED
+
+			       GROUP BY
+			       oi.product.category.id,
+			       oi.product.category.name
+
+			       ORDER BY SUM(oi.quantity) DESC
+			       """)
+			List<Object[]> getCategoryWiseSales();
+			
+			
+			@Query("""
+				       SELECT
+				       oi.product.subCategory.id,
+				       oi.product.subCategory.name,
+				       SUM(oi.quantity)
+
+				       FROM OrderItem oi
+
+				       WHERE oi.order.status =
+				       com.nextbuy.demo.enums.OrderStatus.DELIVERED
+
+				       AND oi.product.category.id = :categoryId
+
+				       GROUP BY
+				       oi.product.subCategory.id,
+				       oi.product.subCategory.name
+
+				       ORDER BY SUM(oi.quantity) DESC
+				       """)
+				List<Object[]> getSubCategorySalesByCategory(
+				        @Param("categoryId") Long categoryId);
+		
 }
