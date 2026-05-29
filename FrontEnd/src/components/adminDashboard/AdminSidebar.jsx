@@ -9,7 +9,11 @@ import {
   FaCog
 } from "react-icons/fa";
 
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
+=======
+import { useNavigate, useLocation } from "react-router-dom";
+>>>>>>> f0c60e2918836391912e47267e1d0162b7325d2e
 
 function AdminSidebar({
   sidebarOpen,
@@ -17,8 +21,14 @@ function AdminSidebar({
   handleLogout,
 }) {
 
+<<<<<<< HEAD
   // ✅ FIX ADDED HERE
   const navigate = useNavigate();
+=======
+    const navigate = useNavigate();
+
+    const location = useLocation();
+>>>>>>> f0c60e2918836391912e47267e1d0162b7325d2e
 
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
@@ -34,12 +44,18 @@ function AdminSidebar({
       </div>
 
       <nav className="sidebar-nav">
-        <button className="nav-item active">
+        <button className={`nav-item ${
+            location.pathname === "/admin/dashboard" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/dashboard")}>
           <FaTachometerAlt />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
 
-        <button className="nav-item">
+        <button  className={`nav-item ${
+            location.pathname === "/admin/userManagement" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/userManagement")}>
           <FaUsers />
           {sidebarOpen && <span>Users</span>}
         </button>

@@ -49,5 +49,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 
 	 
 	 List<Order> findByOrderNumberContainingIgnoreCase(String keyword);
+	 
+	 Long countByUser(User user);
+	 
+	 @Query("""
+	            SELECT COALESCE(SUM(o.finalPrice), 0)
+	            FROM Order o
+	            WHERE o.user.id = :userId
+	            AND o.status = com.nextbuy.demo.enums.OrderStatus.DELIVERED
+	           """)
+	    Double getTotalAmountSpentByUser(@Param("userId") Long userId);
+
 }
 

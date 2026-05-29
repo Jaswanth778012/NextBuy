@@ -18,7 +18,11 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 import AdminProfile from "./pages/AdminProfile";
 
+<<<<<<< HEAD
 import AdminOptions from "./pages/AdminOptions";
+=======
+import UserManagement from "./pages/UserManegement";
+>>>>>>> f0c60e2918836391912e47267e1d0162b7325d2e
 
 // =========================
 // LAYOUTS
@@ -55,7 +59,11 @@ function App() {
 
           <Route path="dashboard" element={<AdminDashboard />} />
 
+<<<<<<< HEAD
           <Route path="options" element={<AdminOptions/>}/>
+=======
+          <Route path="userManagement" element={<UserManagement/>}/>
+>>>>>>> f0c60e2918836391912e47267e1d0162b7325d2e
 
           {/* DEFAULT ADMIN ROUTE */}
 
