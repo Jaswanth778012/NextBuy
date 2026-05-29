@@ -12,6 +12,7 @@ import com.nextbuy.demo.dto.AdminUserResponceDto;
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.enums.Role;
+import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
 
@@ -22,16 +23,18 @@ public class AdminService {
 	private PasswordEncoder passwordEncoder;
 	private EmailService emailSevice;
 	private CloudinaryService cludinaryService;
+	private OrderRepository orderRepo;
 
 	
 
 
-	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice, CloudinaryService cloudinaryService) {
+	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice, CloudinaryService cloudinaryService, OrderRepository orderRepo) {
 		super();
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 		this.emailSevice = emailSevice;
 		this.cludinaryService = cloudinaryService;
+		this.orderRepo = orderRepo;
 	}
 
 	public AdminUserResponceDto searchUser(String username) {
@@ -50,6 +53,7 @@ public class AdminService {
 	        List<User> users = userRepo.findAll();
 
 	        return users.stream()
+	        		.filter(user ->user.getRole() != Role.ADMIN)
 	                .map(this::mapToResponseDto)
 	                .toList();
 	    }
@@ -133,6 +137,7 @@ public class AdminService {
 	public userProfileDTO profile(String username) {
 		  User admin = userRepo.findByUsername(username).get();
 		  userProfileDTO ur = new userProfileDTO();
+		  ur.setUsername(admin.getUsername());
 		  ur.setName(admin.getName());
 		  ur.setDpUrl(admin.getDpUrl());
 		  ur.setAddressLine1(admin.getAddressLine1());
@@ -170,13 +175,25 @@ public class AdminService {
 	 
 	 public AdminUserResponceDto mapToResponseDto(User user) {
 		  AdminUserResponceDto AdminURD = new AdminUserResponceDto();
-		  AdminURD.setUsername(user.getUsername());
+		  	AdminURD.setId(user.getId());
+		  	AdminURD.setUsername(user.getUsername());
 	        AdminURD.setName(user.getName());
 	        AdminURD.setMobileNumber(user.getMobileNumber());
+	        AdminURD.setImgUrl(user.getDpUrl());
 	        AdminURD.setEmail(user.getEmail());
 	        AdminURD.setGender(user.getGender());
+	        AdminURD.setState(user.getState());
 	        AdminURD.setDob(user.getDob());
 	        AdminURD.setAddress(user.getAddressLine1());
+	        AdminURD.setCreatedAt(user.getCreatedAt());
+	        AdminURD.setLastLogin(user.getLastLogin());
+	        
+	        Long totalOrders = orderRepo.countByUser(user);
+	        AdminURD.setTotalOrders(totalOrders);
+	        
+	        Double totalSpent = orderRepo.getTotalAmountSpentByUser(user.getId());
+	        AdminURD.setTotalSpent(totalSpent);
+	        
 	        return AdminURD;
 	     
 	      

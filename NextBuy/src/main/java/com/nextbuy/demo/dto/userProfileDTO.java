@@ -14,7 +14,7 @@ public class userProfileDTO {
 	private String name;
 	
 	private Long mobileNumber;
-	
+	private String Username;
 	
 	private String addressLine1;
 	
