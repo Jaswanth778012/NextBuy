@@ -74,7 +74,7 @@ useEffect(() => {
 
         setProfile({
           name:
-            response.data.name,
+            response.data.Username,
 
           dpUrl:
             response.data.dpUrl,
@@ -188,15 +188,8 @@ useEffect(() => {
   My Profile
 </button>
 
-              <button className="dropdown-item">
-                <FaCog />
-                Settings
-              </button>
-
-              <button className="dropdown-item logout-item">
-                <FaSignOutAlt />
-                Logout
-              </button>
+              
+             
 
             </div>
           )}

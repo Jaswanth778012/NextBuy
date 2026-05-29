@@ -6,13 +6,20 @@ import {
   FaBoxOpen,
   FaChartLine,
   FaSignOutAlt,
+  FaCog
 } from "react-icons/fa";
+
+import { useNavigate } from "react-router-dom";
 
 function AdminSidebar({
   sidebarOpen,
   setSidebarOpen,
   handleLogout,
 }) {
+
+  // ✅ FIX ADDED HERE
+  const navigate = useNavigate();
+
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
       <div
@@ -42,15 +49,20 @@ function AdminSidebar({
           {sidebarOpen && <span>Orders</span>}
         </button>
 
-        <button className="nav-item">
-          <FaChartLine />
-          {sidebarOpen && <span>Analytics</span>}
+        <button
+          className="nav-item"
+          onClick={() => navigate("/admin/options")}
+        >
+          <FaCog />
+          {sidebarOpen && <span>Options</span>}
         </button>
 
         <button className="nav-item logout-nav" onClick={handleLogout}>
           <FaSignOutAlt />
           {sidebarOpen && <span>Logout</span>}
         </button>
+
+        
       </nav>
     </aside>
   );

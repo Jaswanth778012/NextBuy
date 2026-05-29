@@ -18,6 +18,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 import AdminProfile from "./pages/AdminProfile";
 
+import AdminOptions from "./pages/AdminOptions";
+
 // =========================
 // LAYOUTS
 // =========================
@@ -52,6 +54,8 @@ function App() {
           {/* DASHBOARD */}
 
           <Route path="dashboard" element={<AdminDashboard />} />
+
+          <Route path="options" element={<AdminOptions/>}/>
 
           {/* DEFAULT ADMIN ROUTE */}
 
