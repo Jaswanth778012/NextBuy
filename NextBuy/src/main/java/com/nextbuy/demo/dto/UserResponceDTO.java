@@ -44,6 +44,14 @@ public class UserResponceDTO {
 	
 	private int deliveryTimeInDays;
 	
+	private Integer stockQuantity;
+
+	private Double gstPercentage;
+
+	private Double taxablePrice;
+
+	private Double mrp_price;
+	
 	
 	
 	
