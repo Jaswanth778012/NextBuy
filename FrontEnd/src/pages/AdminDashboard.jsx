@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 
 import { useLocation } from "react-router-dom";
 
@@ -31,6 +32,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const toastShown = useRef(false);
+  const { theme, toggleTheme } = useTheme();
 
   const token = localStorage.getItem("token");
 
@@ -75,19 +77,6 @@ const [selectedSubCategory,
     TotalHighStockProducts: 0,
   });
 
-  const [theme, setTheme] = useState("light");
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("adminTheme");
-    if (savedTheme === "dark" || savedTheme === "light") {
-      setTheme(savedTheme);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("adminTheme", theme);
-  }, [theme]);
-
   useEffect(() => {
     if (location.state?.loginSuccess && !toastShown.current) {
       toastShown.current = true;
@@ -100,10 +89,6 @@ const [selectedSubCategory,
       });
     }
   }, [location, navigate]);
-
-  const toggleTheme = () => {
-    setTheme((current) => (current === "light" ? "dark" : "light"));
-  };
 
   const fetchStats = async () => {
     try {
@@ -187,7 +172,8 @@ const fetchSubCategoriesByCategory =
 };
 
   useEffect(() => {
-    if (!token) {
+    const role = localStorage.getItem("role");
+    if (!token || role !== "ADMIN") {
       navigate("/login");
       return;
     }

@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route }
-from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 import {
   ToastContainer,
@@ -9,12 +9,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Home from "./pages/Home"
+import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProfile
 from "./pages/AdminProfile";
+import Products from "./pages/Products";
 
-function App() {
+function AppRoutes() {
+  const { theme } = useTheme();
 
   return (
 
@@ -45,10 +47,22 @@ function App() {
   path="/admin/profile"
   element={<AdminProfile />}
 />
+        <Route
+          path="/admin/products"
+          element={<Products />}
+        />
 
       </Routes>
 
     </BrowserRouter>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppRoutes />
+    </ThemeProvider>
   );
 }
 
