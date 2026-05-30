@@ -979,3 +979,142 @@
     translateY(-50%)
     scale(1.1);
 }
+
+
+/* =========================
+   INPUT WRAPPER
+========================= */
+
+.edit-input-wrapper{
+
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+}
+
+/* =========================
+   INPUT ICON
+========================= */
+
+.edit-field-icon{
+
+    position: absolute;
+
+    left: 18px;
+
+    font-size: 16px;
+
+    color: black;
+
+    z-index: 2;
+}
+
+/* =========================
+   INPUT FIELD
+========================= */
+
+.edit-input-wrapper input{
+
+    width: 100%;
+
+    padding: 14px 16px 14px 50px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+    rgba(255,255,255,0.72);
+
+    backdrop-filter: blur(16px);
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    color: black;
+
+    outline: none;
+
+    transition: 0.3s ease;
+
+    box-shadow:
+    0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* INPUT FOCUS */
+
+.edit-input-wrapper input:focus{
+
+    box-shadow:
+    0 0 0 4px rgba(139,92,246,0.15);
+
+    border:
+    1px solid #8b5cf6;
+}
+
+/* =========================
+   FILE UPLOAD
+========================= */
+
+.edit-file-upload-box{
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    padding: 16px;
+
+    border-radius: 18px;
+
+    background:
+    rgba(255,255,255,0.55);
+
+    backdrop-filter: blur(18px);
+
+    box-shadow:
+    0 8px 22px rgba(0,0,0,0.06);
+}
+
+/* LABEL */
+
+.edit-file-upload-box label{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: black;
+
+    margin-bottom: 12px;
+}
+
+/* IMAGE ICON */
+
+.edit-upload-icon{
+
+    font-size: 18px;
+
+    color: #8b5cf6;
+}
+
+/* FILE INPUT */
+
+.edit-file-upload-box input{
+
+    font-size: 14px;
+
+    color: black;
+}

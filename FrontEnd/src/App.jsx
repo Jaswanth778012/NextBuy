@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
 import { ToastContainer } from "react-toastify";
 
@@ -17,6 +18,10 @@ import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 
 import AdminProfile from "./pages/AdminProfile";
+
+import AdminOptions from "./pages/AdminOptions";
+import UserManagement from "./pages/UserManegement";
+import BroadcastCenter from "./pages/BroadcastCenter";
 
 // =========================
 // LAYOUTS
@@ -53,15 +58,17 @@ function App() {
 
           <Route path="dashboard" element={<AdminDashboard />} />
 
+          <Route path="options" element={<AdminOptions />} />
+          <Route path="userManagement" element={<UserManagement />} />
+
+          <Route path="broadcast" element={<BroadcastCenter />} />
+
           {/* DEFAULT ADMIN ROUTE */}
 
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
 
-          <Route
-          path="/admin/profile"
-          element={<AdminProfile />}
-        />
+        <Route path="/admin/profile" element={<AdminProfile />} />
 
         {/* =========================
             UNKNOWN ROUTE

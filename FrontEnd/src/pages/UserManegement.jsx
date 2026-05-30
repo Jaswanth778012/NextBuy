@@ -1,247 +1,261 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   viewAllUsers,
   searchUser,
-  deleteUser,
-  updateUserPassword,
 } from "../services/adminUserService";
+
+import {
+  useOutletContext,
+} from "react-router-dom";
+
+import {
+  FaUsers,
+} from "react-icons/fa";
+
+import UserSearchBar from "../components/userManagement/UserSearchBar";
+import UserTable from "../components/userManagement/UserTable";
+import UserPagination from "../components/userManagement/UserPagination";
+
+import "../styles/UserManagement.css";
 
 function UserManagement() {
 
-  const [users, setUsers] = useState([]);
-  const [searchUsername, setSearchUsername] =
+  const {
+    sidebarOpen,
+    theme,
+  } = useOutletContext();
+
+  const [users, setUsers] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [searchUsername,
+    setSearchUsername] =
     useState("");
 
-  const [passwords, setPasswords] =
-    useState({});
+  const [currentPage,
+    setCurrentPage] =
+    useState(1);
 
-  // Fetch All Users
+  const [usersPerPage,
+    setUsersPerPage] =
+    useState(10);
 
-  const fetchUsers = async () => {
-    try {
+  // FETCH USERS
 
-      const response =
-        await viewAllUsers();
-
-      setUsers(response.data);
-
-    } catch (error) {
-
-      console.error(
-        "Error fetching users",
-        error
-      );
-    }
-  };
-
-  // Load Users
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // Search User
-
-  const handleSearch = async () => {
-
-    if (!searchUsername) {
-      fetchUsers();
-      return;
-    }
-
-    try {
-
-      const response =
-        await searchUser(searchUsername);
-
-      setUsers([response.data]);
-
-    } catch (error) {
-
-      console.error("User not found");
-
-      setUsers([]);
-    }
-  };
-
-  // Delete User
-
-  const handleDelete = async (username) => {
-
-    try {
-
-      await deleteUser(username);
-
-      alert("User deleted successfully");
-
-      fetchUsers();
-
-    } catch (error) {
-
-      console.error(
-        "Delete failed",
-        error
-      );
-    }
-  };
-
-  // Update Password
-
-  const handleUpdatePassword =
-    async (username) => {
+  const fetchUsers =
+    async () => {
 
       try {
 
-        await updateUserPassword(
-          username,
-          passwords[username]
-        );
+        setLoading(true);
 
-        alert(
-          "Password updated successfully"
-        );
+        const response =
+          await viewAllUsers();
 
-        setPasswords({
-          ...passwords,
-          [username]: "",
-        });
+        setUsers(response.data);
 
       } catch (error) {
 
         console.error(
-          "Password update failed",
+          "Error fetching users",
           error
         );
+
+      } finally {
+
+        setLoading(false);
       }
     };
 
+  useEffect(() => {
+
+    fetchUsers();
+
+  }, []);
+
+  // SEARCH
+
+  const handleSearch =
+    async () => {
+
+      if (!searchUsername.trim()) {
+
+        fetchUsers();
+
+        return;
+      }
+
+      try {
+
+        setLoading(true);
+
+        const response =
+          await searchUser(
+            searchUsername
+          );
+
+        setUsers([
+          response.data
+        ]);
+
+        setCurrentPage(1);
+
+      } catch {
+
+        setUsers([]);
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+  // PAGINATION
+
+  const indexOfLastUser =
+    currentPage * usersPerPage;
+
+  const indexOfFirstUser =
+    indexOfLastUser - usersPerPage;
+
+  const currentUsers =
+    users.slice(
+      indexOfFirstUser,
+      indexOfLastUser
+    );
+
+  const totalPages =
+    Math.ceil(
+      users.length / usersPerPage
+    );
+
+  if (loading) {
+
+    return (
+
+      <div
+        className={`user-management-page ${
+          theme === "dark"
+            ? "dark-mode"
+            : ""
+        }`}
+      >
+
+        <div className="dashboard-status-card">
+
+          <div className="dashboard-loader"></div>
+
+          <h2>
+            Loading Users
+          </h2>
+
+          <p>
+            Fetching user records...
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
   return (
 
-    <div className="user-management-container">
+    <div
+      className={`user-management-page ${
+        sidebarOpen
+          ? "sidebar-open"
+          : "sidebar-closed"
+      } ${
+        theme === "dark"
+          ? "dark-mode"
+          : ""
+      }`}
+    >
 
-      <h2>User Management</h2>
+      {/* HEADER */}
 
-      {/* Search */}
+      <div className="users-header">
 
-      <div className="search-bar">
+        <div>
 
-        <input
-          type="text"
-          placeholder="Search username"
-          value={searchUsername}
-          onChange={(e) =>
-            setSearchUsername(
-              e.target.value
-            )
-          }
-        />
+          <h1>
+            User Management
+          </h1>
 
-        <button onClick={handleSearch}>
-          Search
-        </button>
+          <p>
+            Manage users, orders &
+            spending analytics
+          </p>
 
-        <button onClick={fetchUsers}>
-          Reset
-        </button>
+        </div>
+
+        <div className="users-count">
+
+          <FaUsers />
+
+          <span>
+            {users.length} Users
+          </span>
+
+        </div>
 
       </div>
 
-      {/* Table */}
+      {/* SEARCH */}
 
-      <table className="user-table">
+      <UserSearchBar
+        searchUsername={
+          searchUsername
+        }
+        setSearchUsername={
+          setSearchUsername
+        }
+        handleSearch={
+          handleSearch
+        }
+        fetchUsers={
+          fetchUsers
+        }
+        setCurrentPage={
+          setCurrentPage
+        }
+      />
 
-        <thead>
+      {/* TABLE */}
 
-          <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Mobile</th>
-            <th>Gender</th>
-            <th>Address</th>
-            <th>DOB</th>
-            <th>Total Orders</th>
-            <th>Password</th>
-            <th>Actions</th>
-          </tr>
+      <UserTable
+        currentUsers={
+          currentUsers
+        }
+      />
 
-        </thead>
+      {/* PAGINATION */}
 
-        <tbody>
-
-          {users.map((user) => (
-
-            <tr key={user.id}>
-
-              <td>{user.id}</td>
-              <td>{user.username}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.mobileNumber}</td>
-              <td>{user.gender}</td>
-              <td>{user.address}</td>
-              <td>{user.dob}</td>
-              <td>{user.totalOrders}</td>
-
-              {/* Password */}
-
-              <td>
-
-                <input
-                  type="password"
-                  placeholder="New Password"
-                  value={
-                    passwords[user.username] || ""
-                  }
-                  onChange={(e) =>
-                    setPasswords({
-                      ...passwords,
-                      [user.username]:
-                        e.target.value,
-                    })
-                  }
-                  className="password-input"
-                />
-
-              </td>
-
-              {/* Buttons */}
-
-              <td className="action-buttons">
-
-                <button
-                  className="update-btn"
-                  onClick={() =>
-                    handleUpdatePassword(
-                      user.username
-                    )
-                  }
-                >
-                  Update
-                </button>
-
-                <button
-                  className="delete-btn"
-                  onClick={() =>
-                    handleDelete(
-                      user.username
-                    )
-                  }
-                >
-                  Delete
-                </button>
-
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
+      <UserPagination
+        currentPage={
+          currentPage
+        }
+        totalPages={
+          totalPages
+        }
+        usersPerPage={
+          usersPerPage
+        }
+        setUsersPerPage={
+          setUsersPerPage
+        }
+        setCurrentPage={
+          setCurrentPage
+        }
+      />
 
     </div>
   );
