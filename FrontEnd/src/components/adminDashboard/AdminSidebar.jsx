@@ -7,6 +7,8 @@ import {
   FaChartLine,
   FaSignOutAlt,
   FaTags,
+  FaCog,
+  FaBell
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -35,16 +37,20 @@ function AdminSidebar({
 
       <nav className="sidebar-nav">
         <button
-          className={`nav-item ${isActive('/admin/dashboard') ? 'active' : ''}`}
-          onClick={() => navigate('/admin/dashboard')}
+          className={`nav-item ${
+            location.pathname === "/admin/dashboard" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/dashboard")}
         >
           <FaTachometerAlt />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
 
         <button
-          className={`nav-item ${isActive('/admin/users') ? 'active' : ''}`}
-          onClick={() => navigate('/admin/users')}
+          className={`nav-item ${
+            location.pathname === "/admin/userManagement" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/userManagement")}
         >
           <FaUsers />
           {sidebarOpen && <span>Users</span>}
@@ -58,12 +64,19 @@ function AdminSidebar({
           {sidebarOpen && <span>Orders</span>}
         </button>
 
+        <button className="nav-item" onClick={() => navigate("/admin/options")}>
+          <FaCog />
+          {sidebarOpen && <span>Options</span>}
+        </button>
+
         <button
-          className={`nav-item ${isActive('/admin/analytics') ? 'active' : ''}`}
-          onClick={() => navigate('/admin/analytics')}
+          className={`nav-item ${
+            location.pathname === "/admin/broadcast" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/broadcast")}
         >
-          <FaChartLine />
-          {sidebarOpen && <span>Analytics</span>}
+          <FaBell />
+          {sidebarOpen && <span>Notifications</span>}
         </button>
 
         <button

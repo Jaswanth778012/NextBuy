@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.ComparisionProductDto;
 import com.nextbuy.demo.dto.ProductDTO;
+import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.ProductStatus;
@@ -117,33 +118,34 @@ public class ProductService {
 	}
 	
   //DELETEPRODDUCT
-	public String deleteproduct(String name, Long Brand_id) {
-		  
-		  Optional<Product> pr = productRepo.findByName(name);
-		  if(pr.isEmpty()) {
-			  return "Product not Found";
-		  }
-		  Product product = pr.get();
-		  if(!product.getName().equals(name) && !product.getBrand().getId().equals(Brand_id)) {
-			 
-			  return "something went Worng";
-		  }
-		 
-		  productRepo.deleteById(product.getId());
-		  return "Product Deleted Successfully!!";
-		
+	public String deleteProduct(String name, Long productId) {
+
+	    Optional<Product> pr = productRepo.findByName(name);
+
+	    if (pr.isEmpty()) {
+	        return "Product not found";
+	    }
+
+	    Product product = pr.get();
+
+	    if (!product.getId().equals(productId)) {
+	        return "Product ID does not match";
+	    }
+
+	    productRepo.deleteById(product.getId());
+
+	    return "Product deleted successfully!";
 	}
+	
 	//VIEW_ALL_PRODUCTS
-	public List<Product> viewAllProducts() {
-		 List<Product> allproducts = productRepo.findAll();
-		 if(allproducts.isEmpty()) {
-			 throw new RuntimeException("No products found");
+	public List<UserResponceDTO> viewAllProducts(){
+		
+		 List<Product> pr = productRepo.findAll();
+		 if(pr.isEmpty()) {
+			 throw new RuntimeException("Username is required");
 		 }
-		return allproducts.stream()
-				   .filter(p->p.getProductStatus()==ProductStatus.ACTIVE)
-				   .sorted((a,b) ->
-			        a.getName().compareTo(b.getName()))
-				   .toList();
+		return pr.stream().map(this::mapToResponseDto).toList();
+		
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
@@ -340,4 +342,24 @@ public class ProductService {
 	    );
 	}
 	
+	public UserResponceDTO mapToResponseDto(Product product) {
+		UserResponceDTO userDto = new UserResponceDTO ();
+			userDto.setId(product.getId());
+		  userDto.setName(product.getName());
+	        userDto.setDescription(product.getDescription());
+	        userDto.setCategory(product.getCategory());
+	        userDto.setSubCategory(product.getSubCategory());
+	        userDto.setPrice(product.getMrp_price());
+	        userDto.setDiscountPercentage(product.getDiscountPercentage());
+	        userDto.setProductStatus(product.getProductStatus());
+	        userDto.setImageUrl(product.getImageUrl());
+	        userDto .setAttributes(product.getAttributes());
+	        userDto.setAverageRating(product.getAverageRating());
+	        userDto.setBrand(product.getBrand());
+	        userDto.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
+	        userDto.setFinalPrice(product.getFinalPrice());
+	        return userDto;
+	     
+	      
+	  }
 }

@@ -49,7 +49,7 @@ function ChangePasswordPopup({
   return (
 
     <div
-      className="edit-popup-overlay"
+      className="edit-popup-overlay1"
       onClick={() => {
 
         setShowPasswordPopup(false);
@@ -59,7 +59,7 @@ function ChangePasswordPopup({
     >
 
       <div
-        className="edit-popup"
+        className="edit-popup1"
         onClick={(e) =>
           e.stopPropagation()
         }
@@ -69,7 +69,7 @@ function ChangePasswordPopup({
           Change Password
         </h2>
 
-        <div className="edit-grid">
+        <div className="edit-grid1">
 
           {!isVerified && (
 

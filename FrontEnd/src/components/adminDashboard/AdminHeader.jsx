@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef, useEffect } from "react";
 import NestBuy from "../../assets/NestBuy.png"
 import {
@@ -76,7 +74,7 @@ useEffect(() => {
 
         setProfile({
           name:
-            response.data.name,
+            response.data.Username,
 
           dpUrl:
             response.data.dpUrl,
@@ -190,15 +188,8 @@ useEffect(() => {
   My Profile
 </button>
 
-              <button className="dropdown-item">
-                <FaCog />
-                Settings
-              </button>
-
-              <button className="dropdown-item logout-item">
-                <FaSignOutAlt />
-                Logout
-              </button>
+              
+             
 
             </div>
           )}

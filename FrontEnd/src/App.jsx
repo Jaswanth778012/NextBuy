@@ -1,68 +1,82 @@
 ﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
-import {
-  ToastContainer,
-} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+// =========================
+// PAGES
+// =========================
+
 import Home from "./pages/Home";
+
+import Login from "./pages/Login";
+
+import Register from "./pages/Register";
+
 import AdminDashboard from "./pages/AdminDashboard";
-import AdminProfile
-from "./pages/AdminProfile";
-import Products from "./pages/Products";
 
-function AppRoutes() {
-  const { theme } = useTheme();
+import AdminProfile from "./pages/AdminProfile";
 
-  return (
+import AdminOptions from "./pages/AdminOptions";
+import UserManagement from "./pages/UserManegement";
+import BroadcastCenter from "./pages/BroadcastCenter";
 
-    <BrowserRouter>
+// =========================
+// LAYOUTS
+// =========================
 
-         <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        theme="light"
-      />
-
-      <Routes>
-
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-
-        <Route path="/" element={<Home />} />
-        <Route
-  path="/admin/profile"
-  element={<AdminProfile />}
-/>
-        <Route
-          path="/admin/products"
-          element={<Products />}
-        />
-
-      </Routes>
-
-    </BrowserRouter>
-  );
-}
+import AdminLayout from "./layout/AdminLayout";
 
 function App() {
   return (
-    <ThemeProvider>
-      <AppRoutes />
-    </ThemeProvider>
+    <BrowserRouter>
+      {/* TOAST */}
+
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+
+      {/* ROUTES */}
+
+      <Routes>
+        {/* =========================
+            PUBLIC ROUTES
+        ========================== */}
+
+        <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        {/* =========================
+            ADMIN LAYOUT ROUTES
+        ========================== */}
+
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* DASHBOARD */}
+
+          <Route path="dashboard" element={<AdminDashboard />} />
+
+          <Route path="options" element={<AdminOptions />} />
+          <Route path="userManagement" element={<UserManagement />} />
+
+          <Route path="broadcast" element={<BroadcastCenter />} />
+
+          {/* DEFAULT ADMIN ROUTE */}
+
+          <Route index element={<Navigate to="dashboard" replace />} />
+        </Route>
+
+        <Route path="/admin/profile" element={<AdminProfile />} />
+
+        {/* =========================
+            UNKNOWN ROUTE
+        ========================== */}
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

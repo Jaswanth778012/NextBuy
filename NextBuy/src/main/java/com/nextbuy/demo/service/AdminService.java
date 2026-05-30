@@ -12,6 +12,7 @@ import com.nextbuy.demo.dto.AdminUserResponceDto;
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.enums.Role;
+import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
 
@@ -22,16 +23,18 @@ public class AdminService {
 	private PasswordEncoder passwordEncoder;
 	private EmailService emailSevice;
 	private CloudinaryService cludinaryService;
+	private OrderRepository orderRepo;
 
 	
 
 
-	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice, CloudinaryService cloudinaryService) {
+	public AdminService(UserRepository userRepo, PasswordEncoder passwordEncoder, EmailService emailSevice, CloudinaryService cloudinaryService, OrderRepository orderRepo) {
 		super();
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 		this.emailSevice = emailSevice;
 		this.cludinaryService = cloudinaryService;
+		this.orderRepo = orderRepo;
 	}
 
 	public AdminUserResponceDto searchUser(String username) {
@@ -50,6 +53,7 @@ public class AdminService {
 	        List<User> users = userRepo.findAll();
 
 	        return users.stream()
+	        		.filter(user ->user.getRole() != Role.ADMIN)
 	                .map(this::mapToResponseDto)
 	                .toList();
 	    }
@@ -68,12 +72,36 @@ public class AdminService {
 		    }
 
 		    User existingUser = optionalUser.get();
+		    if(existingUser.getRole() != Role.USER) {
+		    	return "this is not User !!";
+		    }
 
 		    if (password != null && !password.isBlank()) {
 		        existingUser.setPassword(passwordEncoder.encode(password));
 		    }
-
+		    String email = existingUser.getEmail();
+		    String body = "Hello "+existingUser.getName()+"\r\n"
+		    		+ "\r\n"
+		    		+ "Your account password has been successfully reset by the administrator.\r\n"
+		    		+ "\r\n"
+		    		+ "Here are your updated login details:\r\n"
+		    		+ "\r\n"
+		    		+ "━━━━━━━━━━━━━━━━━━━\r\n"
+		    		+ "Username: " +existingUser.getUsername()+"\r\n"
+		    		+ "New Password: "+password+"\r\n"
+		    		+ "━━━━━━━━━━━━━━━━━━━\r\n"
+		    		+ "\r\n"
+		    		+ "Please log in using the new password and change it after login for better account security.\r\n"
+		    		+ "\r\n"
+		    		+ "If you did not request this password reset, please contact our support team immediately.\r\n"
+		    		+ "\r\n"
+		    		+ "Thank you,\r\n"
+		    		+ "NEXTBUY Support Team";
+		    		
+		    
+           emailSevice.sendEmail(email, "FROM NEXTBUY", body);
 		    userRepo.save(existingUser);
+		    
 
 		    return "password changed!";
 		}
@@ -86,7 +114,9 @@ public class AdminService {
 	        }
 
 	         User user = userRepo.findByUsername(username).get();
-	        
+	        if(user.getRole() != Role.USER) {
+	        	return "this details not belongs to User!!";
+	        }
 	         userRepo.deleteById(user.getId());
 	        return "User deleted successfully";
 	    }
@@ -94,7 +124,8 @@ public class AdminService {
 	 
 	 public String UpdateAdminPassword(String username,String password, String newPass) {
 		 User userex = userRepo.findByUsername(username).get();
-		 if(!userex.getPassword() .equals(password) && !userex.getUsername().equals(username) ) {
+		 boolean pass = passwordEncoder.matches(password,userex.getPassword());
+		 if(!pass && !userex.getUsername().equals(username) ) {
 			 return "Admin not found!";
 		 }
 		 userex.setPassword(passwordEncoder.encode(newPass));
@@ -123,7 +154,11 @@ public class AdminService {
 
 	public String deleteAdmin(String username, String password) {
 		User admin = userRepo.findByUsername(username).get();
-		if(admin.getUsername().equals(username)&& admin.getPassword().equals(password)) {
+		boolean pass = passwordEncoder.matches(password,admin.getPassword());
+		if(admin.getRole() != Role.ADMIN) {
+			return "this is details not belongs to Admin !!";
+		}
+		if(admin.getUsername().equals(username) && pass) {
 			userRepo.deleteById(admin.getId());
 			return "Deleted successfully!";
 		}
@@ -133,7 +168,8 @@ public class AdminService {
 	public userProfileDTO profile(String username) {
 		  User admin = userRepo.findByUsername(username).get();
 		  userProfileDTO ur = new userProfileDTO();
-		  ur.setName(admin.getUsername());
+		  ur.setUsername(admin.getUsername());
+		  ur.setName(admin.getName());
 		  ur.setDpUrl(admin.getDpUrl());
 		  ur.setAddressLine1(admin.getAddressLine1());
 		  ur.setCity(admin.getCity());
@@ -170,13 +206,25 @@ public class AdminService {
 	 
 	 public AdminUserResponceDto mapToResponseDto(User user) {
 		  AdminUserResponceDto AdminURD = new AdminUserResponceDto();
-		  AdminURD.setUsername(user.getUsername());
+		  	AdminURD.setId(user.getId());
+		  	AdminURD.setUsername(user.getUsername());
 	        AdminURD.setName(user.getName());
 	        AdminURD.setMobileNumber(user.getMobileNumber());
+	        AdminURD.setImgUrl(user.getDpUrl());
 	        AdminURD.setEmail(user.getEmail());
 	        AdminURD.setGender(user.getGender());
+	        AdminURD.setState(user.getState());
 	        AdminURD.setDob(user.getDob());
 	        AdminURD.setAddress(user.getAddressLine1());
+	        AdminURD.setCreatedAt(user.getCreatedAt());
+	        AdminURD.setLastLogin(user.getLastLogin());
+	        
+	        Long totalOrders = orderRepo.countByUser(user);
+	        AdminURD.setTotalOrders(totalOrders);
+	        
+	        Double totalSpent = orderRepo.getTotalAmountSpentByUser(user.getId());
+	        AdminURD.setTotalSpent(totalSpent);
+	        
 	        return AdminURD;
 	     
 	      
