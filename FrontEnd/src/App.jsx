@@ -27,6 +27,7 @@ import BroadcastCenter from "./pages/BroadcastCenter";
 // =========================
 
 import AdminLayout from "./layout/AdminLayout";
+import Products from "./pages/Products";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
           <Route path="userManagement" element={<UserManagement />} />
 
           <Route path="broadcast" element={<BroadcastCenter />} />
+           <Route path="products" element={<Products />} />
 
           {/* DEFAULT ADMIN ROUTE */}
 

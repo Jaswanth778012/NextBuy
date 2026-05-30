@@ -6,6 +6,7 @@ import {
   FaBoxOpen,
   FaChartLine,
   FaSignOutAlt,
+  FaTags,
   FaCog,
   FaBell
 } from "react-icons/fa";
@@ -55,6 +56,16 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
           <FaBoxOpen />
           {sidebarOpen && <span>Orders</span>}
         </button>
+
+        <button
+  className={`nav-item ${
+    location.pathname === "/admin/products" ? "active" : ""
+  }`}
+  onClick={() => navigate("/admin/products")}
+>
+  <FaTags />
+  {sidebarOpen && <span>Products</span>}
+</button>
 
         <button className="nav-item" onClick={() => navigate("/admin/options")}>
           <FaCog />
