@@ -1,5 +1,4 @@
-﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
 
@@ -22,13 +21,14 @@ import AdminProfile from "./pages/AdminProfile";
 import AdminOptions from "./pages/AdminOptions";
 import UserManagement from "./pages/UserManegement";
 import BroadcastCenter from "./pages/BroadcastCenter";
+import Products from "./pages/Products";
 
 // =========================
 // LAYOUTS
 // =========================
 
 import AdminLayout from "./layout/AdminLayout";
-import Products from "./pages/Products";
+
 
 function App() {
   return (
