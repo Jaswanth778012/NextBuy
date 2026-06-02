@@ -358,6 +358,13 @@ public class ProductService {
 	        userDto.setBrand(product.getBrand());
 	        userDto.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
 	        userDto.setFinalPrice(product.getFinalPrice());
+	        userDto.setMrp_price(product.getMrp_price());
+	        userDto.setGstPercentage(product.getGstPercentage());
+	        userDto.setStockQuantity(product.getStockQuantity());
+	        userDto.setTaxablePrice(product.getTaxablePrice());
+	        
+	 
+	        
 	        return userDto;
 	     
 	      

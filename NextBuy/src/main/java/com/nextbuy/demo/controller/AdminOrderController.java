@@ -1,10 +1,12 @@
 package com.nextbuy.demo.controller;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,19 +17,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.enums.OrderStatus;
+import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.service.AdminOrderService;
+import com.nextbuy.demo.service.InvoiceService;
+
 
 @RestController
 @RequestMapping("/adminOrder")
 public class AdminOrderController {
-    AdminOrderService adminOrderService;
-
-	public AdminOrderController(AdminOrderService adminOrderService) {
-		super();
-		this.adminOrderService = adminOrderService;
-	}
+  private  AdminOrderService adminOrderService;
+  private  InvoiceService invoiceService;
+   private OrderRepository orderRepo;
+   
+   
 	
-	
+	public AdminOrderController(AdminOrderService adminOrderService, InvoiceService invoiceService,
+			OrderRepository orderRepo) {
+	super();
+	this.adminOrderService = adminOrderService;
+	this.invoiceService = invoiceService;
+	this.orderRepo = orderRepo;
+}
 	@GetMapping("/getAllOrders")
 	public ResponseEntity<Page<Order>> getAllOrders(
 	        @RequestParam(defaultValue = "0") int page,
@@ -95,5 +105,27 @@ public class AdminOrderController {
   @GetMapping("/getOrdersByMonthAndYear/{month}/{year}")
   public List<Order> getOrdersByMonthAndYear(@PathVariable int month, @PathVariable int year){
 	 return  adminOrderService.getOrdersByMonthAndyear(month, year);
+  }
+  @GetMapping("/orders/{orderId}/invoice/download")
+  public ResponseEntity<byte[]> downloadInvoice(@PathVariable Long orderId) {
+
+      try {
+          Order order = orderRepo.findById(orderId)
+                  .orElseThrow(() -> new RuntimeException("Order not found"));
+
+          File pdfFile = invoiceService.generateInvoice(order);
+
+          byte[] fileContent = java.nio.file.Files.readAllBytes(pdfFile.toPath());
+
+          return ResponseEntity.ok()
+                  .header("Content-Disposition",
+                          "attachment; filename=invoice_" + order.getOrderNumber() + ".pdf")
+                  .contentType(MediaType.APPLICATION_PDF)
+                  .body(fileContent);
+
+      } catch (Exception e) {
+          e.printStackTrace(); // 🔥 IMPORTANT
+          throw new RuntimeException("Invoice download failed: " + e.getMessage());
+      }
   }
 }

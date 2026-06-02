@@ -1,0 +1,549 @@
+/* ===========================
+   BROADCAST PAGE
+=========================== */
+
+.broadcast-page {
+  animation: fadeUp .3s ease;
+}
+
+.broadcast-header {
+  margin-bottom: 30px;
+}
+
+.broadcast-header h1 {
+  font-size: 42px;
+  font-weight: 800;
+}
+
+/* ===========================
+   TABS
+=========================== */
+
+.broadcast-tabs {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.broadcast-tabs button {
+  border: none;
+  padding: 14px 24px;
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 700;
+  background: rgba(255,255,255,.65);
+  backdrop-filter: blur(20px);
+  transition: .25s ease;
+}
+
+.broadcast-tabs button:hover {
+  transform: translateY(-2px);
+}
+
+.broadcast-tabs button.active {
+  background: linear-gradient(
+    135deg,
+    #49A6F8,
+    #8B5CF6
+  );
+  color: white;
+}
+
+/* ===========================
+   FORM
+=========================== */
+
+.broadcast-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  padding: 32px;
+
+  border-radius: 30px;
+
+  background:
+    rgba(255,255,255,.25);
+
+  backdrop-filter:
+    blur(24px);
+
+  border:
+    1px solid rgba(255,255,255,.3);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.08);
+}
+
+.broadcast-form input,
+.broadcast-form textarea {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  padding: 16px 18px;
+
+  border-radius: 18px;
+
+  font-size: 15px;
+
+  background:
+    rgba(255,255,255,.8);
+
+  transition: .25s ease;
+}
+
+.broadcast-form input:focus,
+.broadcast-form textarea:focus {
+  box-shadow:
+    0 0 0 3px rgba(73,166,248,.25);
+}
+
+.broadcast-form textarea {
+  resize: vertical;
+  min-height: 180px;
+}
+
+.broadcast-form label {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-weight: 700;
+
+  color: #334155;
+}
+
+.broadcast-form button {
+  border: none;
+
+  padding: 16px;
+
+  border-radius: 18px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  font-size: 16px;
+
+  color: white;
+
+  transition: .25s ease;
+
+  background:
+    linear-gradient(
+      135deg,
+      #49A6F8,
+      #8B5CF6
+    );
+}
+
+.broadcast-form button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 25px rgba(73,166,248,.35);
+}
+
+.broadcast-form button:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* ===========================
+   REACT SELECT
+=========================== */
+
+.user-select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.select-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: #243b53;
+}
+
+/* Main Select */
+
+.react-select__control {
+  min-height: 62px !important;
+
+  border: none !important;
+
+  border-radius: 20px !important;
+
+  background:
+    rgba(255,255,255,.85) !important;
+
+  backdrop-filter:
+    blur(16px);
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.08) !important;
+
+  transition:
+    all .25s ease !important;
+}
+
+.react-select__control:hover {
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.12) !important;
+}
+
+.react-select__control--is-focused {
+  border: none !important;
+
+  outline: none !important;
+
+  box-shadow:
+    0 12px 30px rgba(73,166,248,.15) !important;
+}
+
+/* Removes inner cursor ring */
+
+.react-select__input input {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.react-select__input input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Selected Chips */
+
+.react-select__multi-value {
+  background:
+    linear-gradient(
+      135deg,
+      #49A6F8,
+      #8B5CF6
+    ) !important;
+
+  border-radius: 14px !important;
+
+  padding: 3px 5px;
+
+  box-shadow:
+    0 4px 12px rgba(73,166,248,.25);
+}
+
+.react-select__multi-value__label {
+  color: white !important;
+  font-weight: 600;
+}
+
+.react-select__multi-value__remove {
+  color: white !important;
+  border-radius: 10px;
+}
+
+.react-select__multi-value__remove:hover {
+  background:
+    rgba(255,255,255,.15) !important;
+
+  color:
+    white !important;
+}
+
+/* Dropdown */
+
+.react-select__menu {
+  border-radius: 18px !important;
+
+  overflow: hidden;
+
+  border: none !important;
+
+  background:
+    rgba(255,255,255,.95) !important;
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,.12) !important;
+}
+
+.react-select__menu-list {
+  padding: 8px;
+}
+
+.react-select__option {
+  border-radius: 12px;
+
+  padding: 14px;
+
+  cursor: pointer;
+
+  transition:
+    .2s ease;
+}
+
+.react-select__option--is-focused {
+  background:
+    rgba(73,166,248,.08) !important;
+
+  color:
+    #243b53 !important;
+}
+
+.react-select__option--is-selected {
+  background:
+    linear-gradient(
+      135deg,
+      #49A6F8,
+      #8B5CF6
+    ) !important;
+
+  color:
+    white !important;
+}
+
+.react-select__placeholder {
+  color:
+    #94a3b8 !important;
+}
+
+.react-select__input-container {
+  color:
+    #243b53 !important;
+}
+
+.react-select__indicator-separator {
+  display: none;
+}
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media (max-width: 768px) {
+
+  .broadcast-form {
+    padding: 20px;
+  }
+
+  .broadcast-header h1 {
+    font-size: 30px;
+  }
+
+  .broadcast-tabs {
+    flex-direction: column;
+  }
+
+  .broadcast-tabs button {
+    width: 100%;
+  }
+}
+
+/* ===========================
+   DARK MODE
+=========================== */
+
+.dark-mode .broadcast-page {
+  color: #f1f5f9;
+}
+
+.dark-mode .broadcast-header h1 {
+  color: #f8fafc;
+}
+
+/* Tabs */
+
+.dark-mode .broadcast-tabs button {
+  background: rgba(15, 23, 42, 0.75);
+  color: #cbd5e1;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.dark-mode .broadcast-tabs button.active {
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #7c3aed
+  );
+  color: white;
+}
+
+/* Form */
+
+.dark-mode .broadcast-form {
+  background: rgba(15, 23, 42, 0.55);
+
+  border: 1px solid
+    rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.35);
+}
+
+/* Inputs */
+
+.dark-mode .broadcast-form input,
+.dark-mode .broadcast-form textarea {
+  background:
+    rgba(30, 41, 59, 0.85);
+
+  color:
+    #f8fafc;
+
+  border:
+    1px solid rgba(255,255,255,.08);
+}
+
+.dark-mode .broadcast-form input::placeholder,
+.dark-mode .broadcast-form textarea::placeholder {
+  color: #94a3b8;
+}
+
+.dark-mode .broadcast-form input:focus,
+.dark-mode .broadcast-form textarea:focus {
+  box-shadow:
+    0 0 0 3px rgba(59,130,246,.35);
+}
+
+/* Labels */
+
+.dark-mode .broadcast-form label,
+.dark-mode .select-label {
+  color: #e2e8f0;
+}
+
+/* Buttons */
+
+.dark-mode .broadcast-form button {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #7c3aed
+    );
+}
+
+.dark-mode .broadcast-form button:hover:not(:disabled) {
+  box-shadow:
+    0 10px 25px rgba(59,130,246,.4);
+}
+
+/* React Select */
+
+.dark-mode .react-select__control {
+  background:
+    rgba(30,41,59,.85) !important;
+
+  border:
+    1px solid rgba(255,255,255,.08) !important;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.25) !important;
+}
+
+.dark-mode .react-select__control--is-focused {
+  border: none !important;
+
+  outline: none !important;
+
+  box-shadow:
+    0 12px 30px rgba(59,130,246,.18) !important;
+}
+
+.dark-mode .react-select__control--is-focused {
+  border: none !important;
+
+  outline: none !important;
+
+  box-shadow:
+    0 12px 30px rgba(59,130,246,.18) !important;
+}
+
+.dark-mode .react-select__placeholder {
+  color:
+    #94a3b8 !important;
+}
+
+.dark-mode .react-select__input-container {
+  color:
+    #f8fafc !important;
+}
+
+.dark-mode .react-select__single-value {
+  color:
+    #f8fafc !important;
+}
+
+.dark-mode .react-select__menu {
+  background:
+    #1e293b !important;
+
+  border:
+    1px solid rgba(255,255,255,.08) !important;
+}
+
+.dark-mode .react-select__option {
+  color:
+    #f8fafc !important;
+}
+
+.dark-mode .react-select__option--is-focused {
+  background:
+    rgba(59,130,246,.18) !important;
+}
+
+.dark-mode .react-select__option--is-selected {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #7c3aed
+    ) !important;
+}
+
+.dark-mode .react-select__multi-value {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #7c3aed
+    ) !important;
+}
+
+.dark-mode .react-select__multi-value__label {
+  color:
+    white !important;
+}
+
+.dark-mode .react-select__multi-value__remove {
+  color:
+    white !important;
+}
+
+.dark-mode .react-select__multi-value__remove:hover {
+  background:
+    rgba(255,255,255,.15) !important;
+}
+
+/* Disabled States */
+
+.dark-mode .broadcast-form button:disabled,
+.dark-mode .broadcast-form input:disabled,
+.dark-mode .broadcast-form textarea:disabled {
+  opacity: .65;
+}
+
+/* Scrollbar */
+
+.dark-mode .react-select__menu-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark-mode .react-select__menu-list::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark-mode .react-select__menu-list::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 10px;
+}
