@@ -23,3 +23,8 @@ export const scheduleEmail = (data) =>
     "/Admin/schedule",
     data
   );
+
+ export const getAllSentEmails = () =>
+  API.get(
+    "/Admin/sent-emails"
+  );

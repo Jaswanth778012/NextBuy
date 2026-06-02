@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   FaTachometerAlt,
@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [notificationOpen, setNotificationOpen] = useState(false);
 
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
@@ -53,7 +54,7 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
           {sidebarOpen && <span>Users</span>}
         </button>
 
-        <button
+        {/* <button
           className={`nav-item ${
             location.pathname === "/admin/products" ? "active" : ""
           }`}
@@ -61,22 +62,66 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
         >
           <FaTags />
           {sidebarOpen && <span>Products</span>}
-        </button>
+        </button> */}
 
         <button className="nav-item" onClick={() => navigate("/admin/options")}>
           <FaCog />
           {sidebarOpen && <span>Options</span>}
         </button>
 
-        <button
-          className={`nav-item ${
-            location.pathname === "/admin/broadcast" ? "active" : ""
+        <div className="sidebar-dropdown">
+  <button
+    className={`nav-item ${
+      location.pathname.includes("/admin/broadcast") ||
+      location.pathname.includes("/admin/sentEmails")
+        ? "active"
+        : ""
+    }`}
+    onClick={() => setNotificationOpen(!notificationOpen)}
+  >
+    <FaBell />
+
+    {sidebarOpen && (
+      <>
+        <span>Notifications</span>
+
+        <span
+          className={`dropdown-icon ${
+            notificationOpen ? "rotate" : ""
           }`}
-          onClick={() => navigate("/admin/broadcast")}
         >
-          <FaBell />
-          {sidebarOpen && <span>Notifications</span>}
-        </button>
+          ▼
+        </span>
+      </>
+    )}
+  </button>
+
+  {notificationOpen && sidebarOpen && (
+    <div className="sidebar-submenu">
+      <button
+        className={`submenu-item ${
+          location.pathname === "/admin/broadcast"
+            ? "active"
+            : ""
+        }`}
+        onClick={() => navigate("/admin/broadcast")}
+      >
+        Broadcast
+      </button>
+
+      <button
+        className={`submenu-item ${
+          location.pathname === "/admin/sent-emails"
+            ? "active"
+            : ""
+        }`}
+        onClick={() => navigate("/admin/sent-emails")}
+      >
+        Sent Emails
+      </button>
+    </div>
+  )}
+</div>
 
         <button className="nav-item logout-nav" onClick={handleLogout}>
           <FaSignOutAlt />
