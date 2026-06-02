@@ -20,11 +20,8 @@ import AdminProfile from "./pages/AdminProfile";
 
 import AdminOptions from "./pages/AdminOptions";
 import UserManagement from "./pages/UserManegement";
-<<<<<<< HEAD
 import OrdersManagement from "./pages/OrdersManagement";
-=======
 import BroadcastCenter from "./pages/BroadcastCenter";
->>>>>>> c2d43ad618d0c43b469918ba4df4bcf89e7880b4
 
 // =========================
 // LAYOUTS
@@ -63,14 +60,9 @@ function App() {
 
           <Route path="dashboard" element={<AdminDashboard />} />
 
-<<<<<<< HEAD
           <Route path="options" element={<AdminOptions/>}/>
           <Route path="userManagement" element={<UserManagement/>}/>
           <Route path="orderManagement" element={<OrdersManagement/>}/>
-=======
-          <Route path="options" element={<AdminOptions />} />
-          <Route path="userManagement" element={<UserManagement />} />
->>>>>>> c2d43ad618d0c43b469918ba4df4bcf89e7880b4
 
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails/>}/>
