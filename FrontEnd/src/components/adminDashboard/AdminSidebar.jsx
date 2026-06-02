@@ -8,19 +8,16 @@ import {
   FaSignOutAlt,
   FaTags,
   FaCog,
-  FaBell
+  FaBell,
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function AdminSidebar({
-  sidebarOpen,
-  setSidebarOpen,
-  handleLogout,
-}) {
+function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path);
+  const isActive = (path) =>
+    location.pathname === path || location.pathname.startsWith(path);
 
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
@@ -57,11 +54,13 @@ function AdminSidebar({
         </button>
 
         <button
-          className={`nav-item ${isActive('/admin/orders') ? 'active' : ''}`}
-          onClick={() => navigate('/admin/orders')}
+          className={`nav-item ${
+            location.pathname === "/admin/products" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/products")}
         >
-          <FaBoxOpen />
-          {sidebarOpen && <span>Orders</span>}
+          <FaTags />
+          {sidebarOpen && <span>Products</span>}
         </button>
 
         <button className="nav-item" onClick={() => navigate("/admin/options")}>
@@ -77,14 +76,6 @@ function AdminSidebar({
         >
           <FaBell />
           {sidebarOpen && <span>Notifications</span>}
-        </button>
-
-        <button
-          className={`nav-item ${isActive('/admin/products') ? 'active' : ''}`}
-          onClick={() => navigate('/admin/products')}
-        >
-          <FaTags />
-          {sidebarOpen && <span>Products</span>}
         </button>
 
         <button className="nav-item logout-nav" onClick={handleLogout}>

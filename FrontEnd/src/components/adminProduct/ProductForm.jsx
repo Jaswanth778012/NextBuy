@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import productApi from '../../services/productApi';
-import { getBrands, getCategories, getSubCategoriesByCategory } from '../../services/brandCategoryApi';
+import adminProductService from '../../services/adminProductService';
+import { getBrands, getCategories, getSubCategoriesByCategory } from '../../services/brandscategory';
 import { FaTimes } from 'react-icons/fa'; // Import clean cross icon
 
 const STATUS_OPTIONS = ['ACTIVE', 'INACTIVE', 'DRAFT'];
@@ -158,10 +158,10 @@ function ProductForm({ initialData = null, onClose, onSaved }) {
     try {
       setLoading(true);
       if (initialData?.id) {
-        await productApi.updateProduct(initialData.id, payload, file);
+        await adminProductService.updateProduct(initialData.id, payload, file);
         alert('Product updated successfully');
       } else {
-        await productApi.createProduct(payload, file);
+        await adminProductService.createProduct(payload, file);
         alert('Product created successfully');
       }
       onSaved?.();

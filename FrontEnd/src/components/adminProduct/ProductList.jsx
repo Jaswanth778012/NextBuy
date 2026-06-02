@@ -1,5 +1,5 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
-import productApi from '../../services/productApi';
+import React, { useEffect, useMemo, useState } from 'react';
+import adminProductService from '../../services/adminProductService';
 import ProductForm from './ProductForm';
 import { FaSearch } from 'react-icons/fa';
 
@@ -26,7 +26,7 @@ function ProductList({ searchKeyword: outerSearchKeyword = '' }) {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const data = await productApi.listProducts();
+      const data = await adminProductService.listProducts();
       setProducts(data || []);
       setError('');
     } catch (err) {
@@ -163,7 +163,7 @@ function ProductList({ searchKeyword: outerSearchKeyword = '' }) {
     }
 
     try {
-      await productApi.deleteProduct(product.name, productId);
+      await adminProductService.deleteProduct(product.name, productId);
       fetchProducts();
       alert('Product deleted successfully');
     } catch (err) {
@@ -199,7 +199,7 @@ function ProductList({ searchKeyword: outerSearchKeyword = '' }) {
     setUpdatingStockId(currentId);
 
     try {
-      await productApi.updateStock(currentId, newStock);
+      await adminProductService.updateStock(currentId, newStock);
 
       setProducts((prevProducts) =>
         prevProducts.map((item) => {
@@ -229,7 +229,7 @@ function ProductList({ searchKeyword: outerSearchKeyword = '' }) {
     setStatusUpdatingId(currentId);
 
     try {
-      await productApi.updateStatus(currentId, newStatus);
+      await adminProductService.updateStatus(currentId, newStatus);
 
       setProducts((prevProducts) =>
         prevProducts.map((item) => {
@@ -313,7 +313,6 @@ function ProductList({ searchKeyword: outerSearchKeyword = '' }) {
                   <th>Final Price</th>
                   <th>Stock</th>
                   <th>Status</th>
-                  <th>Total Price</th>
                   <th style={{ textAlign: 'center' }}>Actions</th>
                 </tr>
               </thead>
@@ -409,15 +408,6 @@ function ProductList({ searchKeyword: outerSearchKeyword = '' }) {
                           <option value="DRAFT">Draft</option>
                           <option value="INACTIVE">Inactive</option>
                         </select>
-                      </td>
-
-                      <td>
-                        <div style={{ fontWeight: 600, color: '#0f172a' }}>
-                          ₹{formatPrice(getTotalAmount(product))}
-                        </div>
-                        <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '500', marginTop: '2px', whiteSpace: 'nowrap' }}>
-                          (Price × {displayStock})
-                        </div>
                       </td>
 
                       <td>

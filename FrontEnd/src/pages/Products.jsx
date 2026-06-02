@@ -1,43 +1,32 @@
-﻿import React, { useState, useEffect } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
-import ProductList from '../components/adminDashboard/ProductList';
-
-import '../styles/Products.css';
+import React from "react";
+import ProductList from "../components/adminProduct/ProductList";
+import "../styles/AdminProduct.css";
+import { useOutletContext } from "react-router-dom";
 
 function Products() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const { theme, toggleTheme } = useTheme();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (!token || role !== 'ADMIN') {
-      window.location.href = '/login';
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    window.location.href = '/login';
-  };
-
-  const handleGlobalSearch = (e) => {
-    setSearchKeyword(e.target.value);
-  };
+  const {
+    sidebarOpen,
+    theme,
+  } = useOutletContext();
 
   return (
-    
 
-      <div className="admin-main">
-        
+    <div
+      className={`products-page ${
+        sidebarOpen
+          ? "sidebar-open"
+          : "sidebar-closed"
+      } ${
+        theme === "dark"
+          ? "dark-mode"
+          : ""
+      }`}
+    >
 
-        <div className="admin-content">
-          <ProductList searchKeyword={searchKeyword} />
-        </div>
-      </div>
-    
+      <ProductList />
+
+    </div>
   );
 }
 
