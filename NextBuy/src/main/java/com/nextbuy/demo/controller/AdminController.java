@@ -24,6 +24,7 @@ import com.nextbuy.demo.dto.BroadcastEmailRequest;
 import com.nextbuy.demo.dto.BroadcastNotificationRequest;
 import com.nextbuy.demo.dto.ScheduleEmailRequest;
 import com.nextbuy.demo.dto.SelectedUsersEmailRequest;
+import com.nextbuy.demo.dto.SentEmailResponse;
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.service.AdminSearchService;
 import com.nextbuy.demo.service.AdminService;
@@ -120,6 +121,14 @@ public class AdminController {
       broadcastService.scheduleEmail(request);
 
       return ResponseEntity.ok("Email scheduled successfully");
+  }
+  
+  @GetMapping("/sent-emails")
+  public ResponseEntity<List<SentEmailResponse>> getAllSentEmails() {
+
+      return ResponseEntity.ok(
+              broadcastService.getAllSentEmails()
+      );
   }
 
   @PatchMapping("/makeUserToAdmin/{email}/{username}/{password}")
