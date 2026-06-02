@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +22,8 @@ import com.nextbuy.demo.dto.AdminGlobalSearchResponse;
 import com.nextbuy.demo.dto.AdminUserResponceDto;
 import com.nextbuy.demo.dto.BroadcastEmailRequest;
 import com.nextbuy.demo.dto.BroadcastNotificationRequest;
+import com.nextbuy.demo.dto.ScheduleEmailRequest;
+import com.nextbuy.demo.dto.SelectedUsersEmailRequest;
 import com.nextbuy.demo.dto.userProfileDTO;
 import com.nextbuy.demo.service.AdminSearchService;
 import com.nextbuy.demo.service.AdminService;
@@ -101,6 +102,24 @@ public class AdminController {
   public ResponseEntity<String> broadcastEmail(@Valid @RequestBody BroadcastEmailRequest request) {
       broadcastService.sendEmailToAll(request);
       return ResponseEntity.ok("Email sent to all registered users");
+  }
+  
+  @PostMapping("/selected-users")
+  public ResponseEntity<String> sendToSelectedUsers(
+          @RequestBody SelectedUsersEmailRequest request) {
+
+      broadcastService.sendEmailToSelectedUsers(request);
+
+      return ResponseEntity.ok("Emails sent successfully");
+  }
+  
+  @PostMapping("/schedule")
+  public ResponseEntity<String> scheduleEmail(
+          @RequestBody ScheduleEmailRequest request) {
+
+      broadcastService.scheduleEmail(request);
+
+      return ResponseEntity.ok("Email scheduled successfully");
   }
 
   @PatchMapping("/makeUserToAdmin/{email}/{username}/{password}")
