@@ -17,9 +17,9 @@ function AdminSidebar({
   handleLogout,
 }) {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const location = useLocation();
+  const location = useLocation();
 
   return (
     <aside className={`admin-sidebar ${sidebarOpen ? "open" : "closed"}`}>
@@ -35,27 +35,31 @@ function AdminSidebar({
       </div>
 
       <nav className="sidebar-nav">
-        <button className={`nav-item ${
-            location.pathname === "/admin/dashboard" ? "active" : ""
+        <button className={`nav-item ${location.pathname === "/admin/dashboard" ? "active" : ""
           }`}
           onClick={() => navigate("/admin/dashboard")}>
           <FaTachometerAlt />
           {sidebarOpen && <span>Dashboard</span>}
         </button>
 
-        <button  className={`nav-item ${
-            location.pathname === "/admin/userManagement" ? "active" : ""
+        <button className={`nav-item ${location.pathname === "/admin/userManagement" ? "active" : ""
           }`}
           onClick={() => navigate("/admin/userManagement")}>
           <FaUsers />
           {sidebarOpen && <span>Users</span>}
         </button>
 
-        <button className="nav-item">
+        <button
+          className={`nav-item ${location.pathname === "/admin/orderManagement" ? "active" : ""
+            }`}
+          onClick={() => {
+            console.log("Orders Clicked");
+            navigate("/admin/orderManagement");
+          }}
+        >
           <FaBoxOpen />
           {sidebarOpen && <span>Orders</span>}
         </button>
-
         <button
           className="nav-item"
           onClick={() => navigate("/admin/options")}
@@ -69,7 +73,7 @@ function AdminSidebar({
           {sidebarOpen && <span>Logout</span>}
         </button>
 
-        
+
       </nav>
     </aside>
   );

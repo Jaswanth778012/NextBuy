@@ -20,6 +20,7 @@ import AdminProfile from "./pages/AdminProfile";
 
 import AdminOptions from "./pages/AdminOptions";
 import UserManagement from "./pages/UserManegement";
+import OrdersManagement from "./pages/OrdersManagement";
 
 // =========================
 // LAYOUTS
@@ -58,6 +59,7 @@ function App() {
 
           <Route path="options" element={<AdminOptions/>}/>
           <Route path="userManagement" element={<UserManagement/>}/>
+          <Route path="orderManagement" element={<OrdersManagement/>}/>
 
           {/* DEFAULT ADMIN ROUTE */}
 
