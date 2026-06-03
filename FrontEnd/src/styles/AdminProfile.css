@@ -1118,3 +1118,117 @@
 
     color: black;
 }
+
+/* =========================
+   INPUT WITH ICON FIELD (USERNAME)
+========================= */
+.input-with-icon-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+
+  padding: 10px 12px;
+
+  transition: 0.2s ease;
+}
+
+.input-with-icon-field:focus-within {
+  border: 1px solid #3d74e0;
+  box-shadow: 0 0 0 3px rgba(61, 116, 224, 0.15);
+}
+
+/* INPUT INSIDE ICON FIELD */
+.field-input-enhanced {
+  flex: 1;
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 14px;
+  color: #222;
+}
+
+/* =========================
+   ICON BOX (LEFT SIDE ICON)
+========================= */
+.field-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 10px;
+
+  background: rgba(221, 191, 190, 0.35); /* dusty pink */
+  backdrop-filter: blur(10px);
+}
+
+/* ICON STYLE */
+.field-icon {
+  font-size: 15px;
+  color: #3d74e0; /* royal blue */
+}
+
+/* =========================
+   PASSWORD FIELD ENHANCED
+========================= */
+.enhanced-password-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+
+  padding: 10px 12px;
+
+  transition: 0.2s ease;
+}
+
+.enhanced-password-field:focus-within {
+  border: 1px solid #49a6f8;
+  box-shadow: 0 0 0 3px rgba(73, 166, 248, 0.15);
+}
+
+/* PASSWORD INPUT INSIDE */
+.enhanced-password-field input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 14px;
+  color: #222;
+}
+
+/* EYE ICON */
+.password-eye {
+  cursor: pointer;
+  color: #555;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px;
+  border-radius: 8px;
+
+  transition: 0.2s;
+}
+
+.password-eye:hover {
+  background: rgba(229, 199, 247, 0.35); /* lilac hover */
+  color: #3d74e0;
+}

@@ -2,7 +2,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-
+import { toast } from "react-toastify";
 import {
   useNavigate,
 } from "react-router-dom";
@@ -260,7 +260,7 @@ function AdminProfile() {
           false
         );
 
-        alert(
+        toast.success(
           "Profile Updated Successfully 🚀"
         );
 
@@ -268,7 +268,7 @@ function AdminProfile() {
 
         console.log(error);
 
-        alert(
+        toast.error(
           "Profile Update Failed ❌"
         );
       }
@@ -292,7 +292,7 @@ function AdminProfile() {
           passwordForm.oldPassword
         );
 
-        alert(
+        toast.success(
           "Verified Successfully ✅"
         );
 
@@ -300,7 +300,7 @@ function AdminProfile() {
 
         console.log(error);
 
-        alert(
+        toast.error(
           "Wrong Username or Password ❌"
         );
       }
@@ -323,7 +323,7 @@ function AdminProfile() {
 
         ) {
 
-          alert(
+          toast.error(
             "Passwords Not Matching ❌"
           );
 
@@ -339,7 +339,7 @@ function AdminProfile() {
           passwordForm.newPassword
         );
 
-        alert(
+        toast.success(
           "Password Updated Successfully 🔐"
         );
 

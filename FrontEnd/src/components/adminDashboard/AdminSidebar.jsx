@@ -12,11 +12,16 @@ import {
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [notificationOpen, setNotificationOpen] = useState(false);
+function AdminSidebar({
+  sidebarOpen,
+  setSidebarOpen,
+  handleLogout,
+}) {
 
+  const navigate = useNavigate();
+
+  const location = useLocation();
+    const [notificationOpen, setNotificationOpen] = useState(false);
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
 
@@ -54,17 +59,21 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
           {sidebarOpen && <span>Users</span>}
         </button>
 
-        {/* <button
-          className={`nav-item ${
-            location.pathname === "/admin/products" ? "active" : ""
-          }`}
-          onClick={() => navigate("/admin/products")}
+        <button
+          className={`nav-item ${location.pathname === "/admin/orderManagement" ? "active" : ""
+            }`}
+          onClick={() => {
+            console.log("Orders Clicked");
+            navigate("/admin/orderManagement");
+          }}
         >
-          <FaTags />
-          {sidebarOpen && <span>Products</span>}
-        </button> */}
-
-        <button className="nav-item" onClick={() => navigate("/admin/options")}>
+          <FaBoxOpen />
+          {sidebarOpen && <span>Orders</span>}
+        </button>
+        <button
+          className="nav-item"
+          onClick={() => navigate("/admin/options")}
+          >
           <FaCog />
           {sidebarOpen && <span>Options</span>}
         </button>
@@ -127,6 +136,8 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
           <FaSignOutAlt />
           {sidebarOpen && <span>Logout</span>}
         </button>
+
+
       </nav>
     </aside>
   );

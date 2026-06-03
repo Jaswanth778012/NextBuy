@@ -20,6 +20,7 @@ import AdminProfile from "./pages/AdminProfile";
 
 import AdminOptions from "./pages/AdminOptions";
 import UserManagement from "./pages/UserManegement";
+import OrdersManagement from "./pages/OrdersManagement";
 import BroadcastCenter from "./pages/BroadcastCenter";
 
 // =========================
@@ -59,8 +60,9 @@ function App() {
 
           <Route path="dashboard" element={<AdminDashboard />} />
 
-          <Route path="options" element={<AdminOptions />} />
-          <Route path="userManagement" element={<UserManagement />} />
+          <Route path="options" element={<AdminOptions/>}/>
+          <Route path="userManagement" element={<UserManagement/>}/>
+          <Route path="orderManagement" element={<OrdersManagement/>}/>
 
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails/>}/>
