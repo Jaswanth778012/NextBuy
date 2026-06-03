@@ -22,7 +22,8 @@ public class SentEmail {
 	  	@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
-
+	  	
+	  	@Column(length = 2000)
 	    private String recipients;
 
 	    private String subject;
