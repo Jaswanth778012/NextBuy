@@ -69,7 +69,6 @@ function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
             location.pathname === "/admin/orderManagement" ? "active" : ""
           }`}
           onClick={() => {
-            console.log("Orders Clicked");
             navigate("/admin/orderManagement");
           }}
         >

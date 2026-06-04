@@ -4,61 +4,32 @@ const API = axios.create({
   baseURL: "http://localhost:9090",
 });
 
-// =========================
-// REQUEST INTERCEPTOR
-// =========================
+let isRedirecting = false;
 
-API.interceptors.request.use(
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
 
-  (config) => {
-
-    const token =
-      localStorage.getItem("token");
-
-    if (token) {
-
-      config.headers.Authorization =
-        `Bearer ${token}`;
-    }
-
-    return config;
-  },
-
-  (error) => {
-
-    return Promise.reject(error);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
 
-// =========================
-// RESPONSE INTERCEPTOR
-// =========================
+  return config;
+});
 
 API.interceptors.response.use(
-
-  (response) => {
-
-    return response;
-  },
-
+  (response) => response,
   (error) => {
+    const status = error?.response?.status;
 
-    // TOKEN EXPIRED / UNAUTHORIZED
+    if (status === 401 || status === 403) {
+      if (isRedirecting) return Promise.reject(error);
 
-    if (
-      error.response &&
-      error.response.status === 401
-    ) {
-
-      // CLEAR STORAGE
+      isRedirecting = true;
 
       localStorage.removeItem("token");
-
       localStorage.removeItem("user");
 
-      // REDIRECT TO LOGIN
-
-      window.location.href = "/login";
+      window.location.replace("/login");
     }
 
     return Promise.reject(error);

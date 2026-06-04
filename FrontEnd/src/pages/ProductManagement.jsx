@@ -74,11 +74,6 @@ function ProductManagement() {
         const response =
           await viewAllProducts();
 
-        console.log(
-          "Products Response:",
-          response
-        );
-
         setProducts(
           response?.data || []
         );
