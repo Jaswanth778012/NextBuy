@@ -157,9 +157,8 @@ useEffect(() => {
             }
           >
             <img
-              src={
-  profile.dpUrl
-}
+              src={profile.dpUrl || "/default-avatar.png"}
+  alt="Profile"
              
             />
 

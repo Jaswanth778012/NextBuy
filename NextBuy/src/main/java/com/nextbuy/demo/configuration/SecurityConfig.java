@@ -46,7 +46,7 @@ public class SecurityConfig {
 						.requestMatchers("/Product/viewAllProducts").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/Brands/**","/Categories/**","/Subcategories/**").permitAll()
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**").hasRole("ADMIN")
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**","/festival-banner/**").hasRole("ADMIN")
 
 		            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**").hasRole("USER")
 	            
