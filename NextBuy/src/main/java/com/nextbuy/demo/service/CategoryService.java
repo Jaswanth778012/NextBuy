@@ -27,7 +27,8 @@ public class CategoryService {
 
     	    return new CategoryDTO(
     	            saved.getId(),
-    	            saved.getName()
+    	            saved.getName(),
+    	            saved.getDescription()
     	    );
     }
 
@@ -38,7 +39,8 @@ public class CategoryService {
                 .map(category ->
                         new CategoryDTO(
                                 category.getId(),
-                                category.getName()
+                                category.getName(),
+                                category.getDescription()
                         ))
                 .toList();
     }
@@ -51,7 +53,8 @@ public class CategoryService {
 
         return new CategoryDTO(
                 category.getId(),
-                category.getName()
+                category.getName(),
+                category.getDescription()
         );
     }
 
@@ -67,7 +70,8 @@ public class CategoryService {
 
         return new CategoryDTO(
                 updated.getId(),
-                updated.getName()
+                updated.getName(),
+                updated.getDescription()
         );
     }
 

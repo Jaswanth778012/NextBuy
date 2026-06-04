@@ -43,6 +43,7 @@ public class SubCategoryService {
         return new SubCategoryDTO(
                 saved.getId(),
                 saved.getName(),
+                saved.getCategory().getDescription(),
                 saved.getCategory().getId(),
                 saved.getCategory().getName()
         );
@@ -55,6 +56,7 @@ public class SubCategoryService {
                 .map(subCategory -> new SubCategoryDTO(
                         subCategory.getId(),
                         subCategory.getName(),
+                        subCategory.getCategory().getDescription(),
                         subCategory.getCategory().getId(),
                         subCategory.getCategory().getName()
                 ))
@@ -68,8 +70,10 @@ public class SubCategoryService {
                 .map(subCategory -> new SubCategoryDTO(
                         subCategory.getId(),
                         subCategory.getName(),
+                        subCategory.getCategory().getDescription(),
                         subCategory.getCategory().getId(),
                         subCategory.getCategory().getName()
+                        
                 ))
                 .toList();
     }
@@ -83,8 +87,10 @@ public class SubCategoryService {
         return new SubCategoryDTO(
                 subCategory.getId(),
                 subCategory.getName(),
+                subCategory.getCategory().getDescription(),
                 subCategory.getCategory().getId(),
                 subCategory.getCategory().getName()
+               
         );
     }
 
@@ -102,9 +108,11 @@ public class SubCategoryService {
 
         return new SubCategoryDTO(
                 updated.getId(),
-                updated.getName(),
-                updated.getCategory().getId(),
-                updated.getCategory().getName()
+				updated.getName(),
+				updated.getCategory().getDescription(),
+				updated.getCategory().getId(),
+				updated.getCategory().getName()
+				
         );
     }
 

@@ -118,9 +118,9 @@ public class ProductService {
 	}
 	
   //DELETEPRODDUCT
-	public String deleteProduct(String name, Long productId) {
+	public String deleteProduct(Long productId) {
 
-	    Optional<Product> pr = productRepo.findByName(name);
+	    Optional<Product> pr = productRepo.findById(productId);
 
 	    if (pr.isEmpty()) {
 	        return "Product not found";
@@ -203,6 +203,8 @@ public class ProductService {
     	                String.format("%.2f", taxablePrice)
     	        )
     	);
+    	p.setSubCategory(product.getSubCategory());
+    	p.setProductCondition(product.getProductCondition());
 
     	p.setFinalPrice(finalPrice);
 		
@@ -349,6 +351,9 @@ public class ProductService {
 	        userDto.setDescription(product.getDescription());
 	        userDto.setCategory(product.getCategory());
 	        userDto.setSubCategory(product.getSubCategory());
+	        userDto.setProductCondition(
+	                product.getProductCondition()
+	        );
 	        userDto.setPrice(product.getMrp_price());
 	        userDto.setDiscountPercentage(product.getDiscountPercentage());
 	        userDto.setProductStatus(product.getProductStatus());

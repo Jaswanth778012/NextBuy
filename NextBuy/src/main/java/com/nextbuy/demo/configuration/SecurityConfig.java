@@ -43,8 +43,7 @@ public class SecurityConfig {
 						.requestMatchers("/auth/**").permitAll()
 
 						.requestMatchers("/Product/compare/**").hasRole("USER")
-
-.requestMatchers(HttpMethod.GET, "/Product/viewAllProducts").permitAll()
+						.requestMatchers("/Product/viewAllProducts").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/Brands/**","/Categories/**","/Subcategories/**").permitAll()
 						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**").hasRole("ADMIN")
