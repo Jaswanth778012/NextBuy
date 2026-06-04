@@ -22,7 +22,9 @@ import AdminOptions from "./pages/AdminOptions";
 import UserManagement from "./pages/UserManegement";
 import OrdersManagement from "./pages/OrdersManagement";
 import BroadcastCenter from "./pages/BroadcastCenter";
-
+import CategoryManagement from "./pages/CategoryManagement";
+import SubCategoryManagement from "./pages/SubCategoryManagement";
+import BrandManagement from "./pages/BrandManagement";
 // =========================
 // LAYOUTS
 // =========================
@@ -64,6 +66,23 @@ function App() {
           <Route path="userManagement" element={<UserManagement />} />
           <Route path="orderManagement" element={<OrdersManagement />} />
           <Route path="productManagement" element={<ProductManagement />} />
+          <Route
+            path="categoryManagement"
+            element={<CategoryManagement />}
+          />
+
+          {/* Sub Categories */}
+          <Route
+            path="subCategoryManagement"
+            element={<SubCategoryManagement />}
+          />
+
+          {/* Brands */}
+          <Route
+            path="brandManagement"
+            element={<BrandManagement />}
+          />
+
 
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails />} />
