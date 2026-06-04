@@ -94,7 +94,18 @@ public class CloudinaryService {
     		return uploadResult.get("secure_url").toString();
     	}
     	catch(IOException e) {
-    		throw new RuntimeException("Failed to upload brand logo to Cloudinary", e);
+    		throw new RuntimeException("Failed to upload dpUrl to Cloudinary", e);
+    	}
+    }
+    
+    public String uploadFestBanner(MultipartFile file) {
+    	try {
+    		Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("folder", "festival_banner"));
+    		
+    		return uploadResult.get("secure_url").toString();
+    	}
+    	catch(IOException e) {
+    		throw new RuntimeException("Failed to upload festival banner to Cloudinary", e);
     	}
     }
 }

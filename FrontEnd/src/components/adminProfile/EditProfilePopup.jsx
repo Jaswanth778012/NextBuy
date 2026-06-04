@@ -1,5 +1,25 @@
 import React from "react";
 
+import {
+
+  FaUser,
+
+  FaPhone,
+
+  FaEnvelope,
+
+  FaMapMarkerAlt,
+
+  FaCity,
+
+  FaGlobeAsia,
+
+  FaFlag,
+
+  FaImage
+
+} from "react-icons/fa";
+
 function EditProfilePopup({
 
   editForm,
@@ -36,66 +56,128 @@ function EditProfilePopup({
 
         <div className="edit-grid">
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={editForm.name}
-            onChange={handleChange}
-          />
+          {/* NAME */}
 
-          <input
-            type="text"
-            name="mobileNumber"
-            placeholder="Mobile"
-            value={editForm.mobileNumber}
-            onChange={handleChange}
-          />
+          <div className="edit-input-wrapper">
 
-          <input
-            type="text"
-            name="email"
-            placeholder="Email"
-            value={editForm.email}
-            onChange={handleChange}
-          />
+            <FaUser className="edit-field-icon" />
 
-          <input
-            type="text"
-            name="addressLine1"
-            placeholder="Address"
-            value={editForm.addressLine1}
-            onChange={handleChange}
-          />
+            <input
+              type="text"
+              name="name"
+              placeholder="Name"
+              value={editForm.name}
+              onChange={handleChange}
+            />
 
-          <input
-            type="text"
-            name="city"
-            placeholder="City"
-            value={editForm.city}
-            onChange={handleChange}
-          />
+          </div>
 
-          <input
-            type="text"
-            name="state"
-            placeholder="State"
-            value={editForm.state}
-            onChange={handleChange}
-          />
+          {/* MOBILE */}
 
-          <input
-            type="text"
-            name="country"
-            placeholder="Country"
-            value={editForm.country}
-            onChange={handleChange}
-          />
+          <div className="edit-input-wrapper">
 
-          <div className="file-upload-box">
+            <FaPhone className="edit-field-icon" />
+
+            <input
+              type="text"
+              name="mobileNumber"
+              placeholder="Mobile"
+              value={editForm.mobileNumber}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* EMAIL */}
+
+          <div className="edit-input-wrapper">
+
+            <FaEnvelope className="edit-field-icon" />
+
+            <input
+              type="text"
+              name="email"
+              placeholder="Email"
+              value={editForm.email}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* ADDRESS */}
+
+          <div className="edit-input-wrapper">
+
+            <FaMapMarkerAlt className="edit-field-icon" />
+
+            <input
+              type="text"
+              name="addressLine1"
+              placeholder="Address"
+              value={editForm.addressLine1}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* CITY */}
+
+          <div className="edit-input-wrapper">
+
+            <FaCity className="edit-field-icon" />
+
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              value={editForm.city}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* STATE */}
+
+          <div className="edit-input-wrapper">
+
+            <FaGlobeAsia className="edit-field-icon" />
+
+            <input
+              type="text"
+              name="state"
+              placeholder="State"
+              value={editForm.state}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* COUNTRY */}
+
+          <div className="edit-input-wrapper">
+
+            <FaFlag className="edit-field-icon" />
+
+            <input
+              type="text"
+              name="country"
+              placeholder="Country"
+              value={editForm.country}
+              onChange={handleChange}
+            />
+
+          </div>
+
+          {/* IMAGE */}
+
+          <div className="edit-file-upload-box">
 
             <label>
+
+              <FaImage className="edit-upload-icon" />
+
               Choose Profile Image
+
             </label>
 
             <input

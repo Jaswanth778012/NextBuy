@@ -39,9 +39,9 @@ public class ProductController {
     	
 		return productService.addProduct(Pdto, image);
 	}
-    @DeleteMapping("/deleteProduct/{name}/{id}")
-    public String deleteProduct(@PathVariable String name, @PathVariable Long id) {
-    	return productService.deleteproduct(name,id);
+    @DeleteMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+    	return productService.deleteProduct(id);
     }
     
     @GetMapping("/viewAllProducts")

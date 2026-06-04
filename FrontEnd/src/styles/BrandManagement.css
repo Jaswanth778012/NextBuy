@@ -1,0 +1,1053 @@
+/* =========================================
+   BRAND PAGE
+========================================= */
+
+.brand-page {
+  width: 100%;
+  animation: fadeUp 0.35s ease;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.brand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.brand-header-left h1 {
+  font-size: 42px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.brand-header-left p {
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.brand-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =========================================
+   TOTAL CARD
+========================================= */
+
+.brand-total-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 22px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+
+  color: white;
+  font-weight: 700;
+
+  box-shadow:
+    0 10px 25px
+    rgba(59,130,246,0.22);
+}
+
+/* =========================================
+   ADD BUTTON
+========================================= */
+
+.brand-add-btn {
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 24px;
+
+  border-radius: 18px;
+
+  color: white;
+  font-weight: 700;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+
+  transition: 0.3s ease;
+
+  box-shadow:
+    0 10px 25px
+    rgba(59,130,246,0.18);
+}
+
+.brand-add-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.brand-search-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 15px 20px;
+
+  margin-bottom: 28px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255,255,255,0.78);
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    0 8px 20px
+    rgba(31,38,135,0.08);
+}
+
+.brand-search-box svg {
+  color: #64748b;
+}
+
+.brand-search-box input {
+  flex: 1;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 15px;
+  color: #111827;
+  font-weight: 500;
+}
+
+/* =========================================
+   TABLE CARD
+========================================= */
+
+.brand-table-shell {
+  border-radius: 34px;
+
+  padding: 30px;
+
+  background:
+    rgba(255,255,255,0.24);
+
+  backdrop-filter: blur(24px);
+
+  border:
+    1px solid rgba(255,255,255,0.35);
+
+  box-shadow:
+    0 10px 35px
+    rgba(31,38,135,0.12);
+}
+
+.brand-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.brand-table {
+  width: 100%;
+  min-width: 1200px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.brand-table thead th {
+  padding: 22px;
+
+  text-align: left;
+
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+.brand-table thead th:first-child {
+  border-top-left-radius: 20px;
+}
+
+.brand-table thead th:last-child {
+  border-top-right-radius: 20px;
+}
+
+.brand-table td {
+  padding: 20px;
+
+  background:
+    rgba(255,255,255,0.94);
+
+  color: #1e293b;
+
+  border-bottom:
+    1px solid rgba(226,232,240,0.7);
+}
+
+.brand-table tbody tr:hover td {
+  background:
+    rgba(59,130,246,0.05);
+}
+
+/* =========================================
+   BRAND LOGO
+========================================= */
+
+.brand-logo {
+  width: 65px;
+  height: 65px;
+
+  border-radius: 18px;
+
+  object-fit: cover;
+
+  border:
+    2px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    0 8px 20px
+    rgba(59,130,246,0.15);
+}
+
+/* =========================================
+   COLUMN WIDTHS
+========================================= */
+
+.brand-table td:nth-child(1) {
+  width: 100px;
+}
+
+.brand-table td:nth-child(2) {
+  width: 80px;
+  font-weight: 700;
+}
+
+.brand-table td:nth-child(3) {
+  min-width: 180px;
+  font-weight: 700;
+}
+
+.brand-table td:nth-child(4) {
+  min-width: 250px;
+}
+
+.brand-table td:nth-child(5) {
+  min-width: 150px;
+}
+
+.brand-table td:nth-child(6) {
+  min-width: 140px;
+}
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.brand-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-edit-btn,
+.brand-delete-btn {
+  border: none;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  transition: 0.3s ease;
+}
+
+.brand-edit-btn {
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+.brand-delete-btn {
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+}
+
+.brand-edit-btn:hover,
+.brand-delete-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.brand-pagination-container {
+  margin-top: 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.brand-pagination-left {
+  color: #475569;
+  font-weight: 600;
+}
+
+.brand-pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-page-btn {
+  border: none;
+
+  padding: 12px 18px;
+
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  color: white;
+  font-weight: 700;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+.brand-page-btn:disabled {
+  opacity: 0.5;
+}
+
+.brand-page-indicator {
+  padding: 12px 18px;
+
+  border-radius: 16px;
+
+  background:
+    rgba(255,255,255,0.75);
+
+  font-weight: 700;
+}
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.brand-empty {
+  text-align: center;
+
+  padding: 60px;
+
+  color: #64748b;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* =========================================
+   LOADER
+========================================= */
+
+.brand-loader-card {
+  min-height: 350px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 34px;
+
+  background:
+    rgba(255,255,255,0.24);
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.35);
+
+  box-shadow:
+    0 10px 35px
+    rgba(31,38,135,0.12);
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .brand-header-left h1 {
+  color: #f8fafc;
+}
+
+.dark-mode .brand-header-left p {
+  color: #cbd5e1;
+}
+
+.dark-mode .brand-search-box,
+.dark-mode .brand-table-shell {
+  background:
+    rgba(15,23,42,0.82);
+}
+
+.dark-mode .brand-search-box input {
+  color: #f8fafc;
+}
+
+.dark-mode .brand-table td {
+  background:
+    rgba(15,23,42,0.88);
+
+  color: #e2e8f0;
+
+  border-bottom:
+    1px solid rgba(51,65,85,0.55);
+}
+
+.dark-mode .brand-table tbody tr:hover td {
+  background:
+    rgba(59,130,246,0.10);
+}
+
+.dark-mode .brand-page-indicator {
+  background:
+    rgba(15,23,42,0.72);
+
+  color: #f8fafc;
+}
+
+.dark-mode .brand-logo {
+  border:
+    2px solid rgba(148,163,184,0.2);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+  .brand-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .brand-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .brand-total-card,
+  .brand-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .brand-table-shell {
+    padding: 18px;
+  }
+
+  .brand-pagination-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .brand-pagination-right {
+    justify-content: space-between;
+  }
+}
+
+/* =========================================
+   ADD BRAND MODAL
+========================================= */
+
+.brand-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+
+  z-index: 9999;
+
+  animation: modalFade 0.25s ease;
+}
+
+.brandmodal-content {
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  padding: 30px;
+
+  border-radius: 32px;
+
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(25px);
+
+  box-shadow:
+    0 20px 60px rgba(31,38,135,0.18);
+
+  animation: modalPop 0.28s ease;
+}
+
+.brand-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.brand-modal-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.brand-close {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+}
+
+.brand-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin-bottom: 18px;
+}
+
+.brand-form label {
+  font-weight: 700;
+  color: #334155;
+}
+
+.brand-form input,
+.brand-form textarea {
+  width: 100%;
+
+  padding: 15px 18px;
+
+  border-radius: 18px;
+
+  border:
+    1px solid rgba(203,213,225,0.8);
+
+  background:
+    rgba(255,255,255,0.85);
+
+  outline: none;
+
+  font-size: 14px;
+}
+
+.brand-form textarea {
+  resize: vertical;
+}
+
+.brand-form input[type="file"] {
+  padding: 16px;
+
+  border-radius: 18px;
+
+  border:
+    1px dashed rgba(59,130,246,0.3);
+
+  cursor: pointer;
+}
+
+.brand-form input[type="file"]::file-selector-button {
+  border: none;
+
+  padding: 10px 16px;
+
+  border-radius: 14px;
+
+  margin-right: 12px;
+
+  color: white;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+.brand-image-preview {
+  display: flex;
+  justify-content: center;
+
+  margin: 20px 0;
+}
+
+.brand-preview {
+  width: 180px;
+  height: 180px;
+
+  object-fit: cover;
+
+  border-radius: 24px;
+
+  border:
+    3px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    0 10px 25px rgba(59,130,246,0.18);
+}
+
+.brand-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 25px;
+}
+
+.brand-cancel-btn,
+.brand-save-btn {
+  border: none;
+
+  padding: 14px 22px;
+
+  border-radius: 16px;
+
+  color: white;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.brand-cancel-btn {
+  background: linear-gradient(
+    135deg,
+    #64748b,
+    #475569
+  );
+}
+
+.brand-save-btn {
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+/* =========================================
+   EDIT BRAND MODAL
+========================================= */
+
+.brand-edit-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+
+  z-index: 9999;
+
+  animation: modalFade 0.25s ease;
+}
+
+.brand-edit-content {
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  padding: 30px;
+
+  border-radius: 32px;
+
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(25px);
+
+  box-shadow:
+    0 20px 60px rgba(31,38,135,0.18);
+
+  animation: modalPop 0.28s ease;
+}
+
+.brand-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.brand-edit-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.brand-edit-close {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+}
+
+.brand-edit-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin-bottom: 18px;
+}
+
+.brand-edit-form label {
+  font-weight: 700;
+  color: #334155;
+}
+
+.brand-edit-form input,
+.brand-edit-form textarea {
+  width: 100%;
+
+  padding: 15px 18px;
+
+  border-radius: 18px;
+
+  border:
+    1px solid rgba(203,213,225,0.8);
+
+  background:
+    rgba(255,255,255,0.85);
+
+  outline: none;
+}
+
+.brand-edit-form textarea {
+  resize: vertical;
+}
+
+.brand-edit-form input[type="file"] {
+  padding: 16px;
+
+  border-radius: 18px;
+
+  border:
+    1px dashed rgba(59,130,246,0.3);
+
+  cursor: pointer;
+}
+
+.brand-edit-form input[type="file"]::file-selector-button {
+  border: none;
+
+  padding: 10px 16px;
+
+  border-radius: 14px;
+
+  margin-right: 12px;
+
+  color: white;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+.brand-edit-image-preview {
+  display: flex;
+  justify-content: center;
+
+  margin: 20px 0;
+}
+
+.brand-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  margin-top: 25px;
+}
+
+.brand-edit-cancel,
+.brand-edit-save {
+  border: none;
+
+  padding: 14px 22px;
+
+  border-radius: 16px;
+
+  color: white;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.brand-edit-cancel {
+  background: linear-gradient(
+    135deg,
+    #64748b,
+    #475569
+  );
+}
+
+.brand-edit-save {
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+/* =========================================
+   DARK MODE MODALS
+========================================= */
+
+.dark-mode .brandmodal-content,
+.dark-mode .brand-edit-content {
+  background:
+    rgba(15,23,42,0.82);
+}
+
+.dark-mode .brand-modal-header h2,
+.dark-mode .brand-edit-header h2 {
+  color: #f8fafc;
+}
+
+.dark-mode .brand-form label,
+.dark-mode .brand-edit-form label {
+  color: #cbd5e1;
+}
+
+.dark-mode .brand-form input,
+.dark-mode .brand-form textarea,
+.dark-mode .brand-edit-form input,
+.dark-mode .brand-edit-form textarea {
+  background:
+    rgba(15,23,42,0.72);
+
+  color: #f8fafc;
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+.dark-mode .brand-form input[type="file"],
+.dark-mode .brand-edit-form input[type="file"] {
+  background:
+    rgba(15,23,42,0.72);
+
+  color: #f8fafc;
+
+  border:
+    1px dashed rgba(148,163,184,0.2);
+}
+
+.dark-mode .brand-page-indicator {
+  background:
+    rgba(15,23,42,0.72);
+
+  color: #f8fafc;
+}
+
+.dark-mode .brand-preview {
+  border:
+    2px solid rgba(148,163,184,0.2);
+}
+
+/* =========================================
+   COMMON DELETE MODAL
+========================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+
+  animation: modalFade 0.25s ease;
+}
+
+.confirm-modal {
+  width: 100%;
+  max-width: 450px;
+
+  padding: 30px;
+
+  border-radius: 28px;
+
+  text-align: center;
+
+  background: rgba(255,255,255,0.95);
+
+  box-shadow:
+    0 20px 60px rgba(31,38,135,0.18);
+
+  animation: modalPop 0.28s ease;
+}
+
+.confirm-modal h3 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+
+  margin-bottom: 12px;
+}
+
+.confirm-modal p {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cancel-btn,
+.delete-btn {
+  border: none;
+
+  padding: 14px 24px;
+
+  border-radius: 16px;
+
+  color: white;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: linear-gradient(
+    135deg,
+    #64748b,
+    #475569
+  );
+}
+
+.delete-btn {
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+}
+
+.dark-mode .confirm-modal {
+  background:
+    rgba(15,23,42,0.92);
+}
+
+.dark-mode .confirm-modal h3 {
+  color: #f8fafc;
+}
+
+.dark-mode .confirm-modal p {
+  color: #cbd5e1;
+}

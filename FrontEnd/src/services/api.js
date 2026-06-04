@@ -4,8 +4,9 @@ const API = axios.create({
   baseURL: "http://localhost:9090",
 });
 
-API.interceptors.request.use((config) => {
+let isRedirecting = false;
 
+API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
   if (token) {
@@ -14,5 +15,25 @@ API.interceptors.request.use((config) => {
 
   return config;
 });
+
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status;
+
+    if (status === 401 || status === 403) {
+      if (isRedirecting) return Promise.reject(error);
+
+      isRedirecting = true;
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      window.location.replace("/login");
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default API;

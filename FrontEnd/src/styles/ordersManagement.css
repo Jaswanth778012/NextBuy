@@ -1,0 +1,871 @@
+/* =========================================
+   ORDERS MANAGEMENT PAGE
+========================================= */
+
+.orders-container {
+  width: 100%;
+  animation: fadeUp 0.35s ease;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  padding: 0 6px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.orders-title {
+  font-size: 42px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.ordersmanagesment-message {
+  font-size: 17px;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+
+/* =========================================
+   TOTAL ORDERS BADGE
+========================================= */
+
+.total-orders-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 22px;
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+
+  font-weight: 700;
+  font-size: 15px;
+
+  box-shadow: 0 10px 25px rgba(59,130,246,0.22);
+}
+
+.orders-icon {
+  font-size: 18px;
+}
+
+/* =========================================
+   STATS GRID
+========================================= */
+
+.orders-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* =========================================
+   STAT CARD (MATCH USER DESIGN)
+========================================= */
+/* =========================================
+   ORDER STAT CARD (MATCH DASHBOARD STYLE)
+========================================= */
+
+.stat-card {
+  padding: 18px 20px;
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(24px);
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  box-shadow: 0 10px 35px rgba(31, 38, 135, 0.12);
+
+  transition: 0.35s ease;
+
+  min-height: 130px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  position: relative;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 45px rgba(59, 130, 246, 0.18);
+}
+
+/* TITLE */
+.stat-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+/* VALUE */
+.stat-card p {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  padding-top: 10px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* STATUS DOT */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+
+/* STATUS DOT */
+.stat-card::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* =========================================
+   ORDER SEARCH BAR (ISOLATED ONLY)
+========================================= */
+
+.order-search-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+/* LEFT */
+.order-left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* CENTER */
+.order-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+
+/* RIGHT */
+.order-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* SEARCH BOX */
+.order-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* INPUT */
+.order-input {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  outline: none;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* ICON */
+.order-icon {
+  color: #64748b;
+}
+
+/* MONTH-YEAR */
+.order-month-year {
+  display: flex;
+  gap: 10px;
+}
+
+/* BUTTONS */
+.search-section button {
+  padding: 14px 20px;
+
+  border: none;
+  border-radius: 18px;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  color: white;
+
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+
+  box-shadow: 0 10px 25px rgba(59,130,246,0.18);
+
+  transition: 0.3s ease;
+}
+
+.search-section button:hover {
+  transform: translateY(-3px);
+}
+
+/* =========================================
+   CENTER SEARCH WIDTH INCREASE
+========================================= */
+
+.order-center {
+  flex: 3; /* increased from 2 → makes center wider */
+  display: flex;
+  justify-content: center;
+}
+
+/* Make search box wider */
+.order-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 100%;
+  max-width: 520px; /* 👈 controls search bar width */
+}
+
+/* Make input/select take full space */
+.order-input {
+  width: 100%;
+}
+
+/* =========================================
+   TABLE WRAPPER (USER STYLE MATCH)
+========================================= */
+
+.orders-table-container {
+  margin-top: 10px;
+
+  background: rgba(255,255,255,0.24);
+  backdrop-filter: blur(24px);
+
+  border-radius: 34px;
+
+  border: 1px solid rgba(255,255,255,0.35);
+
+  box-shadow: 0 10px 35px rgba(31,38,135,0.12);
+
+  padding: 20px;
+  overflow-x: auto;
+}
+
+/* SCROLLBAR */
+.orders-table-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.orders-table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 20px;
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.orders-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* HEADER */
+.orders-table th {
+  padding: 22px 18px;
+  text-align: left;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  color: white;
+
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+
+  position: sticky;
+  top: 0;
+}
+
+/* CELLS */
+.orders-table td {
+  padding: 18px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #334155;
+
+  background: rgba(255,255,255,0.92);
+
+  border-bottom: 1px solid rgba(226,232,240,0.6);
+}
+
+.orders-table tbody tr:hover td {
+  background: rgba(59,130,246,0.06);
+}
+
+/* =========================================
+   STATUS BADGES
+========================================= */
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-badge.pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.status-badge.confirmed { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.status-badge.cancelled { background: rgba(239,68,68,0.15); color: #ef4444; }
+.status-badge.delivered { background: rgba(34,197,94,0.15); color: #22c55e; }
+.status-badge.returned { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.no-orders,
+.empty-orders {
+  text-align: center;
+  padding: 40px;
+
+  font-size: 18px;
+  font-weight: 700;
+  color: #64748b;
+}
+
+/* =========================================
+   PAGINATION (MATCH USER STYLE)
+========================================= */
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  flex-wrap: wrap;
+  gap: 18px;
+
+  margin-top: 28px;
+}
+
+/* BUTTONS */
+.pagination-btn {
+  padding: 12px 18px;
+
+  border: none;
+  border-radius: 16px;
+
+  font-weight: 700;
+
+  color: white;
+
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+
+  cursor: pointer;
+
+  box-shadow: 0 10px 20px rgba(59,130,246,0.18);
+
+  transition: 0.3s ease;
+}
+
+.pagination-btn:hover {
+  transform: translateY(-3px);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* PAGE INDICATOR */
+.page-indicator {
+  padding: 10px 16px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+
+  font-weight: 700;
+  color: #334155;
+}
+
+/* DROPDOWN */
+.page-size-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(255,255,255,0.35);
+}
+
+.page-size-box select {
+  padding: 8px 12px;
+  border-radius: 10px;
+
+  border: 1px solid rgba(203,213,225,0.6);
+
+  font-weight: 700;
+
+  background: white;
+
+  cursor: pointer;
+  outline: none;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+  .orders-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .orders-title {
+    font-size: 32px;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination-btn {
+    width: 100%;
+  }
+}
+
+/* =========================================
+   DARK MODE - ORDERS MANAGEMENT
+========================================= */
+
+.dark-mode .orders-title {
+  color: #f8fafc;
+}
+
+.dark-mode .ordersmanagesment-message {
+  color: #cbd5e1;
+}
+
+/* HEADER BADGE */
+
+.dark-mode .total-orders-badge {
+  background: linear-gradient(
+    135deg,
+    #1e293b,
+    #334155
+  );
+  color: #f8fafc;
+}
+
+/* STAT CARDS */
+
+.dark-mode .stat-card {
+  background:
+    rgba(15,23,42,0.72);
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+.dark-mode .stat-card h3 {
+  color: #cbd5e1;
+}
+
+.dark-mode .stat-card p {
+  color: #f8fafc;
+}
+
+/* SEARCH */
+
+.dark-mode .search-section input,
+.dark-mode .search-section select {
+  background:
+    rgba(15,23,42,0.82);
+
+  color: #f8fafc;
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+.dark-mode .search-section input::placeholder {
+  color: #94a3b8;
+}
+
+.dark-mode .search-section button {
+  color: white;
+}
+
+/* TABLE CARD */
+
+.dark-mode .orders-table-container {
+  background:
+    rgba(15,23,42,0.72);
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+/* TABLE HEADER */
+
+.dark-mode .orders-table th {
+  background: linear-gradient(
+    135deg,
+    #1e293b,
+    #334155
+  );
+
+  color: #f8fafc;
+}
+
+/* TABLE BODY */
+
+.dark-mode .orders-table td {
+  background:
+    rgba(15,23,42,0.88);
+
+  color: #e2e8f0;
+
+  border-bottom:
+    1px solid rgba(51,65,85,0.55);
+}
+
+.dark-mode .orders-table tbody tr:hover td {
+  background:
+    rgba(59,130,246,0.10);
+
+  color: #f8fafc;
+}
+
+/* =========================================
+   INVOICE DOWNLOAD BUTTON
+========================================= */
+
+.invoice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 12px;
+
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  font-weight: 700;
+  font-size: 13px;
+
+  color: white;
+
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+
+  box-shadow: 0 8px 18px rgba(59, 130, 246, 0.25);
+
+  transition: all 0.25s ease;
+}
+
+/* hover effect */
+.invoice-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(59, 130, 246, 0.35);
+}
+
+/* icon spacing fix */
+.invoice-btn svg {
+  font-size: 14px;
+}
+
+/* disabled state (optional future use) */
+.invoice-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* STATUS BADGES */
+
+.dark-mode .status-badge.pending {
+  background: rgba(245,158,11,0.18);
+  color: #fbbf24;
+}
+
+.dark-mode .status-badge.confirmed {
+  background: rgba(59,130,246,0.18);
+  color: #60a5fa;
+}
+
+.dark-mode .status-badge.cancelled {
+  background: rgba(239,68,68,0.18);
+  color: #f87171;
+}
+
+.dark-mode .status-badge.delivered {
+  background: rgba(34,197,94,0.18);
+  color: #4ade80;
+}
+
+.dark-mode .status-badge.returned {
+  background: rgba(139,92,246,0.18);
+  color: #a78bfa;
+}
+
+/* EMPTY MESSAGE */
+
+.dark-mode .empty-orders,
+.dark-mode .no-orders {
+  color: #cbd5e1;
+}
+
+/* PAGINATION */
+
+.dark-mode .pagination-container {
+  color: #cbd5e1;
+}
+
+.dark-mode .page-indicator {
+  background:
+    rgba(15,23,42,0.72);
+
+  color: #f8fafc;
+}
+
+.dark-mode .page-size-box {
+  background:
+    rgba(15,23,42,0.72);
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+.dark-mode .page-size-box select {
+  background:
+    rgba(15,23,42,0.82);
+
+  color: #f8fafc;
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+.dark-mode .pagination-btn {
+  background: linear-gradient(
+    135deg,
+    #1e293b,
+    #334155
+  );
+
+  color: #f8fafc;
+}
+
+/* SCROLLBAR */
+
+.dark-mode .orders-table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+
+.dark-mode .total-orders-badge {
+   background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #8b5cf6
+  );
+}
+
+.status-dropdown {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148,163,184,0.3);
+  background: rgba(255,255,255,0.8);
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+}
+
+.dark-mode .status-dropdown {
+  background: rgba(15,23,42,0.85);
+  color: #f8fafc;
+  border: 1px solid rgba(148,163,184,0.2);
+}
+
+/* =========================================
+   STATUS DROPDOWN (PROFESSIONAL STYLE)
+========================================= */
+
+.status-dropdown {
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  font-weight: 700;
+  font-size: 13px;
+
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+
+  outline: none;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  min-width: 160px;
+}
+
+.status-dropdown:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================
+   OPTION COLORS (REAL APP STYLE)
+========================================= */
+
+.status-dropdown option[value="PENDING"] {
+  color: #f59e0b;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="CONFIRMED"] {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="PROCESSING"] {
+  color: #6366f1;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="SHIPPED"] {
+  color: #06b6d4;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="OUT_FOR_DELIVERY"] {
+  color: #f97316;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="DELIVERED"] {
+  color: #22c55e;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="CANCELLED"] {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.status-dropdown option[value="RETURNED"] {
+  color: #64748b;
+  font-weight: 700;
+}
+
+/* =========================================
+   DARK MODE SUPPORT
+========================================= */
+
+.dark-mode .status-dropdown {
+  background: rgba(15, 23, 42, 0.85);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.dark-mode .status-dropdown option {
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+/* =========================================
+   STATUS TEXT COLOR (WORKING FIX)
+========================================= */
+
+.status-dropdown {
+  font-weight: 700;
+  background: transparent;
+}
+
+/* PENDING */
+.status-PENDING {
+  color: #f59e0b;
+}
+
+/* CONFIRMED */
+.status-CONFIRMED {
+  color: #3b82f6;
+}
+
+/* PROCESSING */
+.status-PROCESSING {
+  color: #6366f1;
+}
+
+/* SHIPPED */
+.status-SHIPPED {
+  color: #06b6d4;
+}
+
+/* OUT FOR DELIVERY */
+.status-OUT_FOR_DELIVERY {
+  color: #f97316;
+}
+
+/* DELIVERED */
+.status-DELIVERED {
+  color: #22c55e;
+}
+
+/* CANCELLED */
+.status-CANCELLED {
+  color: #ef4444;
+}
+
+/* RETURNED */
+.status-RETURNED {
+  color: #64748b;
+}

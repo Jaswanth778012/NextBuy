@@ -118,22 +118,25 @@ public class ProductService {
 	}
 	
   //DELETEPRODDUCT
-	public String deleteproduct(String name, Long Brand_id) {
-		  
-		  Optional<Product> pr = productRepo.findByName(name);
-		  if(pr.isEmpty()) {
-			  return "Product not Found";
-		  }
-		  Product product = pr.get();
-		  if(!product.getName().equals(name) && !product.getBrand().getId().equals(Brand_id)) {
-			 
-			  return "something went Worng";
-		  }
-		 
-		  productRepo.deleteById(product.getId());
-		  return "Product Deleted Successfully!!";
-		
+	public String deleteProduct(Long productId) {
+
+	    Optional<Product> pr = productRepo.findById(productId);
+
+	    if (pr.isEmpty()) {
+	        return "Product not found";
+	    }
+
+	    Product product = pr.get();
+
+	    if (!product.getId().equals(productId)) {
+	        return "Product ID does not match";
+	    }
+
+	    productRepo.deleteById(product.getId());
+
+	    return "Product deleted successfully!";
 	}
+	
 	//VIEW_ALL_PRODUCTS
 	public List<UserResponceDTO> viewAllProducts(){
 		
@@ -200,6 +203,8 @@ public class ProductService {
     	                String.format("%.2f", taxablePrice)
     	        )
     	);
+    	p.setSubCategory(product.getSubCategory());
+    	p.setProductCondition(product.getProductCondition());
 
     	p.setFinalPrice(finalPrice);
 		
@@ -341,18 +346,30 @@ public class ProductService {
 	
 	public UserResponceDTO mapToResponseDto(Product product) {
 		UserResponceDTO userDto = new UserResponceDTO ();
+			userDto.setId(product.getId());
 		  userDto.setName(product.getName());
 	        userDto.setDescription(product.getDescription());
 	        userDto.setCategory(product.getCategory());
 	        userDto.setSubCategory(product.getSubCategory());
+	        userDto.setProductCondition(
+	                product.getProductCondition()
+	        );
 	        userDto.setPrice(product.getMrp_price());
 	        userDto.setDiscountPercentage(product.getDiscountPercentage());
+	        userDto.setProductStatus(product.getProductStatus());
 	        userDto.setImageUrl(product.getImageUrl());
 	        userDto .setAttributes(product.getAttributes());
 	        userDto.setAverageRating(product.getAverageRating());
 	        userDto.setBrand(product.getBrand());
 	        userDto.setDeliveryTimeInDays(product.getDeliveryTimeInDays());
 	        userDto.setFinalPrice(product.getFinalPrice());
+	        userDto.setMrp_price(product.getMrp_price());
+	        userDto.setGstPercentage(product.getGstPercentage());
+	        userDto.setStockQuantity(product.getStockQuantity());
+	        userDto.setTaxablePrice(product.getTaxablePrice());
+	        
+	 
+	        
 	        return userDto;
 	     
 	      
