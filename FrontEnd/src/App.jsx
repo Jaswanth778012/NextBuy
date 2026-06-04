@@ -29,7 +29,7 @@ import BroadcastCenter from "./pages/BroadcastCenter";
 
 import AdminLayout from "./layout/AdminLayout";
 import SentEmails from "./pages/SentEmails";
-
+import ProductManagement from "./pages/ProductManagement";
 
 function App() {
   return (
@@ -60,12 +60,13 @@ function App() {
 
           <Route path="dashboard" element={<AdminDashboard />} />
 
-          <Route path="options" element={<AdminOptions/>}/>
-          <Route path="userManagement" element={<UserManagement/>}/>
-          <Route path="orderManagement" element={<OrdersManagement/>}/>
+          <Route path="options" element={<AdminOptions />} />
+          <Route path="userManagement" element={<UserManagement />} />
+          <Route path="orderManagement" element={<OrdersManagement />} />
+          <Route path="productManagement" element={<ProductManagement />} />
 
           <Route path="broadcast" element={<BroadcastCenter />} />
-          <Route path="sent-emails" element={<SentEmails/>}/>
+          <Route path="sent-emails" element={<SentEmails />} />
           {/* DEFAULT ADMIN ROUTE */}
 
           <Route index element={<Navigate to="dashboard" replace />} />

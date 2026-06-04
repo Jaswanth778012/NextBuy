@@ -12,16 +12,11 @@ import {
 } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
-function AdminSidebar({
-  sidebarOpen,
-  setSidebarOpen,
-  handleLogout,
-}) {
-
+function AdminSidebar({ sidebarOpen, setSidebarOpen, handleLogout }) {
   const navigate = useNavigate();
 
   const location = useLocation();
-    const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
 
@@ -60,8 +55,19 @@ function AdminSidebar({
         </button>
 
         <button
-          className={`nav-item ${location.pathname === "/admin/orderManagement" ? "active" : ""
-            }`}
+          className={`nav-item ${
+            location.pathname === "/admin/productManagement" ? "active" : ""
+          }`}
+          onClick={() => navigate("/admin/productManagement")}
+        >
+          <FaTags />
+          {sidebarOpen && <span>Products</span>}
+        </button>
+
+        <button
+          className={`nav-item ${
+            location.pathname === "/admin/orderManagement" ? "active" : ""
+          }`}
           onClick={() => {
             console.log("Orders Clicked");
             navigate("/admin/orderManagement");
@@ -70,74 +76,65 @@ function AdminSidebar({
           <FaBoxOpen />
           {sidebarOpen && <span>Orders</span>}
         </button>
-        <button
-          className="nav-item"
-          onClick={() => navigate("/admin/options")}
-          >
+        <button className="nav-item" onClick={() => navigate("/admin/options")}>
           <FaCog />
           {sidebarOpen && <span>Options</span>}
         </button>
 
         <div className="sidebar-dropdown">
-  <button
-    className={`nav-item ${
-      location.pathname.includes("/admin/broadcast") ||
-      location.pathname.includes("/admin/sentEmails")
-        ? "active"
-        : ""
-    }`}
-    onClick={() => setNotificationOpen(!notificationOpen)}
-  >
-    <FaBell />
+          <button
+            className={`nav-item ${
+              location.pathname.includes("/admin/broadcast") ||
+              location.pathname.includes("/admin/sentEmails")
+                ? "active"
+                : ""
+            }`}
+            onClick={() => setNotificationOpen(!notificationOpen)}
+          >
+            <FaBell />
 
-    {sidebarOpen && (
-      <>
-        <span>Notifications</span>
+            {sidebarOpen && (
+              <>
+                <span>Notifications</span>
 
-        <span
-          className={`dropdown-icon ${
-            notificationOpen ? "rotate" : ""
-          }`}
-        >
-          ▼
-        </span>
-      </>
-    )}
-  </button>
+                <span
+                  className={`dropdown-icon ${
+                    notificationOpen ? "rotate" : ""
+                  }`}
+                >
+                  ▲
+                </span>
+              </>
+            )}
+          </button>
 
-  {notificationOpen && sidebarOpen && (
-    <div className="sidebar-submenu">
-      <button
-        className={`submenu-item ${
-          location.pathname === "/admin/broadcast"
-            ? "active"
-            : ""
-        }`}
-        onClick={() => navigate("/admin/broadcast")}
-      >
-        Broadcast
-      </button>
+          {notificationOpen && sidebarOpen && (
+            <div className="sidebar-submenu">
+              <button
+                className={`submenu-item ${
+                  location.pathname === "/admin/broadcast" ? "active" : ""
+                }`}
+                onClick={() => navigate("/admin/broadcast")}
+              >
+                Broadcast
+              </button>
 
-      <button
-        className={`submenu-item ${
-          location.pathname === "/admin/sent-emails"
-            ? "active"
-            : ""
-        }`}
-        onClick={() => navigate("/admin/sent-emails")}
-      >
-        Sent Emails
-      </button>
-    </div>
-  )}
-</div>
+              <button
+                className={`submenu-item ${
+                  location.pathname === "/admin/sent-emails" ? "active" : ""
+                }`}
+                onClick={() => navigate("/admin/sent-emails")}
+              >
+                Sent Emails
+              </button>
+            </div>
+          )}
+        </div>
 
         <button className="nav-item logout-nav" onClick={handleLogout}>
           <FaSignOutAlt />
           {sidebarOpen && <span>Logout</span>}
         </button>
-
-
       </nav>
     </aside>
   );
