@@ -4,19 +4,32 @@
 
 
 .admin-options-page{
-
+   
     min-height: 100vh;
 
     padding: 45px;
 
     font-family: "Poppins", sans-serif;
 
-    /* ❌ REMOVED OWN BACKGROUND
-       ✔ NOW USES DASHBOARD BACKGROUND */
+   
     background: transparent;
 }
+.admin-options-page h1{
 
-
+    font-size: 45px;
+    margin-bottom: 7px;
+}
+.dark-mode .admin-options-page h1{
+    color: white;
+}
+.dark-mode p{
+     color: #cbd5e1;;
+}
+p{
+     font-size: 17px;
+  color: #64748b;
+  font-weight: 500;
+}
 /* =========================
    BACK BUTTON
 ========================= */

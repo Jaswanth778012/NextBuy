@@ -21,6 +21,9 @@ public class FestivalBannerResponseDto {
     private LocalDate endDate;
     private Integer priority;
     private Boolean active;
+    private String Category;
+    private String  SubCategory;
+    private String Product;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
