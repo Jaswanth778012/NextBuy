@@ -18,6 +18,7 @@ function AdminOptions() {
       <h1>
         Admin Options
       </h1>
+      <p> View & manage customer accounts</p>
 
       <OptionsButtons />
 
