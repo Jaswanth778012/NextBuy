@@ -8,7 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.FestivalBannerRequestDto;
 import com.nextbuy.demo.dto.FestivalBannerResponseDto;
+import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.entity.FestivalBanner;
+import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.repository.FestivalBannerRepository;
 
 @Service
@@ -48,7 +50,10 @@ public class FestivalBannerService {
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? 1 : fsdto.getPriority());
         banner.setActive(fsdto.getActive() == null || fsdto.getActive());
-
+        banner.setCategory(fsdto.getCategory());
+        banner.setProduct(fsdto.getProduct());
+        banner.setSubCategory(fsdto.getSubCategory()); 
+        
         fsRepo.save(banner);
 
         return "Festival banner created successfully";
@@ -80,6 +85,28 @@ public class FestivalBannerService {
 
         return mapToResponseDto(banner);
     }
+    
+    public String getFestivalProductsBybannerId(Long id) {
+    	 FestivalBanner b = fsRepo.findById(id).get();
+    	 LocalDate date = LocalDate.now();
+    	 if(date == b.getEndDate()) {
+    		 b.setActive(false);
+    		 fsRepo.save(b);
+    	 }
+    	 if(b.getActive() == false) {
+    		return "banner not Active";
+    	 }
+    	 if(b.getProduct() != null) {
+    		 return "/Common/searchProducts?search="+b.getProduct();
+    	 }
+    	 if(b.getCategory() != null) {
+    		 return "/Common/searchProducts?category="+b.getCategory();
+    	 }
+    	 if(b.getSubCategory() != null) {
+    		 return "/Common/searchProducts?subCategory="+b.getSubCategory();
+    	 }
+    	 return "No products";
+    }
 
     public String updateBanner(
             Long id,
@@ -104,7 +131,9 @@ public class FestivalBannerService {
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? banner.getPriority() : fsdto.getPriority());
         banner.setActive(fsdto.getActive() == null ? banner.getActive() : fsdto.getActive());
-
+        banner.setCategory(fsdto.getCategory());
+        banner.setProduct(fsdto.getProduct());
+        banner.setSubCategory(fsdto.getSubCategory()); 
         fsRepo.save(banner);
 
         return "Festival banner updated successfully";

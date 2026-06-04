@@ -31,10 +31,11 @@ public class FestivalBanner {
     @Column(length = 1000)
     private String imageUrl;
 
-    private String imagePublicId;
-
+  
     private String redirectUrl;
-
+    private String Category;
+    private String  SubCategory;
+    private String Product;
     private LocalDate startDate;
     private LocalDate endDate;
 
