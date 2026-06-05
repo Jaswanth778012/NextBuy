@@ -29,28 +29,28 @@ public class AdminOrderService {
         this.orderRepo = orderRepo;
     }
 
-	 public Page<Order> getAllOrders(int page, int size){
-    	    List<Order> allOrders = orderRepo.findAll();
-    	    if(allOrders.isEmpty()) {
-    	    	throw new RuntimeException("no orders");
-    	    }
-    	    Pageable pageable = PageRequest.of(page, size);
-    	    return orderRepo.findByStatusNotOrderByOrderedAtDesc(OrderStatus.PENDING, pageable);
-    	    
-     }
+    public Page<Order> getAllOrders(int page, int size){
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return orderRepo.findByStatusNotOrderByOrderedAtDesc(
+                OrderStatus.PENDING,
+                pageable
+        );
+    }
     
 	 public List<Order> getPendingOrders(){
 		return orderRepo.findByStatusOrderByOrderedAtDesc(OrderStatus.PENDING);
 	 }
       
-     public Order getOrderById(Long id){
-    	       Optional<Order> order = orderRepo.findById(id);
-    	       if(order.isEmpty()) {
-    	    	   throw new RuntimeException("Order Id not found");
-    	       }
-    	       
-    	       return orderRepo.findById(id).get();
-     }
+	 public Order getOrderById(Long id){
+
+		    return orderRepo.findById(id)
+		            .orElseThrow(() ->
+		                    new RuntimeException(
+		                            "Order Id not found"
+		                    ));
+		}
      
      
      public String updateOrderStatus(Long id,OrderStatus status) {
@@ -138,27 +138,22 @@ public class AdminOrderService {
                 .count();
     }
     public List<Order> getOrdersByMonth(int month){
-    	List<Order> monthorders = orderRepo.findByMonthOrders(month);
-    	if(monthorders.isEmpty()) {
-    		 throw new RuntimeException("this Month orders Empty !!");
-    	}
-    	return monthorders;
-    	
+
+        return orderRepo.findByMonthOrders(month);
     }
     public List<Order> getOrdersByYear(int year){
-    	  List<Order> yearOrders = orderRepo.findByYear(year);
-    	  if(yearOrders.isEmpty()) {
-    		  throw new RuntimeException("this Year orders Empty !!");
-    	  }
-    	  return yearOrders;
+
+        return orderRepo.findByYear(year);
     }
-    public List<Order> getOrdersByMonthAndyear(int month , int year){
-    	     List<Order> ordersMandY = orderRepo.findByMonthAndYear(month,year);
-    	     if(ordersMandY.isEmpty()) {
-    	    	 throw new RuntimeException("this Month&Year orders Empty !!");
-    	     }
-    	     return ordersMandY;
-    	     
+    public List<Order> getOrdersByMonthAndyear(
+            int month,
+            int year
+    ){
+
+        return orderRepo.findByMonthAndYear(
+                month,
+                year
+        );
     }
     
 }

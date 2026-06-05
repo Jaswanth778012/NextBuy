@@ -42,13 +42,13 @@ public class SecurityConfig {
 
 						.requestMatchers("/auth/**").permitAll()
 
-						.requestMatchers("/Product/compare/**").hasRole("USER")
+						
 						.requestMatchers("/Product/viewAllProducts").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/Brands/**","/Categories/**","/Subcategories/**").permitAll()
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**","/festival-banner/**").hasRole("ADMIN")
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/**","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**","/festival-banner/**").hasRole("ADMIN")
 
-		            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**").hasRole("USER")
+		            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**").hasRole("USER")
 	            
 	            	.requestMatchers("/Common/**").hasAnyRole("USER","ADMIN")
 	            

@@ -139,13 +139,11 @@ public class ProductService {
 	
 	//VIEW_ALL_PRODUCTS
 	public List<UserResponceDTO> viewAllProducts(){
-		
-		 List<Product> pr = productRepo.findAll();
-		 if(pr.isEmpty()) {
-			 throw new RuntimeException("Username is required");
-		 }
-		return pr.stream().map(this::mapToResponseDto).toList();
-		
+
+	    return productRepo.findAll()
+	            .stream()
+	            .map(this::mapToResponseDto)
+	            .toList();
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {

@@ -1,6 +1,7 @@
 package com.nextbuy.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -8,8 +9,10 @@ import com.nextbuy.demo.dto.CuponRequestDto;
 import com.nextbuy.demo.entity.Cart;
 import com.nextbuy.demo.entity.Cupon;
 import com.nextbuy.demo.entity.User;
+import com.nextbuy.demo.enums.CuponStatus;
 import com.nextbuy.demo.repository.CartRepository;
 import com.nextbuy.demo.repository.CuponRepository;
+import com.nextbuy.demo.repository.UserCuponRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
 @Service
@@ -21,10 +24,13 @@ public class CuponService {
 	
 	private CuponRepository cuponRepository;
 	
-	public CuponService(CartRepository cartRepository, UserRepository userRepository, CuponRepository cuponRepository) {
+	private UserCuponRepository userCouponRepository;
+	
+	public CuponService(CartRepository cartRepository, UserRepository userRepository, CuponRepository cuponRepository, UserCuponRepository userCouponRepository) {
 		this.cartRepository = cartRepository;
 		this.userRepository = userRepository;
 		this.cuponRepository = cuponRepository;
+		this.userCouponRepository = userCouponRepository;
 	}
 	
 	public String createCupon(CuponRequestDto cuponRequest)
@@ -40,11 +46,15 @@ public class CuponService {
 		}
 		Cupon cupon = new Cupon();
 		
+		cupon.setDescription(cuponRequest.getDescription());
+		
 		cupon.setCode(cuponRequest.getCode().toUpperCase());
 		
 		cupon.setDiscountPercentage(cuponRequest.getDiscountPercentage());
 		
-		cupon.setActive(false);
+		cupon.setCuponStatus(CuponStatus.INACTIVE);
+		
+		cupon.setUsageCount(0);
 		
 		cupon.setExpiryDate(cuponRequest.getExpiryDate());
 		
@@ -69,14 +79,17 @@ public class CuponService {
 	        throw new RuntimeException("Coupon already applied");
 	    }
 
-		if(!cupon.isActive())
+		if(cupon.getCuponStatus() != CuponStatus.ACTIVE)
 		{
 			throw new RuntimeException("Cupon is not active");
 		}
 		
 		if(cupon.getExpiryDate().isBefore(LocalDateTime.now()))
 		{
-			throw new RuntimeException("Cupon is Expired");
+		    cupon.setCuponStatus(CuponStatus.EXPIRED);
+		    cuponRepository.save(cupon);
+
+		    throw new RuntimeException("Coupon is expired");
 		}
 		
 		if(cart.getTotalPrice() < cupon.getMinimumAmount())
@@ -90,6 +103,9 @@ public class CuponService {
 		
 		cart.setCuponDiscount(discount);
 		
+		if (userCouponRepository.existsByUserAndCupon(user, cupon)) {
+		    throw new RuntimeException("Coupon already used by this user");
+		}
 		cart.setAppliedCupon(cupon);
 		
 		double finalPrice = cart.getTotalPrice() - maxDiscount + cart.getShipingCharges();
@@ -108,48 +124,92 @@ public class CuponService {
 		return "Cupon Applied Successfully";
 	}
 	
-	public String updateCupon(String code, CuponRequestDto requestDto)
+	public String updateCupon(Long id, CuponRequestDto requestDto)
 	{
-	    Cupon cupon = cuponRepository.findByCode(code.toUpperCase())
+	    Cupon cupon = cuponRepository.findById(id)
 	            .orElseThrow(() -> new RuntimeException("Cupon not found"));
-	    
+
 	    if(requestDto.getExpiryDate().isBefore(LocalDateTime.now()))
 	    {
 	        throw new RuntimeException("Invalid expiry date");
 	    }
-	    
-	    if(requestDto.getDiscountPercentage() <= 0 ||requestDto.getDiscountPercentage() > 100)
-		{
-			throw new RuntimeException("Invalid discount percentage");
-		}
 
+	    if(requestDto.getDiscountPercentage() <= 0
+	            || requestDto.getDiscountPercentage() > 100)
+	    {
+	        throw new RuntimeException("Invalid discount percentage");
+	    }
+
+	    cupon.setDescription(requestDto.getDescription());
 	    cupon.setDiscountPercentage(requestDto.getDiscountPercentage());
-
 	    cupon.setMinimumAmount(requestDto.getMinimumAmount());
-
 	    cupon.setExpiryDate(requestDto.getExpiryDate());
-
-	    cupon.setActive(requestDto.isActive());
+	    cupon.setCuponStatus(requestDto.getCuponStatus());
 
 	    cuponRepository.save(cupon);
 
 	    return "Cupon updated successfully";
 	}
 	
+	public String deleteCupon(Long id)
+	{
+	    Cupon cupon = cuponRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Cupon not found"));
+
+	    cuponRepository.delete(cupon);
+
+	    return "Cupon deleted successfully";
+	}
+	
 	public String removeCupon(String username)
 	{
-		User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-		
-		Cart cart = cartRepository.findByUserAndActiveTrue(user).orElseThrow(() -> new RuntimeException("Cart not found"));
-		
-		cart.setCuponDiscount(0.0);
-		
-		cart.setAppliedCupon(null);
-		
-		cart.setFinalPrice(  cart.getShipingCharges()+cart.getTotalPrice() - cart.getTotalPrice()*cart.getDiscount()/100);
-		
-		cartRepository.save(cart);
-		
-		return "Removed Cupon is Successfully";
+	    User user = userRepository.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    Cart cart = cartRepository.findByUserAndActiveTrue(user)
+	            .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+	    cart.setCuponDiscount(0.0);
+	    cart.setAppliedCupon(null);
+
+	    cart.setFinalPrice(
+	            cart.getShipingCharges()
+	            + cart.getTotalPrice()
+	            - cart.getTotalPrice() * cart.getDiscount() / 100
+	    );
+
+	    cartRepository.save(cart);
+
+	    return "Removed Cupon Successfully";
+	}
+	
+	public List<Cupon> getAllCupons()
+	{
+	    return cuponRepository.findAll();
+	}
+	
+	public List<Cupon> getAvailableCupons()
+	{
+		return cuponRepository
+		        .findByCuponStatusAndExpiryDateAfter(
+		                CuponStatus.ACTIVE,
+		                LocalDateTime.now()
+		        );
+	}
+	
+	public List<Cupon> getAvailableCouponsForUser(String username)
+	{
+	    User user = userRepository.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Cupon> allCoupons =
+	            cuponRepository.findByCuponStatusAndExpiryDateAfter(
+	            		CuponStatus.ACTIVE,
+	                    LocalDateTime.now());
+
+	    return allCoupons.stream()
+	            .filter(coupon ->
+	                    !userCouponRepository.existsByUserAndCupon(user, coupon))
+	            .toList();
 	}
 }

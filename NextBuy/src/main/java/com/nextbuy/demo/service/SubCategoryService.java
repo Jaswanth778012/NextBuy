@@ -37,13 +37,14 @@ public class SubCategoryService {
 
         subCategory.setName(dto.getName());
         subCategory.setCategory(category);
+        subCategory.setDescription(dto.getDescription());
 
         SubCategory saved = subCategoryRepository.save(subCategory);
 
         return new SubCategoryDTO(
                 saved.getId(),
                 saved.getName(),
-                saved.getCategory().getDescription(),
+                saved.getDescription(),
                 saved.getCategory().getId(),
                 saved.getCategory().getName()
         );
@@ -56,7 +57,7 @@ public class SubCategoryService {
                 .map(subCategory -> new SubCategoryDTO(
                         subCategory.getId(),
                         subCategory.getName(),
-                        subCategory.getCategory().getDescription(),
+                        subCategory.getDescription(),
                         subCategory.getCategory().getId(),
                         subCategory.getCategory().getName()
                 ))
@@ -70,7 +71,7 @@ public class SubCategoryService {
                 .map(subCategory -> new SubCategoryDTO(
                         subCategory.getId(),
                         subCategory.getName(),
-                        subCategory.getCategory().getDescription(),
+                        subCategory.getDescription(),
                         subCategory.getCategory().getId(),
                         subCategory.getCategory().getName()
                         
@@ -87,7 +88,7 @@ public class SubCategoryService {
         return new SubCategoryDTO(
                 subCategory.getId(),
                 subCategory.getName(),
-                subCategory.getCategory().getDescription(),
+                subCategory.getDescription(),
                 subCategory.getCategory().getId(),
                 subCategory.getCategory().getName()
                
@@ -103,13 +104,14 @@ public class SubCategoryService {
                         new RuntimeException("SubCategory not found"));
 
         subCategory.setName(dto.getName());
+        subCategory.setDescription(dto.getDescription());
 
         SubCategory updated = subCategoryRepository.save(subCategory);
 
         return new SubCategoryDTO(
                 updated.getId(),
 				updated.getName(),
-				updated.getCategory().getDescription(),
+				updated.getDescription(),
 				updated.getCategory().getId(),
 				updated.getCategory().getName()
 				
