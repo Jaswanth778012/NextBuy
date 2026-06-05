@@ -22,7 +22,10 @@ import AdminOptions from "./pages/AdminOptions";
 import UserManagement from "./pages/UserManegement";
 import OrdersManagement from "./pages/OrdersManagement";
 import BroadcastCenter from "./pages/BroadcastCenter";
-
+import CategoryManagement from "./pages/CategoryManagement";
+import SubCategoryManagement from "./pages/SubCategoryManagement";
+import BrandManagement from "./pages/BrandManagement";
+import AdminCupon from "./pages/AdminCupon";
 // =========================
 // LAYOUTS
 // =========================
@@ -59,11 +62,28 @@ function App() {
           {/* DASHBOARD */}
 
           <Route path="dashboard" element={<AdminDashboard />} />
-
-          <Route path="options" element={<AdminOptions />} />
           <Route path="userManagement" element={<UserManagement />} />
-          <Route path="orderManagement" element={<OrdersManagement />} />
           <Route path="productManagement" element={<ProductManagement />} />
+          <Route path="orderManagement" element={<OrdersManagement />} />
+          <Route path="couponManagement" element={<AdminCupon/>}/>
+           <Route path="options" element={<AdminOptions />} />
+          <Route
+            path="categoryManagement"
+            element={<CategoryManagement />}
+          />
+
+          {/* Sub Categories */}
+          <Route
+            path="subCategoryManagement"
+            element={<SubCategoryManagement />}
+          />
+
+          {/* Brands */}
+          <Route
+            path="brandManagement"
+            element={<BrandManagement />}
+          />
+
 
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails />} />
