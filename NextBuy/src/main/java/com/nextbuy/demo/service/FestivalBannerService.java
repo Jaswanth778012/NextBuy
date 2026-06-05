@@ -150,7 +150,7 @@ public class FestivalBannerService {
 
     private FestivalBannerResponseDto mapToResponseDto(FestivalBanner banner) {
         FestivalBannerResponseDto dto = new FestivalBannerResponseDto();
-
+   dto.setId(banner.getId());
         dto.setFestivalName(banner.getFestivalName());
         dto.setTitle(banner.getTitle());
         dto.setSubtitle(banner.getSubtitle());

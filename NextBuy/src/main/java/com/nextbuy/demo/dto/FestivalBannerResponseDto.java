@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FestivalBannerResponseDto {
-
+    private Long id;
     private String festivalName;
     private String title;
     private String subtitle;
