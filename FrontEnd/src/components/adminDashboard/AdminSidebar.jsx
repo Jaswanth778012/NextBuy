@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+
 import {
   FaTachometerAlt,
   FaUsers,
@@ -8,7 +9,10 @@ import {
   FaTags,
   FaCog,
   FaBell,
+  FaTicketAlt,
 } from "react-icons/fa";
+
+
 
 import {
   useLocation,
@@ -267,6 +271,8 @@ function AdminSidebar({
             </span>
           )}
         </button>
+
+        <button className={`nav-item ${ location.pathname === "/admin/couponManagement" ? "active" : "" }`} onClick={() => navigate( "/admin/couponManagement" ) } > <FaTicketAlt /> {sidebarOpen && ( <span> Coupons </span> )} </button>
 
         {/* OPTIONS */}
 
