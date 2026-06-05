@@ -33,21 +33,21 @@ public class FestivalBannerController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/getAll")
     public ResponseEntity<List<FestivalBannerResponseDto>> getAllBanners() {
         return ResponseEntity.ok(
                 festivalBannerService.getAllBanners()
         );
     }
 
-    @GetMapping("/active")
+    @GetMapping("/getActive")
     public ResponseEntity<List<FestivalBannerResponseDto>> getActiveBanners() {
         return ResponseEntity.ok(
                 festivalBannerService.getActiveBanners()
         );
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getBannerById{id}")
     public ResponseEntity<FestivalBannerResponseDto> getBannerById(
             @PathVariable Long id
     ) {
@@ -56,7 +56,7 @@ public class FestivalBannerController {
         );
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/updateBanner/{id}")
     public ResponseEntity<String> updateBanner(
             @PathVariable Long id,
             @RequestPart("fs") FestivalBannerRequestDto festivalBannerRequestDto,
@@ -78,5 +78,9 @@ public class FestivalBannerController {
         return ResponseEntity.ok(
                 festivalBannerService.deleteBanner(id)
         );
+    }
+    @GetMapping("/festivalBannerProducts/{id}")
+    public String getFestivalProductsBybannerId(@PathVariable Long id) {
+    	return festivalBannerService.getFestivalProductsBybannerId(id);
     }
 }

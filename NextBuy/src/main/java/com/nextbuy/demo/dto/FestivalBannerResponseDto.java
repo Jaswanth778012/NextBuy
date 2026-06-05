@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FestivalBannerResponseDto {
-
+    private Long id;
     private String festivalName;
     private String title;
     private String subtitle;
@@ -21,6 +21,9 @@ public class FestivalBannerResponseDto {
     private LocalDate endDate;
     private Integer priority;
     private Boolean active;
+    private String Category;
+    private String  SubCategory;
+    private String Product;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
