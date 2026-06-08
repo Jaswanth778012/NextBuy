@@ -159,6 +159,9 @@ public class FestivalBannerService {
         dto.setStartDate(banner.getStartDate());
         dto.setEndDate(banner.getEndDate());
         dto.setPriority(banner.getPriority());
+        dto.setCategory(banner.getCategory());
+        dto.setSubCategory(banner.getSubCategory());
+        dto.setProduct(banner.getProduct());
         dto.setActive(banner.getActive());
         dto.setCreatedAt(banner.getCreatedAt());
         dto.setUpdatedAt(banner.getUpdatedAt());
