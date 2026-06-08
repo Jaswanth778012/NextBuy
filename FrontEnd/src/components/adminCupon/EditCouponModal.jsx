@@ -115,16 +115,17 @@ function EditCouponModal({
 
       } catch (error) {
 
-        console.error(error);
+  console.error(error);
+const message =
+  error?.response?.data?.message ||
+  error?.response?.data ||
+  "Cannot update Expired coupon";
 
-        toast.error(
-          "Failed to update coupon"
-        );
+toast.error(message);
+} finally {
 
-      } finally {
-
-        setLoading(false);
-      }
+  setLoading(false);
+}
     };
 
   if (
@@ -254,10 +255,6 @@ function EditCouponModal({
 
             <option value="INACTIVE">
               INACTIVE
-            </option>
-
-            <option value="EXPIRED">
-              EXPIRED
             </option>
 
           </select>

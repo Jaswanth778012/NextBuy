@@ -10,6 +10,7 @@ import {
   FaCog,
   FaBell,
   FaTicketAlt,
+  FaImages,
 } from "react-icons/fa";
 
 
@@ -248,6 +249,29 @@ function AdminSidebar({
               </div>
             )}
         </div>
+
+        {/* FESTIVAL BANNERS */}
+
+<button
+  className={`nav-item ${
+    location.pathname ===
+    "/admin/festivalBannerManagement"
+      ? "active"
+      : ""
+  }`}
+  onClick={() =>
+    navigate(
+      "/admin/festivalBannerManagement"
+    )
+  }
+>
+  <FaImages />
+  {sidebarOpen && (
+    <span>
+      Festival Banners
+    </span>
+  )}
+</button>
 
         {/* ORDERS */}
 

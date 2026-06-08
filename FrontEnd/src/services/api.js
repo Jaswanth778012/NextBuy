@@ -19,10 +19,16 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    const status = error?.response?.status;
 
-    if (status === 401 || status === 403) {
-      if (isRedirecting) return Promise.reject(error);
+
+    const status =
+      error?.response?.status;
+
+    if (
+      status === 401 || status === 403
+    ) {
+      if (isRedirecting)
+        return Promise.reject(error);
 
       isRedirecting = true;
 
