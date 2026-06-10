@@ -19,21 +19,23 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (response) => response,
   (error) => {
+    const status = error?.response?.status;
+    const token = localStorage.getItem("token");
 
-
-    const status =
-      error?.response?.status;
-
-    if (
-      status === 401 || status === 403
-    ) {
-      if (isRedirecting)
+    if ((status === 401 || status === 403) && token) {
+      if (isRedirecting) {
         return Promise.reject(error);
+      }
 
       isRedirecting = true;
 
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+
+      sessionStorage.setItem(
+        "sessionExpired",
+        "Your session has expired. Please login again."
+      );
 
       window.location.replace("/login");
     }
