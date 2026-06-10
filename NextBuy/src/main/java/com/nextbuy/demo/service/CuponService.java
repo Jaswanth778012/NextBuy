@@ -131,7 +131,7 @@ public class CuponService {
 
 	    if(requestDto.getExpiryDate().isBefore(LocalDateTime.now()))
 	    {
-	        throw new RuntimeException("Invalid expiry date");
+	        throw new RuntimeException("Coupon has already expired");
 	    }
 
 	    if(requestDto.getDiscountPercentage() <= 0
@@ -185,7 +185,25 @@ public class CuponService {
 	
 	public List<Cupon> getAllCupons()
 	{
-	    return cuponRepository.findAll();
+		 List<Cupon> cupons = cuponRepository.findAll();
+
+		    boolean updated = false;
+
+		    for (Cupon cupon : cupons)
+		    {
+		        if (cupon.getCuponStatus() != CuponStatus.EXPIRED
+		                && cupon.getExpiryDate().isBefore(LocalDateTime.now()))
+		        {
+		            cupon.setCuponStatus(CuponStatus.EXPIRED);
+		            updated = true;
+		        }
+		    }
+
+		    if(updated)
+		    {
+		        cuponRepository.saveAll(cupons);
+		    }
+		    return cupons;
 	}
 	
 	public List<Cupon> getAvailableCupons()
