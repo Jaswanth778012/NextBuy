@@ -2,6 +2,7 @@ package com.nextbuy.demo.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,8 +22,9 @@ public class FestivalBannerResponseDto {
     private LocalDate endDate;
     private Integer priority;
     private Boolean active;
-    private String Category;
-    private String  SubCategory;
+    private List<String> categories;
+    private List<String> subCategories;
+
     private String Product;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

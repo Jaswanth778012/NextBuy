@@ -1,30 +1,40 @@
 package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.FestivalBannerRequestDto;
 import com.nextbuy.demo.dto.FestivalBannerResponseDto;
-import com.nextbuy.demo.dto.UserResponceDTO;
+import com.nextbuy.demo.dto.ProductSearchRequestDTO;
+
 import com.nextbuy.demo.entity.FestivalBanner;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.repository.FestivalBannerRepository;
+import com.nextbuy.demo.repository.ProductRepository;
 
 @Service
 public class FestivalBannerService {
-
+	@Autowired
+	private RestTemplate restTemplate;
     private final FestivalBannerRepository fsRepo;
     private final CloudinaryService cloudinaryService;
-
+    private final ProductRepository productRepo;
     public FestivalBannerService(
             FestivalBannerRepository fsRepo,
-            CloudinaryService cloudinaryService
+            CloudinaryService cloudinaryService,
+            ProductRepository productRepo
     ) {
         this.fsRepo = fsRepo;
         this.cloudinaryService = cloudinaryService;
+        this.productRepo = productRepo;
     }
 
     public String createBanner(
@@ -50,9 +60,9 @@ public class FestivalBannerService {
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? 1 : fsdto.getPriority());
         banner.setActive(fsdto.getActive() == null || fsdto.getActive());
-        banner.setCategory(fsdto.getCategory());
-        banner.setProduct(fsdto.getProduct());
-        banner.setSubCategory(fsdto.getSubCategory()); 
+        banner.setCategories(fsdto.getCategories());
+        
+        banner.setSubCategories(fsdto.getSubCategories()); 
         
         fsRepo.save(banner);
 
@@ -86,27 +96,52 @@ public class FestivalBannerService {
         return mapToResponseDto(banner);
     }
     
-    public String getFestivalProductsBybannerId(Long id) {
-    	 FestivalBanner b = fsRepo.findById(id).get();
-    	 LocalDate date = LocalDate.now();
-    	 if(date == b.getEndDate()) {
-    		 b.setActive(false);
-    		 fsRepo.save(b);
-    	 }
-    	 if(b.getActive() == false) {
-    		return "banner not Active";
-    	 }
-    	 if(b.getProduct() != null) {
-    		 return "/Common/searchProducts?search="+b.getProduct();
-    	 }
-    	 if(b.getCategory() != null) {
-    		 return "/Common/searchProducts?category="+b.getCategory();
-    	 }
-    	 if(b.getSubCategory() != null) {
-    		 return "/Common/searchProducts?subCategory="+b.getSubCategory();
-    	 }
-    	 return "No products";
+    
+
+   
+    public List<Product> getFestivalProductsBybannerId(Long id) {
+
+        FestivalBanner banner = fsRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Banner not found"));
+
+        LocalDate today = LocalDate.now();
+
+      
+        if (!today.isBefore(banner.getEndDate())) {
+            banner.setActive(false);
+            fsRepo.save(banner);
+        }
+
+        
+        if (!Boolean.TRUE.equals(banner.getActive())) {
+            throw new RuntimeException("Banner is not active");
+        }
+
+        
+        ProductSearchRequestDTO request = new ProductSearchRequestDTO();
+
+        request.setCategories(banner.getCategories());
+        request.setSubCategories(banner.getSubCategories());
+
+        
+        ResponseEntity<Product[]> response =
+                restTemplate.postForEntity(
+                        "http://localhost:9090/festival-banner/BannerProducts",
+                        request,
+                        Product[].class
+                );
+
+        Product[] productArray = response.getBody();
+
+        if (productArray == null || productArray.length == 0) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.asList(productArray);
     }
+    
+    
+    
 
     public String updateBanner(
             Long id,
@@ -131,23 +166,49 @@ public class FestivalBannerService {
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? banner.getPriority() : fsdto.getPriority());
         banner.setActive(fsdto.getActive() == null ? banner.getActive() : fsdto.getActive());
-        banner.setCategory(fsdto.getCategory());
-        banner.setProduct(fsdto.getProduct());
-        banner.setSubCategory(fsdto.getSubCategory()); 
+        banner.setCategories(fsdto.getCategories());
+        banner.setSubCategories(fsdto.getSubCategories()); 
         fsRepo.save(banner);
 
         return "Festival banner updated successfully";
     }
 
-    public String deleteBanner(Long id) {
+    private void validateDates(LocalDate startDate, LocalDate endDate) {
+
+        if (startDate == null) {
+            throw new RuntimeException("Start date is required");
+        }
+
+        if (endDate == null) {
+            throw new RuntimeException("End date is required");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new RuntimeException("Start date cannot be after end date");
+        }
+
+        if (endDate.isBefore(LocalDate.now())) {
+            throw new RuntimeException("End date cannot be in the past");
+        }
+    }
+	public String deleteBanner(Long id) {
         FestivalBanner banner = fsRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Festival banner not found"));
 
         fsRepo.delete(banner);
-
+           
         return "Festival banner deleted successfully";
-    }
+	}
+    public List<Product> searchProducts(ProductSearchRequestDTO request) {
 
+        return productRepo.multisearchProducts(
+                request.getCategories(),
+                request.getSubCategories()
+        );
+    }
+    
+    
+    
     private FestivalBannerResponseDto mapToResponseDto(FestivalBanner banner) {
         FestivalBannerResponseDto dto = new FestivalBannerResponseDto();
    dto.setId(banner.getId());
@@ -159,9 +220,9 @@ public class FestivalBannerService {
         dto.setStartDate(banner.getStartDate());
         dto.setEndDate(banner.getEndDate());
         dto.setPriority(banner.getPriority());
-        dto.setCategory(banner.getCategory());
-        dto.setSubCategory(banner.getSubCategory());
-        dto.setProduct(banner.getProduct());
+        dto.setCategories(banner.getCategories());
+        dto.setSubCategories(banner.getSubCategories());
+        
         dto.setActive(banner.getActive());
         dto.setCreatedAt(banner.getCreatedAt());
         dto.setUpdatedAt(banner.getUpdatedAt());
@@ -169,13 +230,4 @@ public class FestivalBannerService {
         return dto;
     }
 
-    private void validateDates(LocalDate startDate, LocalDate endDate) {
-        if (startDate == null || endDate == null) {
-            throw new RuntimeException("Start date and end date are required");
-        }
-
-        if (endDate.isBefore(startDate)) {
-            throw new RuntimeException("End date cannot be before start date");
-        }
-    }
 }
