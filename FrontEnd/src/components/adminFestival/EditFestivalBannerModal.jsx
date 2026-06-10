@@ -1,23 +1,12 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  updateFestivalBanner,
-} from "../../services/adminFestivalBannerService";
+import { updateFestivalBanner } from "../../services/adminFestivalBannerService";
 
-import {
-  getAllCategories,
-} from "../../services/adminCategoryService";
+import { getAllCategories } from "../../services/adminCategoryService";
 
-import {
-  getSubCategoriesByCategory,
-} from "../../services/adminSubCategoryService";
+import { getSubCategoriesByCategory } from "../../services/adminSubCategoryService";
 
-import {
-  viewAllProducts,
-} from "../../services/adminProductService";
+import { viewAllProducts } from "../../services/adminProductService";
 
 function EditFestivalBannerModal({
   showModal,
@@ -25,314 +14,174 @@ function EditFestivalBannerModal({
   banner,
   fetchBanners,
 }) {
+  const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [image, setImage] = useState(null);
 
-  const [image, setImage] =
-    useState(null);
+  const [categories, setCategories] = useState([]);
 
-  const [categories,
-    setCategories] =
-    useState([]);
+  const [subCategories, setSubCategories] = useState([]);
 
-  const [subCategories,
-    setSubCategories] =
-    useState([]);
+  const [products, setProducts] = useState([]);
 
-  const [products,
-    setProducts] =
-    useState([]);
-
-  const [formData,
-    setFormData] =
-    useState({
-      festivalName: "",
-      title: "",
-      subtitle: "",
-      redirectUrl: "",
-      startDate: "",
-      endDate: "",
-      priority: 1,
-      active: true,
-      Category: "",
-      SubCategory: "",
-      Product: "",
-    });
+  const [formData, setFormData] = useState({
+    festivalName: "",
+    title: "",
+    subtitle: "",
+    redirectUrl: "",
+    startDate: "",
+    endDate: "",
+    priority: "",
+    active: true,
+    Category: "",
+    SubCategory: "",
+    Product: "",
+  });
 
   useEffect(() => {
-
-    if (
-      showModal &&
-      banner
-    ) {
-
+    if (showModal && banner) {
       initializeModal();
     }
+  }, [showModal, banner]);
 
-  }, [
-    showModal,
-    banner,
-  ]);
+  const initializeModal = async () => {
+    try {
+      const [categoryRes, productRes] = await Promise.all([
+        getAllCategories(),
+        viewAllProducts(),
+      ]);
 
-  const initializeModal =
-    async () => {
+      setCategories(categoryRes || []);
 
-      try {
+      setProducts(productRes?.data || []);
 
-        const [
-          categoryRes,
-          productRes,
-        ] = await Promise.all([
-          getAllCategories(),
-          viewAllProducts(),
-        ]);
+      setFormData({
+        festivalName: banner.festivalName || "",
 
-        setCategories(
-          categoryRes || []
-        );
+        title: banner.title || "",
 
-        setProducts(
-          productRes?.data || []
-        );
+        subtitle: banner.subtitle || "",
 
-        setFormData({
-          festivalName:
-            banner.festivalName || "",
+        redirectUrl: banner.redirectUrl || "",
 
-          title:
-            banner.title || "",
+        startDate: banner.startDate || "",
 
-          subtitle:
-            banner.subtitle || "",
+        endDate: banner.endDate || "",
 
-          redirectUrl:
-            banner.redirectUrl || "",
+        priority: banner.priority || 1,
 
-          startDate:
-            banner.startDate || "",
+        active: banner.active ?? true,
 
-          endDate:
-            banner.endDate || "",
+        Category: banner.Category || "",
 
-          priority:
-            banner.priority || 1,
+        SubCategory: banner.SubCategory || "",
 
-          active:
-            banner.active ?? true,
+        Product: banner.Product || "",
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-          Category:
-            banner.Category || "",
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
 
-          SubCategory:
-            banner.SubCategory || "",
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
-          Product:
-            banner.Product || "",
-        });
+  const handleCategoryChange = async (e) => {
+    const categoryId = e.target.value;
 
-      } catch (error) {
+    const selectedCategory = categories.find(
+      (cat) => cat.id === Number(categoryId),
+    );
 
-        console.error(
-          error
-        );
-      }
-    };
+    setFormData((prev) => ({
+      ...prev,
+      Category: selectedCategory?.name || "",
+      SubCategory: "",
+      Product: "",
+    }));
 
-  const handleChange =
-    (e) => {
+    try {
+      const response = await getSubCategoriesByCategory(categoryId);
 
-      const {
-        name,
-        value,
-        type,
-        checked,
-      } = e.target;
+      setSubCategories(response || []);
+    } catch (error) {
+      console.error(error);
 
-      setFormData(
-        (prev) => ({
-          ...prev,
-          [name]:
-            type === "checkbox"
-              ? checked
-              : value,
-        })
-      );
-    };
+      setSubCategories([]);
+    }
+  };
 
-  const handleCategoryChange =
-    async (e) => {
+  const handleSubCategoryChange = (e) => {
+    const selectedSubCategory = subCategories.find(
+      (sub) => sub.id === Number(e.target.value),
+    );
 
-      const categoryId =
-        e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      SubCategory: selectedSubCategory?.name || "",
+      Product: "",
+    }));
+  };
 
-      const selectedCategory =
-        categories.find(
-          (cat) =>
-            cat.id ===
-            Number(categoryId)
-        );
+  const handleProductChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      Product: e.target.value,
+      Category: "",
+      SubCategory: "",
+    }));
+  };
 
-      setFormData(
-        (prev) => ({
-          ...prev,
-          Category:
-            selectedCategory?.name ||
-            "",
-          SubCategory: "",
-          Product: "",
-        })
-      );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      try {
+    try {
+      setLoading(true);
 
-        const response =
-          await getSubCategoriesByCategory(
-            categoryId
-          );
+      await updateFestivalBanner(banner.id, formData, image);
 
-        setSubCategories(
-          response || []
-        );
+      await fetchBanners();
 
-      } catch (error) {
+      setShowModal(false);
+    } catch (error) {
+      console.error("Update Banner Error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        console.error(
-          error
-        );
-
-        setSubCategories([]);
-      }
-    };
-
-  const handleSubCategoryChange =
-    (e) => {
-
-      const selectedSubCategory =
-        subCategories.find(
-          (sub) =>
-            sub.id ===
-            Number(
-              e.target.value
-            )
-        );
-
-      setFormData(
-        (prev) => ({
-          ...prev,
-          SubCategory:
-            selectedSubCategory?.name ||
-            "",
-          Product: "",
-        })
-      );
-    };
-
-  const handleProductChange =
-    (e) => {
-
-      setFormData(
-        (prev) => ({
-          ...prev,
-          Product:
-            e.target.value,
-          Category: "",
-          SubCategory: "",
-        })
-      );
-    };
-
-  const handleSubmit =
-    async (e) => {
-
-      e.preventDefault();
-
-      try {
-
-        setLoading(true);
-
-        await updateFestivalBanner(
-          banner.id,
-          formData,
-          image
-        );
-
-        await fetchBanners();
-
-        setShowModal(false);
-
-      } catch (error) {
-
-        console.error(
-          "Update Banner Error",
-          error
-        );
-
-      } finally {
-
-        setLoading(false);
-      }
-    };
-
-  if (
-    !showModal ||
-    !banner
-  ) {
+  if (!showModal || !banner) {
     return null;
   }
 
   return (
-
-    <div
-      className="festival-modal-overlay"
-      onClick={() =>
-        setShowModal(false)
-      }
-    >
-
-      <div
-        className="festival-modal"
-        onClick={(e) =>
-          e.stopPropagation()
-        }
-      >
-
+    <div className="festival-modal-overlay" onClick={() => setShowModal(false)}>
+      <div className="festival-modal" onClick={(e) => e.stopPropagation()}>
         <div className="festival-modal-header">
-
-          <h2>
-            Edit Festival Banner
-          </h2>
+          <h2>Edit Festival Banner</h2>
 
           <button
             className="festival-modal-close"
-            onClick={() =>
-              setShowModal(false)
-            }
+            onClick={() => setShowModal(false)}
           >
             ✕
           </button>
-
         </div>
 
-        <form
-          className="festival-form"
-          onSubmit={
-            handleSubmit
-          }
-        >
-
+        <form className="festival-form" onSubmit={handleSubmit}>
           <div className="festival-form-grid">
-
             <input
               type="text"
               name="festivalName"
               placeholder="Festival Name"
-              value={
-                formData.festivalName
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.festivalName}
+              onChange={handleChange}
               required
             />
 
@@ -340,12 +189,8 @@ function EditFestivalBannerModal({
               type="text"
               name="title"
               placeholder="Banner Title"
-              value={
-                formData.title
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.title}
+              onChange={handleChange}
               required
             />
 
@@ -353,199 +198,107 @@ function EditFestivalBannerModal({
               type="text"
               name="subtitle"
               placeholder="Subtitle"
-              value={
-                formData.subtitle
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.subtitle}
+              onChange={handleChange}
             />
 
-            <input
-              type="text"
-              name="redirectUrl"
-              placeholder="Redirect URL"
-              value={
-                formData.redirectUrl
-              }
-              onChange={
-                handleChange
-              }
-            />
+            <div className="festival-form-grid">
+              <div className="form-group">
+                <label>Start Date</label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
-            <input
-              type="date"
-              name="startDate"
-              value={
-                formData.startDate
-              }
-              onChange={
-                handleChange
-              }
-            />
-
-            <input
-              type="date"
-              name="endDate"
-              value={
-                formData.endDate
-              }
-              onChange={
-                handleChange
-              }
-            />
+              <div className="form-group">
+                <label>End Date</label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
 
             <input
               type="number"
               name="priority"
-              value={
-                formData.priority
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.priority}
+              onChange={handleChange}
             />
-
           </div>
 
           {/* CATEGORY */}
 
-          <select
-            onChange={
-              handleCategoryChange
-            }
-            disabled={
-              !!formData.Product
-            }
-          >
+          <select onChange={handleCategoryChange} disabled={!!formData.Product}>
+            <option value="">Select Category</option>
 
-            <option value="">
-              Select Category
-            </option>
-
-            {categories.map(
-              (cat) => (
-
-                <option
-                  key={cat.id}
-                  value={cat.id}
-                >
-                  {cat.name}
-                </option>
-
-              )
-            )}
-
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
           </select>
 
           {/* SUB CATEGORY */}
 
           <select
-            onChange={
-              handleSubCategoryChange
-            }
-            disabled={
-              !!formData.Product
-            }
+            onChange={handleSubCategoryChange}
+            disabled={!!formData.Product}
           >
+            <option value="">Select Sub Category</option>
 
-            <option value="">
-              Select Sub Category
-            </option>
-
-            {subCategories.map(
-              (sub) => (
-
-                <option
-                  key={sub.id}
-                  value={sub.id}
-                >
-                  {sub.name}
-                </option>
-
-              )
-            )}
-
+            {subCategories.map((sub) => (
+              <option key={sub.id} value={sub.id}>
+                {sub.name}
+              </option>
+            ))}
           </select>
 
           {/* PRODUCT */}
 
           <select
-            value={
-              formData.Product
-            }
-            onChange={
-              handleProductChange
-            }
-            disabled={
-              !!formData.Category ||
-              !!formData.SubCategory
-            }
+            value={formData.Product}
+            onChange={handleProductChange}
+            disabled={!!formData.Category || !!formData.SubCategory}
           >
+            <option value="">Select Product</option>
 
-            <option value="">
-              Select Product
-            </option>
-
-            {products.map(
-              (product) => (
-
-                <option
-                  key={product.id}
-                  value={
-                    product.name
-                  }
-                >
-                  {product.name}
-                </option>
-
-              )
-            )}
-
+            {products.map((product) => (
+              <option key={product.id} value={product.name}>
+                {product.name}
+              </option>
+            ))}
           </select>
 
           <label className="festival-checkbox">
-
             <input
               type="checkbox"
               name="active"
-              checked={
-                formData.active
-              }
-              onChange={
-                handleChange
-              }
+              checked={formData.active}
+              onChange={handleChange}
             />
-
             Active Banner
-
           </label>
 
           <input
             type="file"
             accept="image/*"
-            onChange={(e) =>
-              setImage(
-                e.target.files[0]
-              )
-            }
+            onChange={(e) => setImage(e.target.files[0])}
           />
 
-          {(image ||
-            banner.imageUrl) && (
-
+          {(image || banner.imageUrl) && (
             <img
-              src={
-                image
-                  ? URL.createObjectURL(
-                      image
-                    )
-                  : banner.imageUrl
-              }
+              src={image ? URL.createObjectURL(image) : banner.imageUrl}
               alt="Preview"
               className="festival-preview-image"
             />
-
           )}
 
           <button
@@ -553,17 +306,10 @@ function EditFestivalBannerModal({
             className="festival-submit-btn"
             disabled={loading}
           >
-
-            {loading
-              ? "Updating..."
-              : "Update Banner"}
-
+            {loading ? "Updating..." : "Update Banner"}
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 }
