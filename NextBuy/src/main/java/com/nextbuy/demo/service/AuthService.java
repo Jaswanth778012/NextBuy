@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nextbuy.demo.dto.AuthResponse;
 import com.nextbuy.demo.dto.UserLoginRequestDTO;
 import com.nextbuy.demo.dto.UserRegisterRequestDto;
+import com.nextbuy.demo.entity.NotificationType;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.enums.Role;
 import com.nextbuy.demo.repository.UserRepository;
@@ -26,6 +27,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final CloudinaryService cloudinaryService;
     private final EmailService emailService;
+    private final NotificationService notificationService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
@@ -33,7 +35,7 @@ public class AuthService {
                        CustomUserDetailsService customUserDetailsService,
                        JwtService jwtService,
                        CloudinaryService cloudinaryService,
-                       EmailService emailService) {
+                       EmailService emailService, NotificationService notificationService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -42,6 +44,7 @@ public class AuthService {
         this.jwtService = jwtService;
         this.cloudinaryService = cloudinaryService;
         this.emailService = emailService;
+        this.notificationService = notificationService;
     }
 
     public String register(UserRegisterRequestDto request, MultipartFile image) {
@@ -68,7 +71,15 @@ public class AuthService {
         user.setDob(request.getDob());
 
         user.setDpUrl(imageUrl);
-
+        
+        notificationService.createNotification(
+                NotificationType.NEW_USER,
+                "New User Registered",
+                user.getName() + " has registered",
+                user.getId(),
+                "USER",
+                "MEDIUM"
+        );
         userRepository.save(user);
       String email =  user.getEmail();
       String subject = "Welcome to NextBuy – Registration Successful";
