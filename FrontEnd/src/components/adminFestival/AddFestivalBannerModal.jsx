@@ -8,6 +8,9 @@ import { getSubCategoriesByCategory } from "../../services/adminSubCategoryServi
 
 import { viewAllProducts } from "../../services/adminProductService";
 
+
+import Select from "react-select";
+
 function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
   const [loading, setLoading] = useState(false);
 
@@ -16,23 +19,24 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
   const [categories, setCategories] = useState([]);
 
   const [subCategories, setSubCategories] = useState([]);
+  
 
   const [products, setProducts] = useState([]);
 
   const [formData, setFormData] = useState({
-    festivalName: "",
-    title: "",
-    subtitle: "",
-    redirectUrl: "",
-    startDate: "",
-    endDate: "",
-    priority: "",
-    active: true,
-    Category: "",
-    SubCategory: "",
-    Product: "",
-  });
+  festivalName: "",
+  title: "",
+  subtitle: "",
+  redirectUrl: "",
+  startDate: "",
+  endDate: "",
+  priority: "",
+  active: true,
 
+  categories: [],
+  subCategories: [],
+  products: [],
+});
   useEffect(() => {
     if (showModal) {
       loadDropdowns();
@@ -62,50 +66,54 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+  const handleCategoryChange = async (selectedOptions) => {
+  const selectedCategories =
+    selectedOptions?.map((item) => item.label) || [];
 
-  const handleCategoryChange = async (e) => {
-    const categoryId = e.target.value;
+  setFormData((prev) => ({
+    ...prev,
+    categories: selectedCategories,
+    subCategories: [],
+  }));
 
-    const selectedCategory = categories.find(
-      (cat) => cat.id === Number(categoryId),
-    );
+  if (!selectedOptions || selectedOptions.length === 0) {
+    setSubCategories([]);
+    return;
+  }
 
-    setFormData((prev) => ({
-      ...prev,
-      Category: selectedCategory?.name || "",
-      SubCategory: "",
-    }));
+  let allSubCategories = [];
 
-    try {
-      const response = await getSubCategoriesByCategory(categoryId);
+  for (const item of selectedOptions) {
+    const response =
+      await getSubCategoriesByCategory(item.value);
 
-      setSubCategories(response || []);
-    } catch (error) {
-      console.error(error);
+    allSubCategories.push(...response);
+  }
 
-      setSubCategories([]);
-    }
-  };
+  const uniqueSubs = [
+    ...new Map(
+      allSubCategories.map((sub) => [sub.id, sub])
+    ).values(),
+  ];
 
-  const handleSubCategoryChange = (e) => {
-    const selectedSubCategory = subCategories.find(
-      (sub) => sub.id === Number(e.target.value),
-    );
+  setSubCategories(uniqueSubs);
+};
 
-    setFormData((prev) => ({
-      ...prev,
-      SubCategory: selectedSubCategory?.name || "",
-    }));
-  };
+const handleSubCategoryChange = (selectedOptions) => {
+  setFormData((prev) => ({
+    ...prev,
+    subCategories:
+      selectedOptions?.map((item) => item.label) || [],
+  }));
+};
 
-  const handleProductChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      Product: e.target.value,
-      Category: "",
-      SubCategory: "",
-    }));
-  };
+const handleProductChange = (selectedOptions) => {
+  setFormData((prev) => ({
+    ...prev,
+    products:
+      selectedOptions?.map((item) => item.label) || [],
+  }));
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,8 +122,20 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
       setLoading(true);
 
       const payload = {
-        ...formData,
-      };
+  festivalName: formData.festivalName,
+  title: formData.title,
+  subtitle: formData.subtitle,
+  redirectUrl: formData.redirectUrl,
+  startDate: formData.startDate,
+  endDate: formData.endDate,
+  priority: formData.priority,
+  active: formData.active,
+
+  categories: formData.categories,
+  subCategories: formData.subCategories,
+
+  
+};
 
       await createFestivalBanner(payload, image);
 
@@ -208,49 +228,32 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
             />
           </div>
 
-          {/* CATEGORY */}
+          <h4>Categories</h4>
 
-          <select onChange={handleCategoryChange} disabled={!!formData.Product}>
-            <option value="">Select Category</option>
+<Select
+  isMulti
+  options={categories.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }))}
+  onChange={handleCategoryChange}
+/>
 
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+<h4 style={{ marginTop: "15px" }}>
+  Sub Categories
+</h4>
 
-          {/* SUBCATEGORY */}
+<Select
+  isMulti
+  options={subCategories.map((sub) => ({
+    value: sub.id,
+    label: sub.name,
+  }))}
+  onChange={handleSubCategoryChange}
+/>
+         
 
-          <select
-            onChange={handleSubCategoryChange}
-            disabled={!!formData.Product}
-          >
-            <option value="">Select Sub Category</option>
-
-            {subCategories.map((sub) => (
-              <option key={sub.id} value={sub.id}>
-                {sub.name}
-              </option>
-            ))}
-          </select>
-
-          {/* PRODUCT */}
-
-          <select
-            value={formData.Product}
-            onChange={handleProductChange}
-            disabled={!!formData.Category || !!formData.SubCategory}
-          >
-            <option value="">Select Product</option>
-
-            {products.map((product) => (
-              <option key={product.id} value={product.name}>
-                {product.name}
-              </option>
-            ))}
-          </select>
-
+          
           <label className="festival-checkbox">
             <input
               type="checkbox"

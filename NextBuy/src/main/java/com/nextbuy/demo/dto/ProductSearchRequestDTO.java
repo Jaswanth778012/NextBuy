@@ -14,4 +14,6 @@ public class ProductSearchRequestDTO {
 	 private List<String> categories;
 	    private List<String> subCategories;
 	    
+	    
+	    
 }

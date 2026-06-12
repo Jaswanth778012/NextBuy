@@ -38,7 +38,8 @@ function FestivalBannerTable({
               </tr>
             ) : (
               banners.map((banner) => (
-                <tr key={banner.id}>
+  <tr key={banner.id}>
+   
                   <td>
                     {banner.id}
                   </td>
@@ -59,25 +60,9 @@ function FestivalBannerTable({
                     {banner.title}
                   </td>
 
-                  <td>
-                    {banner.Category ? (
-                      <span className="festival-category-badge">
-                        {banner.Category}
-                      </span>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
+                 <td>{JSON.stringify(banner.categories)}</td>
 
-                  <td>
-                    {banner.SubCategory ? (
-                      <span className="festival-subcategory-badge">
-                        {banner.SubCategory}
-                      </span>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
+                  <td>{JSON.stringify(banner.subCategories)}</td>
 
                   <td>
                     {banner.Product ? (
