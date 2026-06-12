@@ -41,4 +41,19 @@ public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpe
 		        @Param("name") String name);
 	 
 	 List<Product> findByNameContainingIgnoreCase(String keyword);
+	 
+	 
+	
+	     @Query("""
+	     SELECT p
+	     FROM Product p
+	     WHERE
+	     (:categories IS NULL OR p.category.name IN :categories)
+	     AND
+	     (:subCategories IS NULL OR p.subCategory.name IN :subCategories)
+	     """)
+	     List<Product> multisearchProducts(
+	             @Param("categories") List<String> categories,
+	             @Param("subCategories") List<String> subCategories);
+	 
 }

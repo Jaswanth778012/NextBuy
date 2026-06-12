@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.FestivalBannerRequestDto;
 import com.nextbuy.demo.dto.FestivalBannerResponseDto;
+import com.nextbuy.demo.dto.ProductSearchRequestDTO;
+import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.service.FestivalBannerService;
 
 @RestController
@@ -79,8 +81,21 @@ public class FestivalBannerController {
                 festivalBannerService.deleteBanner(id)
         );
     }
-    @GetMapping("/festivalBannerProducts/{id}")
-    public String getFestivalProductsBybannerId(@PathVariable Long id) {
-    	return festivalBannerService.getFestivalProductsBybannerId(id);
+    @GetMapping("/festivalProducts/{id}")
+    public ResponseEntity<List<Product>> getFestivalProducts(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                festivalBannerService.getFestivalProductsBybannerId(id)
+        );
+    }
+    
+    @PostMapping("/BannerProducts")
+    public ResponseEntity<List<Product>> searchProducts(
+            @RequestBody ProductSearchRequestDTO request) {
+
+        return ResponseEntity.ok(
+                festivalBannerService.searchProducts(request)
+        );
     }
 }
