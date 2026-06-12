@@ -61,6 +61,7 @@ public class FestivalBannerService {
         banner.setPriority(fsdto.getPriority() == null ? 1 : fsdto.getPriority());
         banner.setActive(fsdto.getActive() == null || fsdto.getActive());
         banner.setCategories(fsdto.getCategories());
+       
         
         banner.setSubCategories(fsdto.getSubCategories()); 
         
@@ -122,7 +123,7 @@ public class FestivalBannerService {
 
         request.setCategories(banner.getCategories());
         request.setSubCategories(banner.getSubCategories());
-
+       
         
         ResponseEntity<Product[]> response =
                 restTemplate.postForEntity(
@@ -166,6 +167,7 @@ public class FestivalBannerService {
         banner.setActive(fsdto.getActive() == null ? banner.getActive() : fsdto.getActive());
         banner.setCategories(fsdto.getCategories());
         banner.setSubCategories(fsdto.getSubCategories()); 
+        
         fsRepo.save(banner);
 
         return "Festival banner updated successfully";
@@ -205,6 +207,7 @@ public class FestivalBannerService {
         return productRepo.multisearchProducts(
                 request.getCategories(),
                 request.getSubCategories()
+                
         );
     }
     

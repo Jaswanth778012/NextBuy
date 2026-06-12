@@ -52,7 +52,10 @@ public class FestivalBanner {
     )
     @Column(name = "subcategory_name")
     private List<String> subCategories;
-
+    
+    
+    
+    
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -61,7 +64,7 @@ public class FestivalBanner {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
+   
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();

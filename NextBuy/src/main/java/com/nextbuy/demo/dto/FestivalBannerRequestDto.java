@@ -26,7 +26,7 @@ public class FestivalBannerRequestDto {
 	    private List<String> categories;
 	    private List<String> subCategories;
 
-	    private String Product;
+	    
 	    private LocalDateTime createdAt;
 	    private LocalDateTime updatedAt;
 

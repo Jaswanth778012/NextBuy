@@ -18,6 +18,7 @@ public class FestivalBannerResponseDto {
     private String subtitle;
     private String imageUrl;
     private String redirectUrl;
+    
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer priority;
@@ -25,7 +26,7 @@ public class FestivalBannerResponseDto {
     private List<String> categories;
     private List<String> subCategories;
 
-    private String Product;
+    
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
