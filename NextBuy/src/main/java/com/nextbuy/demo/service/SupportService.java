@@ -136,14 +136,6 @@ public class SupportService {
 
 	    ticketRepo.save(ticket);
 
-	    notificationService.createNotification(
-	            NotificationType.SUPPORT_TICKET,
-	            "Support Team Replied",
-	            "A new reply was added to your ticket #" + ticket.getId(),
-	            ticket.getId(),
-	            "TICKET",
-	            "MEDIUM");
-
 	    return "Reply Sent Successfully";
 	}
 
