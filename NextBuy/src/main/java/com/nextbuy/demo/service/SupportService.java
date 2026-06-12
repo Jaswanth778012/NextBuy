@@ -50,9 +50,10 @@ public class SupportService {
 		return "Support Ticket Created Successfully";
 	}
 
-	public List<SupportTicket> getMyTickets(Long userId) {
+	public List<SupportTicket> getMyTickets(Principal principal) {
 
-		return ticketRepo.findByUserId(userId);
+		String username = principal.getName();
+		return ticketRepo.findByUserUsername(username);
 	}
 
 	public String customerReply(Long ticketId, Principal principal, SupportReplyRequestDto dto) {
@@ -123,7 +124,7 @@ public class SupportService {
 		SupportTicket ticket = ticketRepo.findById(ticketId)
 				.orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-		return replyRepo.findBySupportTicketIdOrderByCreatedAtAsc(ticket.getId());
+		return replyRepo.findByTicketIdOrderByCreatedAtAsc(ticket.getId());
 	}
 
 	public String updateTicketStatus(Long ticketId, TicketStatus status) {

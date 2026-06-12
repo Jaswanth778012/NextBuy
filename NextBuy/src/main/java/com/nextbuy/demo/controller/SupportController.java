@@ -30,14 +30,10 @@ import jakarta.validation.Valid;
 public class SupportController {
 	
 	private SupportService supportService;
-	private SupportTicketRepository supportTicketRepository;
-	private SupportTicketReplyRepository supportTicketReplyRepository;
-	
-	SupportController(SupportService supportService, SupportTicketRepository supportTicketRepository, SupportTicketReplyRepository supportTicketReplyRepository) {
+
+	SupportController(SupportService supportService) {
 		this.supportService = supportService;
-		this.supportTicketRepository = supportTicketRepository;
-		this.supportTicketReplyRepository = supportTicketReplyRepository;
-		
+
 	}
 
 	    // Customer creates ticket
@@ -52,13 +48,13 @@ public class SupportController {
 	    }
 
 	    // Customer gets own tickets
-	    @GetMapping("/my-tickets/{userId}")
+	    @GetMapping("/my-tickets")
 	    @PreAuthorize("hasRole('USER')")
 	    public ResponseEntity<List<SupportTicket>> getMyTickets(
-	            @PathVariable Long userId) {
+	            Principal principal) {
 
 	        return ResponseEntity.ok(
-	                supportService.getMyTickets(userId)
+	                supportService.getMyTickets(principal)
 	        );
 	    }
 

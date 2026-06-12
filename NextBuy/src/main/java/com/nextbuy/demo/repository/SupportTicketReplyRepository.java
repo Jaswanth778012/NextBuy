@@ -8,6 +8,6 @@ import com.nextbuy.demo.entity.SupportTicketReply;
 
 public interface SupportTicketReplyRepository extends JpaRepository<SupportTicketReply, Long> {
 	
-	List<SupportTicketReply> findBySupportTicketIdOrderByCreatedAtAsc(Long supportTicketId);
+	List<SupportTicketReply> findByTicketIdOrderByCreatedAtAsc(Long ticketId);
 
 }

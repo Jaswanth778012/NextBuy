@@ -140,8 +140,6 @@ public class FestivalBannerService {
         return Arrays.asList(productArray);
     }
     
-    
-    
 
     public String updateBanner(
             Long id,
@@ -191,6 +189,7 @@ public class FestivalBannerService {
             throw new RuntimeException("End date cannot be in the past");
         }
     }
+    
 	public String deleteBanner(Long id) {
         FestivalBanner banner = fsRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Festival banner not found"));
@@ -199,6 +198,8 @@ public class FestivalBannerService {
            
         return "Festival banner deleted successfully";
 	}
+	
+	
     public List<Product> searchProducts(ProductSearchRequestDTO request) {
 
         return productRepo.multisearchProducts(

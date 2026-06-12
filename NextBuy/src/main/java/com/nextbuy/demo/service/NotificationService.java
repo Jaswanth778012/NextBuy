@@ -11,7 +11,6 @@ import com.nextbuy.demo.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class NotificationService {
 	
 	private NotificationRepository notificationRepository;

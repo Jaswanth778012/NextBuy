@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateTicketDto {
 	
-		private String userName;
-
 	    private String subject;
 
 	    private String description;
