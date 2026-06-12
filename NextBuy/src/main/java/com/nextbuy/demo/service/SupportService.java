@@ -27,6 +27,7 @@ public class SupportService {
 	private final UserRepository userRepo;
 	private final NotificationService notificationService;
 	private final SupportTicketReplyRepository replyRepo;
+	private final EmailService emailService;
 
 	public String createTicket(CreateTicketDto dto, Principal principal) {
 
@@ -42,6 +43,20 @@ public class SupportService {
 		ticket.setCategory(dto.getCategory());
 
 		ticketRepo.save(ticket);
+		
+		emailService.sendEmail(
+	            user.getEmail(),
+	            "Support Ticket Created - #" + ticket.getId(),
+	            "Hello " + user.getName() + ",\n\n" +
+	            "Your support ticket has been created successfully.\n\n" +
+	            "Ticket ID: " + ticket.getId() + "\n" +
+	            "Subject: " + ticket.getSubject() + "\n" +
+	            "Category: " + ticket.getCategory() + "\n" +
+	            "Status: OPEN\n\n" +
+	            "Our support team will review your request and get back to you soon.\n\n" +
+	            "Thank you,\n" +
+	            "NextBuy Support Team"
+	    );
 
 		// Admin notification
 		notificationService.createNotification(NotificationType.SUPPORT_TICKET, "New Support Ticket",
@@ -58,60 +73,78 @@ public class SupportService {
 
 	public String customerReply(Long ticketId, Principal principal, SupportReplyRequestDto dto) {
 
-		SupportTicket ticket = ticketRepo.findById(ticketId)
-				.orElseThrow(() -> new RuntimeException("Ticket not found"));
+	    SupportTicket ticket = ticketRepo.findById(ticketId)
+	            .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-		String username = principal.getName();
+	    if (ticket.getStatus() == TicketStatus.CLOSED) {
+	        throw new RuntimeException("Cannot reply to a closed ticket");
+	    }
 
-		User customer = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+	    String username = principal.getName();
 
-		SupportTicketReply reply = new SupportTicketReply();
+	    User customer = userRepo.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
 
-		reply.setTicket(ticket);
-		reply.setSender(customer);
-		reply.setSenderType("CUSTOMER");
-		reply.setMessage(dto.getMessage());
+	    SupportTicketReply reply = new SupportTicketReply();
 
-		replyRepo.save(reply);
+	    reply.setTicket(ticket);
+	    reply.setSender(customer);
+	    reply.setSenderType("CUSTOMER");
+	    reply.setMessage(dto.getMessage());
 
-		if (ticket.getStatus() == TicketStatus.OPEN) {
+	    replyRepo.save(reply);
 
-			ticket.setStatus(TicketStatus.IN_PROGRESS);
+	    ticket.setStatus(TicketStatus.IN_PROGRESS);
 
-			ticketRepo.save(ticket);
-		}
+	    ticketRepo.save(ticket);
 
-		notificationService.createNotification(NotificationType.SUPPORT_TICKET, "Customer Replied",
-				customer.getName() + " replied to ticket #" + ticket.getId(), ticket.getId(), "TICKET", "MEDIUM");
+	    notificationService.createNotification(
+	            NotificationType.SUPPORT_TICKET,
+	            "Customer Replied",
+	            customer.getName() + " replied to ticket #" + ticket.getId(),
+	            ticket.getId(),
+	            "TICKET",
+	            "MEDIUM");
 
-		return "Reply Sent Successfully";
+	    return "Reply Sent Successfully";
 	}
 
 	public String adminReply(Long ticketId, Principal principal, SupportReplyRequestDto dto) {
 
-		SupportTicket ticket = ticketRepo.findById(ticketId)
-				.orElseThrow(() -> new RuntimeException("Ticket not found"));
+	    SupportTicket ticket = ticketRepo.findById(ticketId)
+	            .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-		String username = principal.getName();
+	    if (ticket.getStatus() == TicketStatus.CLOSED) {
+	        throw new RuntimeException("Cannot reply to a closed ticket");
+	    }
 
-		User admin = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("Admin not found"));
+	    String username = principal.getName();
 
-		SupportTicketReply reply = new SupportTicketReply();
+	    User admin = userRepo.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-		reply.setTicket(ticket);
-		reply.setSender(admin);
-		reply.setSenderType("ADMIN");
-		reply.setMessage(dto.getMessage());
+	    SupportTicketReply reply = new SupportTicketReply();
 
-		replyRepo.save(reply);
+	    reply.setTicket(ticket);
+	    reply.setSender(admin);
+	    reply.setSenderType("ADMIN");
+	    reply.setMessage(dto.getMessage());
 
-		notificationService.createNotification(NotificationType.SUPPORT_TICKET, "Support Team Replied",
-				"A new reply was added to your ticket #" + ticket.getId(), ticket.getId(), "TICKET", "MEDIUM");
+	    replyRepo.save(reply);
 
-		ticket.setStatus(TicketStatus.IN_PROGRESS);
-		ticketRepo.save(ticket);
+	    ticket.setStatus(TicketStatus.WAITING_FOR_CUSTOMER);
 
-		return "Reply Sent Successfully";
+	    ticketRepo.save(ticket);
+
+	    notificationService.createNotification(
+	            NotificationType.SUPPORT_TICKET,
+	            "Support Team Replied",
+	            "A new reply was added to your ticket #" + ticket.getId(),
+	            ticket.getId(),
+	            "TICKET",
+	            "MEDIUM");
+
+	    return "Reply Sent Successfully";
 	}
 
 	public List<SupportTicket> getAllTickets() {
@@ -133,6 +166,17 @@ public class SupportService {
 				.orElseThrow(() -> new RuntimeException("Ticket not found"));
 
 		ticket.setStatus(status);
+		
+		 User user = ticket.getUser();
+		
+		emailService.sendEmail(
+	            user.getEmail(),
+	            "Support Ticket Status Updated",
+	            "Hello " + user.getName() + ",\n\n" +
+	            "Your support ticket #" + ticket.getId() +
+	            " has been updated to: " + status +
+	            ".\n\nRegards,\nNextBuy Support Team"
+	    );
 
 		notificationService.createNotification(NotificationType.SUPPORT_TICKET, "Ticket Status Updated",
 				"Ticket #" + ticket.getId() + " marked as " + status, ticket.getId(), "TICKET", "MEDIUM");
@@ -161,4 +205,55 @@ public class SupportService {
 	                        "Ticket not found with id: " + ticketId
 	                ));
 	    }
+	  
+	  public String resolveTicket(Long ticketId) {
+
+		    SupportTicket ticket = ticketRepo.findById(ticketId)
+		            .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+		    ticket.setStatus(TicketStatus.RESOLVED);
+
+		    ticketRepo.save(ticket);
+		    
+		    User user = ticket.getUser();
+		    
+		    emailService.sendEmail(
+		            user.getEmail(),
+		            "Ticket Resolved",
+		            "Hello " + user.getName() + ",\n\n" +
+		            "Your support ticket #" + ticket.getId() +
+		            " has been marked as RESOLVED.\n\n" +
+		            "If your issue still exists, you may reopen the ticket.\n\n" +
+		            "Regards,\nNextBuy Support Team"
+		    );
+
+		    return "Ticket marked as resolved";
+		}
+	  
+	  public String reopenTicket(Long ticketId) {
+
+		    SupportTicket ticket = ticketRepo.findById(ticketId)
+		            .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+		    if (ticket.getStatus() != TicketStatus.RESOLVED) {
+		        throw new RuntimeException("Only resolved tickets can be reopened");
+		    }
+
+		    ticket.setStatus(TicketStatus.OPEN);
+
+		    ticketRepo.save(ticket);
+		    
+		    User user = ticket.getUser();
+
+		    emailService.sendEmail(
+		            user.getEmail(),
+		            "Ticket Reopened",
+		            "Hello " + user.getName() + ",\n\n" +
+		            "Your support ticket #" + ticket.getId() +
+		            " has been reopened and is now under review.\n\n" +
+		            "Regards,\nNextBuy Support Team"
+		    );
+
+		    return "Ticket reopened successfully";
+		}
 }
