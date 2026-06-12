@@ -22,6 +22,7 @@ public class CategoryService {
     	 Category category = new Category();
 
     	    category.setName(dto.getName());
+    	    category.setDescription(dto.getDescription());
 
     	    Category saved = categoryRepository.save(category);
 
@@ -65,6 +66,7 @@ public class CategoryService {
                         new RuntimeException("Category not found"));
 
         category.setName(dto.getName());
+        category.setDescription(dto.getDescription());
 
         Category updated = categoryRepository.save(category);
 

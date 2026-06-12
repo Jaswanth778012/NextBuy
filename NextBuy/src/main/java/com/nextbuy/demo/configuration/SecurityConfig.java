@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 import com.nextbuy.demo.filter.JwtAuthenticationFilter;
 import com.nextbuy.demo.service.CustomUserDetailsService;
@@ -40,14 +41,13 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 
-						.requestMatchers("/auth/**").permitAll()
+						.requestMatchers("/auth/**","/festival-banner/**").permitAll()
 
-						.requestMatchers("/Product/compare/**").hasRole("USER")
+						
 						.requestMatchers("/Product/viewAllProducts").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/Brands/**","/Categories/**","/Subcategories/**").permitAll()
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/create","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**","/festival-banner/**").hasRole("ADMIN")
-
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/**","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**").hasRole("ADMIN")
 		            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**","/wishlist-alerts/**").hasRole("USER")
 	            
 	            	.requestMatchers("/Common/**").hasAnyRole("USER","ADMIN")
@@ -76,6 +76,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
     
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.nextbuy.demo.enums.Gender;
@@ -95,6 +94,12 @@ public class User {
 	@OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval=true)
 	  @JsonManagedReference
 	private List<Order> orders;
+	
+	@OneToMany(mappedBy = "user",
+	        cascade = CascadeType.ALL,
+	        orphanRemoval = true)
+	@JsonIgnore
+	private List<SupportTicket> supportTickets;
 	
 	@PrePersist
 	protected void onCreate() {

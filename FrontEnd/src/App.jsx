@@ -25,6 +25,8 @@ import BroadcastCenter from "./pages/BroadcastCenter";
 import CategoryManagement from "./pages/CategoryManagement";
 import SubCategoryManagement from "./pages/SubCategoryManagement";
 import BrandManagement from "./pages/BrandManagement";
+import AdminCupon from "./pages/AdminCupon";
+import FestivalBannerManagement from "./pages/FestivalBannerManagement";
 // =========================
 // LAYOUTS
 // =========================
@@ -61,11 +63,17 @@ function App() {
           {/* DASHBOARD */}
 
           <Route path="dashboard" element={<AdminDashboard />} />
-
-          <Route path="options" element={<AdminOptions />} />
           <Route path="userManagement" element={<UserManagement />} />
-          <Route path="orderManagement" element={<OrdersManagement />} />
           <Route path="productManagement" element={<ProductManagement />} />
+          <Route path="orderManagement" element={<OrdersManagement />} />
+          <Route path="couponManagement" element={<AdminCupon/>}/>
+           <Route path="options" element={<AdminOptions />} />
+           <Route
+  path="festivalBannerManagement"
+  element={
+    <FestivalBannerManagement />
+  }
+/>
           <Route
             path="categoryManagement"
             element={<CategoryManagement />}
