@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SupportStatsDto {
+	
+	private long total;
 
     private long open;
 
