@@ -1,0 +1,1570 @@
+.support-hub-page {
+  padding: 30px;
+}
+
+.support-hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.support-hub-header h1 {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.support-hub-header p {
+  margin-top: 10px;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.support-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.support-total-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 16px 24px;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #7c3aed
+  );
+
+  color: #fff;
+  border-radius: 18px;
+
+  font-weight: 700;
+  font-size: 1.05rem;
+
+  box-shadow:
+    0 10px 25px
+    rgba(59, 130, 246, 0.25);
+}
+
+.support-total-card svg {
+  font-size: 1.2rem;
+}
+
+/* =========================================
+   STATS GRID
+========================================= */
+
+.support-summary-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(240px, 1fr));
+
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.support-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  padding: 24px;
+
+  border-radius: 28px;
+
+  color: white;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.08);
+
+  transition: 0.3s ease;
+}
+
+.support-summary-card:hover {
+  transform: translateY(-4px);
+}
+
+/* =========================================
+   ICON
+========================================= */
+
+.support-summary-icon {
+  width: 65px;
+  height: 65px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  font-size: 24px;
+
+  background: rgba(255,255,255,0.15);
+
+  backdrop-filter: blur(10px);
+}
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.support-summary-content h4 {
+  font-size: 14px;
+  font-weight: 600;
+
+  opacity: 0.9;
+
+  margin-bottom: 6px;
+}
+
+.support-summary-content h2 {
+  font-size: 34px;
+  font-weight: 800;
+}
+
+/* =========================================
+   CARD COLORS
+========================================= */
+
+.total-card {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #6366f1
+    );
+}
+
+.open-card {
+  background:
+    linear-gradient(
+      135deg,
+      #f59e0b,
+      #d97706
+    );
+}
+
+.progress-card {
+  background:
+    linear-gradient(
+      135deg,
+      #8b5cf6,
+      #7c3aed
+    );
+}
+
+.resolved-card {
+  background:
+    linear-gradient(
+      135deg,
+      #10b981,
+      #059669
+    );
+}
+
+.closed-card {
+    background:
+    linear-gradient(
+      135deg,
+      #0c0cdf,
+      #059669
+    );
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .support-summary-card {
+  box-shadow:
+    0 12px 35px rgba(0,0,0,0.25);
+}
+
+.dark-mode .support-hub-header h1 {
+  color: #f8fafc;
+}
+
+.dark-mode .support-hub-header p {
+  color: #cbd5e1;
+}
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .support-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .support-summary-content h2 {
+    font-size: 28px;
+  }
+
+}
+
+/* =========================================
+   SEARCH SECTION
+========================================= */
+
+.ticket-filter-section {
+  margin-bottom: 28px;
+}
+
+/* =========================================
+   SEARCH BOX
+========================================= */
+
+.ticket-filter-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px 22px;
+
+  border-radius: 24px;
+
+  background:
+    rgba(255,255,255,0.78);
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    0 8px 22px rgba(31,38,135,0.08);
+}
+
+/* =========================================
+   ICON
+========================================= */
+
+.ticket-filter-icon {
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* =========================================
+   INPUT
+========================================= */
+
+.ticket-filter-box input {
+  flex: 1;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  color: #111827;
+}
+
+.ticket-filter-box input::placeholder {
+  color: #94a3b8;
+}
+
+/* =========================================
+   FOCUS EFFECT
+========================================= */
+
+.ticket-filter-box:focus-within {
+  border:
+    1px solid rgba(99,102,241,0.3);
+
+  box-shadow:
+    0 10px 28px rgba(99,102,241,0.15);
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .ticket-filter-box {
+  background:
+    rgba(15,23,42,0.82);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+}
+
+.dark-mode .ticket-filter-box input {
+  color: #f8fafc;
+}
+
+.dark-mode .ticket-filter-icon {
+  color: #94a3b8;
+}
+
+.dark-mode .ticket-filter-box input::placeholder {
+  color: #64748b;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .ticket-filter-box {
+    padding: 14px 18px;
+  }
+
+}
+
+/* =========================================
+   TABLE SHELL
+========================================= */
+
+.ticket-data-shell {
+  border-radius: 34px;
+
+  padding: 30px;
+
+  overflow: hidden;
+
+  background:
+    rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(24px);
+
+  border:
+    1px solid rgba(255,255,255,0.35);
+
+  box-shadow:
+    0 12px 35px rgba(31,38,135,0.12);
+}
+
+/* =========================================
+   WRAPPER
+========================================= */
+
+.ticket-data-wrapper {
+  width: 100%;
+  overflow-x: auto;
+
+  border-radius: 24px;
+
+  scrollbar-width: thin;
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.ticket-admin-table {
+  width: 100%;
+  min-width: 1200px;
+
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.ticket-admin-table thead th {
+  padding: 22px 20px;
+
+  text-align: left;
+
+  color: white;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #7c3aed
+    );
+}
+
+.ticket-admin-table thead th:first-child {
+  border-top-left-radius: 20px;
+}
+
+.ticket-admin-table thead th:last-child {
+  border-top-right-radius: 20px;
+}
+
+/* =========================================
+   BODY
+========================================= */
+
+.ticket-admin-table td {
+  padding: 20px;
+
+  background: rgba(255,255,255,0.94);
+
+  border-bottom:
+    1px solid rgba(226,232,240,0.7);
+
+  color: #1e293b;
+
+  font-size: 14px;
+}
+
+.ticket-admin-table tbody tr:hover td {
+  background:
+    rgba(99,102,241,0.05);
+}
+
+/* =========================================
+   SUBJECT
+========================================= */
+
+.ticket-subject {
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================================
+   STATUS BADGES
+========================================= */
+
+.ticket-status-badge {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  margin-bottom: 10px;
+}
+
+.status-open {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-progress {
+  background: #ddd6fe;
+  color: #5b21b6;
+}
+
+.status-waiting {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-resolved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-closed {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.ticket-action-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ticket-btn {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  transition: 0.25s ease;
+}
+
+.ticket-btn:hover {
+  transform: translateY(-3px);
+}
+
+.ticket-view-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #2563eb
+    );
+}
+
+.ticket-resolve-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #10b981,
+      #059669
+    );
+}
+
+.ticket-merge-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #8b5cf6,
+      #7c3aed
+    );
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.ticket-empty-card {
+  padding: 60px;
+
+  text-align: center;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  color: #64748b;
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(20px);
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .ticket-data-shell {
+  background:
+    rgba(15,23,42,0.82);
+}
+
+.dark-mode .ticket-admin-table td {
+  background:
+    rgba(15,23,42,0.9);
+
+  color: #e2e8f0;
+
+  border-bottom:
+    1px solid rgba(51,65,85,0.5);
+}
+
+.dark-mode .ticket-subject {
+  color: #f8fafc;
+}
+
+.dark-mode .ticket-empty-card {
+  background:
+    rgba(15,23,42,0.82);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+  .ticket-data-shell {
+    padding: 18px;
+  }
+
+  .ticket-admin-table {
+    min-width: 1000px;
+  }
+
+}
+
+/* =========================================
+   WRAPPER
+========================================= */
+
+.status-editor-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+/* =========================================
+   SELECT
+========================================= */
+
+.status-editor-select {
+  width: 100%;
+
+  padding: 10px 14px;
+
+  border-radius: 14px;
+
+  border:
+    1px solid rgba(203,213,225,0.8);
+
+  background:
+    rgba(255,255,255,0.9);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  outline: none;
+
+  transition: 0.25s ease;
+}
+
+.status-editor-select:focus {
+  border-color: #6366f1;
+}
+
+/* =========================================
+   LOADING ICON
+========================================= */
+
+.status-spin-icon {
+  color: #6366f1;
+
+  animation:
+    ticketStatusSpin 0.8s linear infinite;
+}
+
+@keyframes ticketStatusSpin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .status-editor-select {
+  background:
+    rgba(15,23,42,0.8);
+
+  color: #f8fafc;
+
+  border:
+    1px solid rgba(148,163,184,0.18);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+  .status-editor-select {
+    min-width: 180px;
+  }
+
+}
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.resolve-backdrop {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(0,0,0,0.45);
+
+  backdrop-filter: blur(6px);
+
+  z-index: 9999;
+
+  animation:
+    resolveFade 0.25s ease;
+}
+
+/* =========================================
+   MODAL
+========================================= */
+
+.resolve-dialog {
+  width: 100%;
+  max-width: 520px;
+
+  padding: 30px;
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,255,255,0.95);
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.15);
+
+  animation:
+    resolvePop 0.3s ease;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.resolve-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 24px;
+}
+
+.resolve-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+
+  color: #111827;
+}
+
+.resolve-close-btn {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  color: white;
+
+  cursor: pointer;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    );
+}
+
+/* =========================================
+   BODY
+========================================= */
+
+.resolve-content {
+  text-align: center;
+}
+
+.resolve-icon {
+  font-size: 70px;
+
+  color: #10b981;
+
+  margin-bottom: 18px;
+}
+
+.resolve-content h3 {
+  font-size: 22px;
+  font-weight: 800;
+
+  color: #111827;
+
+  margin-bottom: 12px;
+}
+
+.resolve-content p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.resolve-footer {
+  margin-top: 28px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.resolve-cancel-btn {
+  border: none;
+
+  padding: 14px 20px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+
+  background:
+    rgba(226,232,240,0.8);
+}
+
+.resolve-confirm-btn {
+  border: none;
+
+  padding: 14px 22px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      135deg,
+      #10b981,
+      #059669
+    );
+}
+
+/* =========================================
+   ANIMATION
+========================================= */
+
+@keyframes resolveFade {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+@keyframes resolvePop {
+
+  from {
+    opacity: 0;
+    transform:
+      translateY(20px)
+      scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .resolve-dialog {
+  background:
+    rgba(15,23,42,0.92);
+}
+
+.dark-mode .resolve-header h2,
+.dark-mode .resolve-content h3 {
+  color: #f8fafc;
+}
+
+.dark-mode .resolve-content p {
+  color: #cbd5e1;
+}
+
+.dark-mode .resolve-cancel-btn {
+  color: #f8fafc;
+
+  background:
+    rgba(51,65,85,0.8);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:576px){
+
+  .resolve-dialog {
+    padding: 22px;
+  }
+
+  .resolve-footer {
+    flex-direction: column;
+  }
+
+  .resolve-cancel-btn,
+  .resolve-confirm-btn {
+    width: 100%;
+  }
+
+}
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.merge-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(0,0,0,0.45);
+
+  backdrop-filter: blur(8px);
+
+  z-index: 9999;
+}
+
+/* =========================================
+   MODAL
+========================================= */
+
+.merge-modal {
+  width: 100%;
+  max-width: 600px;
+
+  padding: 30px;
+
+  border-radius: 30px;
+
+  background:
+    rgba(255,255,255,0.95);
+
+  backdrop-filter: blur(20px);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.15);
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.merge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.merge-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.merge-close-btn {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #dc2626
+    );
+}
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.merge-content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.merge-icon {
+  text-align: center;
+
+  font-size: 60px;
+
+  color: #8b5cf6;
+}
+
+.merge-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.merge-info-card label {
+  font-weight: 700;
+  color: #334155;
+}
+
+.merge-ticket-box {
+  padding: 14px;
+
+  border-radius: 14px;
+
+  font-weight: 700;
+
+  background:
+    rgba(139,92,246,0.08);
+}
+
+.merge-info-card input {
+  padding: 14px;
+
+  border-radius: 14px;
+
+  border:
+    1px solid rgba(203,213,225,0.8);
+
+  outline: none;
+}
+
+.merge-warning {
+  padding: 16px;
+
+  border-radius: 16px;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+
+  color: #92400e;
+
+  background:
+    rgba(251,191,36,0.15);
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.merge-footer {
+  margin-top: 28px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.merge-cancel-btn {
+  border: none;
+
+  padding: 14px 20px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+.merge-confirm-btn {
+  border: none;
+
+  padding: 14px 22px;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      135deg,
+      #8b5cf6,
+      #7c3aed
+    );
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .merge-modal {
+  background:
+    rgba(15,23,42,0.94);
+}
+
+.dark-mode .merge-header h2 {
+  color: #f8fafc;
+}
+
+.dark-mode .merge-info-card label {
+  color: #cbd5e1;
+}
+
+.dark-mode .merge-info-card input {
+  color: #f8fafc;
+
+  background:
+    rgba(15,23,42,0.8);
+
+  border:
+    1px solid rgba(148,163,184,0.2);
+}
+
+.dark-mode .merge-ticket-box {
+  color: #f8fafc;
+}
+
+.dark-mode .merge-cancel-btn {
+  color: #f8fafc;
+
+  background:
+    rgba(51,65,85,0.8);
+}
+
+/* =========================================
+   CONTAINER
+========================================= */
+
+.support-paging-container {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-top: 28px;
+
+  flex-wrap: wrap;
+}
+
+/* =========================================
+   INFO
+========================================= */
+
+.support-paging-info {
+  color: #475569;
+
+  font-weight: 600;
+}
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.support-paging-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.support-page-control {
+  border: none;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 20px;
+
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-weight: 700;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #8b5cf6
+    );
+
+  transition: 0.25s ease;
+}
+
+.support-page-control:hover {
+  transform:
+    translateY(-2px);
+}
+
+.support-page-control:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+/* =========================================
+   CURRENT PAGE
+========================================= */
+
+.support-page-current {
+  min-width: 50px;
+
+  height: 50px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 16px;
+
+  font-weight: 800;
+
+  color: #334155;
+
+  background:
+    rgba(255,255,255,0.75);
+
+  backdrop-filter: blur(12px);
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .support-paging-info {
+  color: #cbd5e1;
+}
+
+.dark-mode .support-page-current {
+  color: #f8fafc;
+
+  background:
+    rgba(15,23,42,0.75);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+  .support-paging-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .support-paging-actions {
+    justify-content: space-between;
+  }
+
+}
+
+/* =========================================
+   LOADER WRAPPER
+========================================= */
+
+.support-loading-shell {
+  min-height: 450px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 18px;
+
+  border-radius: 34px;
+
+  background:
+    rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.35);
+
+  box-shadow:
+    0 10px 35px rgba(31,38,135,0.12);
+}
+
+/* =========================================
+   SPINNER
+========================================= */
+
+.support-spinner-ring {
+  width: 72px;
+  height: 72px;
+
+  border-radius: 50%;
+
+  border:
+    6px solid rgba(59,130,246,0.15);
+
+  border-top:
+    6px solid #3b82f6;
+
+  animation:
+    supportSpin 0.8s linear infinite;
+}
+
+@keyframes supportSpin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+/* =========================================
+   TEXT
+========================================= */
+
+.support-loading-shell h2 {
+  font-size: 28px;
+
+  font-weight: 800;
+
+  color: #111827;
+}
+
+.support-loading-shell p {
+  font-size: 15px;
+
+  color: #64748b;
+
+  font-weight: 500;
+
+  text-align: center;
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .support-loading-shell {
+  background:
+    rgba(15,23,42,0.82);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+}
+
+.dark-mode .support-loading-shell h2 {
+  color: #f8fafc;
+}
+
+.dark-mode .support-loading-shell p {
+  color: #cbd5e1;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+  .support-loading-shell {
+    min-height: 350px;
+
+    padding: 24px;
+  }
+
+  .support-loading-shell h2 {
+    font-size: 24px;
+  }
+
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.ticket-empty-shell {
+  min-height: 350px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  gap: 16px;
+
+  padding: 40px;
+
+  border-radius: 34px;
+
+  background:
+    rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.35);
+
+  box-shadow:
+    0 10px 35px rgba(31,38,135,0.12);
+}
+
+/* =========================================
+   ICON
+========================================= */
+
+.ticket-empty-icon {
+  width: 90px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 36px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #8b5cf6
+    );
+
+  box-shadow:
+    0 10px 25px rgba(59,130,246,0.25);
+}
+
+/* =========================================
+   TITLE
+========================================= */
+
+.ticket-empty-shell h2 {
+  font-size: 28px;
+
+  font-weight: 800;
+
+  color: #111827;
+}
+
+/* =========================================
+   DESCRIPTION
+========================================= */
+
+.ticket-empty-shell p {
+  max-width: 500px;
+
+  font-size: 15px;
+
+  line-height: 1.7;
+
+  color: #64748b;
+
+  font-weight: 500;
+}
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark-mode .ticket-empty-shell {
+  background:
+    rgba(15,23,42,0.82);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+}
+
+.dark-mode .ticket-empty-shell h2 {
+  color: #f8fafc;
+}
+
+.dark-mode .ticket-empty-shell p {
+  color: #cbd5e1;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media(max-width:768px){
+
+  .ticket-empty-shell {
+    min-height: 280px;
+
+    padding: 24px;
+  }
+
+  .ticket-empty-shell h2 {
+    font-size: 24px;
+  }
+
+  .ticket-empty-icon {
+    width: 75px;
+    height: 75px;
+
+    font-size: 28px;
+  }
+
+}

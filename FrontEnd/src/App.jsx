@@ -27,6 +27,8 @@ import SubCategoryManagement from "./pages/SubCategoryManagement";
 import BrandManagement from "./pages/BrandManagement";
 import AdminCupon from "./pages/AdminCupon";
 import FestivalBannerManagement from "./pages/FestivalBannerManagement";
+import SupportDashboardAdmin from "./pages/SupportDashboardAdmin";
+import TicketDetailsPage from "./pages/TicketDetailsPage";
 // =========================
 // LAYOUTS
 // =========================
@@ -68,12 +70,7 @@ function App() {
           <Route path="orderManagement" element={<OrdersManagement />} />
           <Route path="couponManagement" element={<AdminCupon/>}/>
            <Route path="options" element={<AdminOptions />} />
-           <Route
-  path="festivalBannerManagement"
-  element={
-    <FestivalBannerManagement />
-  }
-/>
+           <Route path="festivalBannerManagement" element={<FestivalBannerManagement />}/>
           <Route
             path="categoryManagement"
             element={<CategoryManagement />}
@@ -94,6 +91,8 @@ function App() {
 
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails />} />
+          <Route path="support" element={<SupportDashboardAdmin />}/>
+          <Route path="support/:ticketId" element={<TicketDetailsPage />}/>
           {/* DEFAULT ADMIN ROUTE */}
 
           <Route index element={<Navigate to="dashboard" replace />} />

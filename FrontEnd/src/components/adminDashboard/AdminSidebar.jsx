@@ -11,6 +11,7 @@ import {
   FaBell,
   FaTicketAlt,
   FaImages,
+  FaHeadset,
 } from "react-icons/fa";
 
 
@@ -295,6 +296,29 @@ function AdminSidebar({
             </span>
           )}
         </button>
+
+        {/* SUPPORT */}
+
+<button
+  className={`nav-item ${
+    location.pathname.includes(
+      "/admin/support"
+    )
+      ? "active"
+      : ""
+  }`}
+  onClick={() =>
+    navigate("/admin/support")
+  }
+>
+  <FaHeadset />
+
+  {sidebarOpen && (
+    <span>
+      Support
+    </span>
+  )}
+</button>
 
         <button className={`nav-item ${ location.pathname === "/admin/couponManagement" ? "active" : "" }`} onClick={() => navigate( "/admin/couponManagement" ) } > <FaTicketAlt /> {sidebarOpen && ( <span> Coupons </span> )} </button>
 
