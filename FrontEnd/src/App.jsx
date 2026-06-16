@@ -1,6 +1,7 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
+import FestivalProductsPage from "./pages/FestivalProductsPage";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -56,6 +57,10 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+        <Route
+  path="/festival-products/:id"
+  element={<FestivalProductsPage />}
+/>
 
         {/* =========================
             ADMIN LAYOUT ROUTES

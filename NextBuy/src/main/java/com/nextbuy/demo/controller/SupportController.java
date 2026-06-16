@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.CreateTicketDto;
+import com.nextbuy.demo.dto.MergeTicketDto;
 import com.nextbuy.demo.dto.SupportReplyRequestDto;
 import com.nextbuy.demo.dto.SupportStatsDto;
 import com.nextbuy.demo.entity.SupportTicket;
@@ -143,7 +144,21 @@ public class SupportController {
 	}
 	
 	  @GetMapping("/ticket/{ticketId}")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	    public ResponseEntity<SupportTicket> getTicket(@PathVariable Long ticketId) {
 	        return ResponseEntity.ok(supportService.getTicketById(ticketId));
 	    }
+	  
+	  @PostMapping("/admin/tickets/merge")
+	  @PreAuthorize("hasRole('ADMIN')")
+	  public ResponseEntity<String> mergeTickets(
+	          @RequestBody MergeTicketDto dto) {
+
+	      return ResponseEntity.ok(
+	              supportService.mergeTickets(
+	                      dto.getSourceTicketId(),
+	                      dto.getTargetTicketId()
+	              )
+	      );
+	  }
 }

@@ -17,6 +17,7 @@ import com.nextbuy.demo.repository.SupportTicketReplyRepository;
 import com.nextbuy.demo.repository.SupportTicketRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,6 +42,7 @@ public class SupportService {
 		ticket.setSubject(dto.getSubject());
 		ticket.setDescription(dto.getDescription());
 		ticket.setCategory(dto.getCategory());
+		ticket.setStatus(TicketStatus.OPEN);
 
 		ticketRepo.save(ticket);
 		
@@ -57,6 +59,8 @@ public class SupportService {
 	            "Thank you,\n" +
 	            "NextBuy Support Team"
 	    );
+		
+		
 
 		// Admin notification
 		notificationService.createNotification(NotificationType.SUPPORT_TICKET, "New Support Ticket",
@@ -179,6 +183,8 @@ public class SupportService {
 	}
 
 	public SupportStatsDto getSupportStats() {
+		
+		long total = ticketRepo.count();
 
 		long open = ticketRepo.countByStatus(TicketStatus.OPEN);
 
@@ -187,8 +193,14 @@ public class SupportService {
 		long resolved = ticketRepo.countByStatus(TicketStatus.RESOLVED);
 
 		long closed = ticketRepo.countByStatus(TicketStatus.CLOSED);
-
-		return new SupportStatsDto(open, inProgress, resolved, closed);
+		
+		return new SupportStatsDto(
+			    total,
+			    open,
+			    inProgress,
+			    resolved,
+			    closed
+			);
 	}
 	
 	  public SupportTicket getTicketById(Long ticketId) {
@@ -248,4 +260,54 @@ public class SupportService {
 
 		    return "Ticket reopened successfully";
 		}
+	  
+	  
+	  @Transactional
+	  public String mergeTickets(
+	          Long sourceTicketId,
+	          Long targetTicketId) {
+
+	      if (sourceTicketId.equals(targetTicketId)) {
+	          throw new RuntimeException(
+	                  "Cannot merge same ticket");
+	      }
+
+	      SupportTicket source =
+	              ticketRepo.findById(sourceTicketId)
+	                      .orElseThrow(() ->
+	                              new RuntimeException(
+	                                      "Source ticket not found"));
+
+	      SupportTicket target =
+	              ticketRepo.findById(targetTicketId)
+	                      .orElseThrow(() ->
+	                              new RuntimeException(
+	                                      "Target ticket not found"));
+
+	      if (source.getReplies() != null) {
+
+	          for (SupportTicketReply reply :
+	                  source.getReplies()) {
+
+	              reply.setTicket(target);
+
+	              target.getReplies().add(reply);
+	          }
+	      }
+
+	      source.setMerged(true);
+
+	      source.setMergedInto(target);
+
+	      source.setStatus(
+	              TicketStatus.MERGED
+	      );
+
+	      ticketRepo.save(source);
+	      
+	      ticketRepo.save(target);
+	      
+	      ticketRepo.delete(source);
+	      return "Tickets merged successfully";
+	  }
 }

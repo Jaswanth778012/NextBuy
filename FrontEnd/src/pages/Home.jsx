@@ -1,60 +1,60 @@
 import React from "react";
-
-import { useNavigate }
-from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import FestivalBanner from "../components/adminFestival/FestivalBanner";
+import "../styles/Home.css";
 
 function Home() {
-
   const navigate = useNavigate();
 
-  // CHECK TOKEN
-  const token =
-    localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-  // LOGIN BUTTON
   const handleLogin = () => {
-
     navigate("/login");
   };
 
-  // LOGOUT BUTTON
   const handleLogout = () => {
-
     localStorage.removeItem("token");
-
     localStorage.removeItem("role");
-
     navigate("/login");
   };
 
   return (
-
     <div className="home-container">
 
-      <h1>
-        Welcome to Ecommerce 🛍️
-      </h1>
+      <div className="home-header">
 
-      {/* IF NOT LOGGED IN */}
-      {!token ? (
+        <h1>Welcome to Ecommerce 🛍️</h1>
 
-        <button
-          className="auth-btn"
-          onClick={handleLogin}
-        >
-          Login
-        </button>
+        <p className="home-subtitle">
+          Discover amazing products, exclusive offers,
+          and festival special deals crafted just for you.
+        </p>
 
-      ) : (
+        {!token ? (
+          <button
+            className="auth-btn"
+            onClick={handleLogin}
+          >
+            Login
+          </button>
+        ) : (
+          <button
+            className="auth-btn"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        )}
 
-        /* IF LOGGED IN */
-        <button
-          className="auth-btn"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
+      </div>
 
+      {/* FESTIVAL BANNER */}
+      
+      {token && (
+        <div className="festival-banner-wrapper">
+          <h1>FESTIVAL BANNER</h1>
+          <FestivalBanner />
+        </div>
       )}
 
     </div>
