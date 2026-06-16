@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.nextbuy.demo.entity.Product;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,7 @@ public class FestivalBannerRequestDto {
 	    private Boolean active;
 	    private List<String> categories;
 	    private List<String> subCategories;
+	    private List<Long> productIds;
 
 	    
 	    private LocalDateTime createdAt;

@@ -53,6 +53,12 @@ public class SupportTicket {
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;
+    
+    @ManyToOne
+    @JoinColumn(name = "merged_into_ticket_id")
+    private SupportTicket mergedInto;
+
+    private boolean merged;
 
     @OneToMany(mappedBy = "ticket",
             cascade = CascadeType.ALL,

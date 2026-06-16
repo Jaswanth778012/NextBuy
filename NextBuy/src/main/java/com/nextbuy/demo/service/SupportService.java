@@ -17,6 +17,7 @@ import com.nextbuy.demo.repository.SupportTicketReplyRepository;
 import com.nextbuy.demo.repository.SupportTicketRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -248,4 +249,33 @@ public class SupportService {
 
 		    return "Ticket reopened successfully";
 		}
+	  
+	  
+	  @Transactional
+	  public String mergeTickets(
+	          Long sourceTicketId,
+	          Long targetTicketId) {
+
+	      if(sourceTicketId.equals(targetTicketId))
+	          throw new RuntimeException(
+	                  "Cannot merge same ticket"
+	          );
+
+	      SupportTicket source =
+	              ticketRepo.findById(sourceTicketId)
+	                      .orElseThrow();
+
+	      SupportTicket target =
+	              ticketRepo.findById(targetTicketId)
+	                      .orElseThrow();
+
+	      source.setMerged(true);
+	      source.setMergedInto(target);
+
+	      source.setStatus(TicketStatus.MERGED);
+
+	      ticketRepo.save(source);
+
+	      return "Tickets merged successfully";
+	  }
 }

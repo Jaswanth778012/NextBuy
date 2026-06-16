@@ -22,11 +22,11 @@ import com.nextbuy.demo.repository.ProductRepository;
 
 @Service
 public class FestivalBannerService {
-	@Autowired
-	private RestTemplate restTemplate;
+
     private final FestivalBannerRepository fsRepo;
     private final CloudinaryService cloudinaryService;
     private final ProductRepository productRepo;
+    
     public FestivalBannerService(
             FestivalBannerRepository fsRepo,
             CloudinaryService cloudinaryService,
@@ -61,9 +61,17 @@ public class FestivalBannerService {
         banner.setPriority(fsdto.getPriority() == null ? 1 : fsdto.getPriority());
         banner.setActive(fsdto.getActive() == null || fsdto.getActive());
         banner.setCategories(fsdto.getCategories());
-       
-        
         banner.setSubCategories(fsdto.getSubCategories()); 
+        
+
+if (fsdto.getProductIds() != null &&
+    !fsdto.getProductIds().isEmpty()) {
+
+    List<Product> products =
+            productRepo.findAllById(fsdto.getProductIds());
+
+    banner.setProducts(products);
+}
         
         fsRepo.save(banner);
 
@@ -107,38 +115,49 @@ public class FestivalBannerService {
 
         LocalDate today = LocalDate.now();
 
-      
-        if (!today.isBefore(banner.getEndDate())) {
+        // Auto-disable expired banner
+        if (today.isAfter(banner.getEndDate())) {
             banner.setActive(false);
             fsRepo.save(banner);
         }
 
-        
+        // Check active status
         if (!Boolean.TRUE.equals(banner.getActive())) {
             throw new RuntimeException("Banner is not active");
         }
 
-        
-        ProductSearchRequestDTO request = new ProductSearchRequestDTO();
+        // If specific products are assigned, return them directly
+        if (banner.getProducts() != null &&
+            !banner.getProducts().isEmpty()) {
 
-        request.setCategories(banner.getCategories());
-        request.setSubCategories(banner.getSubCategories());
-       
-        
-        ResponseEntity<Product[]> response =
-                restTemplate.postForEntity(
-                        "http://localhost:9090/festival-banner/BannerProducts",
-                        request,
-                        Product[].class
-                );
-
-        Product[] productArray = response.getBody();
-
-        if (productArray == null || productArray.length == 0) {
-            return Collections.emptyList();
+            return banner.getProducts();
         }
+        
+        System.out.println("Categories = " + banner.getCategories());
+        System.out.println("SubCategories = " + banner.getSubCategories());
 
-        return Arrays.asList(productArray);
+        System.out.println(
+            banner.getCategories().getClass().getName()
+        );
+
+        // Otherwise search by category/subcategory
+        List<String> categories =
+                banner.getCategories() == null
+                        ? null
+                        : List.copyOf(banner.getCategories());
+
+        List<String> subCategories =
+                banner.getSubCategories() == null
+                        ? null
+                        : List.copyOf(banner.getSubCategories());
+
+        List<Product> products = productRepo.multisearchProducts(
+                categories,
+                subCategories
+        );
+        return products == null
+                ? Collections.emptyList()
+                : products;
     }
     
 
@@ -168,6 +187,13 @@ public class FestivalBannerService {
         banner.setCategories(fsdto.getCategories());
         banner.setSubCategories(fsdto.getSubCategories()); 
         
+        if (fsdto.getProductIds() != null) {
+
+            List<Product> products =
+                    productRepo.findAllById(fsdto.getProductIds());
+
+            banner.setProducts(products);
+        }
         fsRepo.save(banner);
 
         return "Festival banner updated successfully";
@@ -204,6 +230,12 @@ public class FestivalBannerService {
 	
     public List<Product> searchProducts(ProductSearchRequestDTO request) {
 
+    	    if (request.getProductIds() != null &&
+    	        !request.getProductIds().isEmpty()) {
+
+    	        return productRepo.findAllById(request.getProductIds());
+    	    }
+
         return productRepo.multisearchProducts(
                 request.getCategories(),
                 request.getSubCategories()
@@ -226,6 +258,8 @@ public class FestivalBannerService {
         dto.setPriority(banner.getPriority());
         dto.setCategories(banner.getCategories());
         dto.setSubCategories(banner.getSubCategories());
+        
+        dto.setProducts(banner.getProducts());
         
         dto.setActive(banner.getActive());
         dto.setCreatedAt(banner.getCreatedAt());
