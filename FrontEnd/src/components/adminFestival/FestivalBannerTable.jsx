@@ -60,19 +60,21 @@ function FestivalBannerTable({
                     {banner.title}
                   </td>
 
-                 <td>{JSON.stringify(banner.categories)}</td>
+                 <td>
+  {banner.categories?.join(", ") || "-"}
+</td>
 
-                  <td>{JSON.stringify(banner.subCategories)}</td>
+<td>
+  {banner.subCategories?.join(", ") || "-"}
+</td>
 
-                  <td>
-                    {banner.Product ? (
-                      <span className="festival-product-badge">
-                        {banner.Product}
-                      </span>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
+                 <td>
+  {banner.products?.length > 0
+    ? banner.products
+        .map((p) => p.name)
+        .join(", ")
+    : "-"}
+</td>
 
                   <td>
                     {banner.startDate}

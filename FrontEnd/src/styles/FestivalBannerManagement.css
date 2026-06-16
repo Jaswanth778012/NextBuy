@@ -441,8 +441,9 @@
 
 .festival-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 18px;
+  align-items: start;
 }
 
 .festival-form input,
@@ -489,6 +490,7 @@
 }
 
 .dark-mode .festival-search-box input,
+.dark-mode .festival-form h4,
 .dark-mode .festival-form input,
 .dark-mode .festival-form select,
 .dark-mode .festival-pagination-left select  {
@@ -526,6 +528,8 @@
   box-shadow:
     0 10px 30px rgba(59,130,246,0.25);
 }
+
+
 /* =========================================
    ANIMATIONS
 ========================================= */
@@ -988,3 +992,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .dark-mode .form-group label {
   color: #ffffff;
 }
+
