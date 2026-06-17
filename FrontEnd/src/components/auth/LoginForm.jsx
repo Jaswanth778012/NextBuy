@@ -1,59 +1,70 @@
 import React, { useState } from "react";
-import "../../styles/LoginIcon.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { FaRotateRight } from "react-icons/fa6";
-import { GiThink } from "react-icons/gi";
-
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { GiThink } from "react-icons/gi";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-
 import { loginUser } from "../../services/authService";
+import { notifyAuthChange } from "../../hooks/useAuth";
+import "../../styles/LoginIcon.css";
 
 function LoginForm({ setShowForgot }) {
   const navigate = useNavigate();
-
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const [password, setPassword] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!username.trim() || !password.trim()) {
+      toast.error("Please enter username and password");
+      return;
+    }
 
     setLoading(true);
 
     try {
       const response = await loginUser({
-        username,
-        password,
+        username: username.trim(),
+        password: password.trim(),
       });
 
-      const role = response.data.role;
+      const data = response.data;
+      const role = data.role;
 
-      localStorage.setItem("token", response.data.token);
+      // ✅ Store token
+      localStorage.setItem("token", data.token);
 
+      // ✅ Store role
       localStorage.setItem("role", role);
 
-      // NAVIGATE FIRST
+      // ✅ CRITICAL FIX: Store user object so useAuth.js works
+      const userObj = data.user || {
+        username: data.username || username,
+        role: role,
+        email: data.email,
+        name: data.name || data.username || username,
+      };
+      localStorage.setItem("user", JSON.stringify(userObj));
+
+      // ✅ Notify all auth listeners (Header, etc.)
+      notifyAuthChange();
+
+      toast.success("Login successful!");
+
+      // Navigate based on role
       if (role === "ADMIN") {
-        navigate("/admin/dashboard", {
-          state: {
-            loginSuccess: true,
-          },
-        });
+        navigate("/admin/dashboard", { replace: true });
       } else {
-        navigate("/", {
-          state: {
-            loginSuccess: true,
-          },
-        });
+        navigate("/", { replace: true });
       }
+
     } catch (error) {
-      toast.error("Invalid Credentials");
+      console.error("Login error:", error);
+      toast.error(error?.response?.data?.message || "Invalid Credentials");
     } finally {
       setLoading(false);
     }
@@ -62,7 +73,6 @@ function LoginForm({ setShowForgot }) {
   return (
     <>
       <h2 className="login-title">Shop Smarter With NextMart</h2>
-
       <p className="login-subtext">Sign in to continue your account</p>
 
       <form onSubmit={handleLogin}>
@@ -74,20 +84,22 @@ function LoginForm({ setShowForgot }) {
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
+            autoComplete="username"
           />
         </div>
+
         <div className="password-wrapper">
           <div className="input-box">
             <RiLockPasswordFill className="input-icon" />
             <input
-              className="
-              login-input
-              password-input
-            "
+              className="login-input password-input"
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
             />
           </div>
           <span
@@ -108,6 +120,7 @@ function LoginForm({ setShowForgot }) {
             "Login →"
           )}
         </button>
+
         <div className="input-boxx">
           <GiThink className="input-iconn" />
           <button

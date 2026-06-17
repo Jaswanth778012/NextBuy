@@ -599,6 +599,22 @@
 /* =========================================
    IMAGE PREVIEW
 ========================================= */
+.product-images-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 28px;
+
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.3);
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.08);
+}
 
 .product-preview-image {
   width: 180px;

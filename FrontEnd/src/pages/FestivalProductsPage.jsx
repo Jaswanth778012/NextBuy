@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "../styles/FestivalProducts.css";
 
 function FestivalProductsPage() {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState(null);
   const [wishlist, setWishlist] = useState([]);
 
-  // ✅ banner from navigation state
   const bannerImage = location.state?.bannerImage;
   const bannerTitle = location.state?.bannerTitle;
 
@@ -80,40 +80,36 @@ function FestivalProductsPage() {
   };
 
   return (
-    <div className="festival-page">
-
-     
+    <div className="fp-page">
 
       {/* HERO */}
-      <div className="festival-hero">
+      <div className="fp-hero">
         <h1>🎉 Festival Special Sale</h1>
         <p>
           Celebrate this festive season with exclusive discounts,
           limited offers, and handpicked products just for you.
         </p>
       </div>
-        {/* ✅ BANNER HEADER */}
+
+      {/* BANNER */}
       {bannerImage && (
-        <div className="selected-banner">
+        <div className="fp-selected-banner">
           <img src={bannerImage} alt="banner" />
-          
         </div>
       )}
-      <h2 className="title">Festival Products</h2>
+
+      <h2 className="fp-title">Festival Products</h2>
 
       {/* GRID */}
-      <div className="grid">
+      <div className="fp-grid">
         {products.map((p) => (
-          <div className="card" key={p.id}>
+          <div className="fp-card" key={p.id}>
 
             {/* WISHLIST */}
             <div
-              className="wishlist"
+              className="fp-wishlist"
               onClick={() => toggleWishlist(p)}
               style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
                 fontSize: "18px",
                 cursor: "pointer",
               }}
@@ -121,33 +117,38 @@ function FestivalProductsPage() {
               {isWishlisted(p.id) ? "❤️" : "🤍"}
             </div>
 
-            {/* IMAGE */}
+            {/* IMAGE (CLICK TO OPEN DETAILS PAGE) */}
             <img
-              src={p.imageUrl || "https://via.placeholder.com/200"}
-              className="img"
+              src={p.imageUrls[0] || "https://via.placeholder.com/200"}
+              className="fp-img"
               alt={p.name}
+              
+             
             />
 
             {/* NAME */}
-            <div className="name">{p.name}</div>
+            <div className="fp-name">{p.name}</div>
 
             {/* STARS */}
-            <div className="stars">
+            <div className="fp-stars">
               {renderStars(p.averageRating)}
             </div>
 
             {/* PRICE ROW */}
-            <div className="price-row">
-              <span className="final-price">₹{p.finalPrice}</span>
-              <span className="mrp-price">₹{p.mrp_price}</span>
-              <span className="offer-price">
+            <div className="fp-price-row">
+              <span className="fp-final-price">₹{p.finalPrice}</span>
+              <span className="fp-mrp-price">₹{p.mrp_price}</span>
+              <span className="fp-offer-price">
                 {p.discountPercentage}% OFF
               </span>
             </div>
 
             {/* ACTIONS */}
-            <div className="actions">
-              <button className="btn" onClick={() => addToCart(p)}>
+            <div className="fp-actions">
+              <button
+                className="fp-btn"
+                onClick={() => addToCart(p)}
+              >
                 Add to Cart
               </button>
             </div>

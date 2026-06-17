@@ -18,6 +18,7 @@ function FestivalBannerTable({
               <th>Category</th>
               <th>Sub Category</th>
               <th>Product</th>
+              <th>Description</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th>Priority</th>
@@ -30,7 +31,7 @@ function FestivalBannerTable({
             {banners.length === 0 ? (
               <tr>
                 <td
-                  colSpan="12"
+                  colSpan="13"
                   className="festival-empty"
                 >
                   No Festival Banners Found
@@ -74,6 +75,10 @@ function FestivalBannerTable({
         .map((p) => p.name)
         .join(", ")
     : "-"}
+</td>
+
+<td className="festival-description-cell">
+  {banner.description || "-"}
 </td>
 
                   <td>

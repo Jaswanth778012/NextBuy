@@ -2,7 +2,7 @@
    FESTIVAL PRODUCTS PAGE
 ========================================= */
 
-.festival-page {
+.fp-page {
   padding: 30px;
 
   min-height: 100vh;
@@ -21,7 +21,7 @@
    HERO SECTION
 ========================================= */
 
-.festival-hero {
+.fp-hero {
   position: relative;
 
   overflow: hidden;
@@ -41,7 +41,7 @@
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
 }
 
-.festival-hero::before {
+.fp-hero::before {
   content: "";
 
   position: absolute;
@@ -57,7 +57,7 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-.festival-hero::after {
+.fp-hero::after {
   content: "";
 
   position: absolute;
@@ -73,7 +73,7 @@
   background: rgba(73, 166, 248, 0.12);
 }
 
-.festival-hero h1 {
+.fp-hero h1 {
   position: relative;
   z-index: 2;
 
@@ -83,7 +83,7 @@
   color: #222;
 }
 
-.festival-hero p {
+.fp-hero p {
   position: relative;
   z-index: 2;
 
@@ -100,7 +100,7 @@
    TITLE
 ========================================= */
 
-.title {
+.fp-title {
   font-size: 28px;
   font-weight: 800;
 
@@ -110,20 +110,10 @@
 }
 
 /* =========================================
-   GRID
-========================================= */
-
-/* =========================================
-   GRID
-========================================= */
-
-
-
-/* =========================================
    PRODUCT CARD
 ========================================= */
 
-.card {
+.fp-card {
   position: relative;
 
   display: flex;
@@ -144,7 +134,7 @@
   transition: 0.3s ease;
 }
 
-.card:hover {
+.fp-card:hover {
   transform: translateY(-6px);
 
   box-shadow: 0 18px 35px rgba(61, 116, 224, 0.18);
@@ -154,7 +144,7 @@
    IMAGE
 ========================================= */
 
-.img {
+.fp-img {
   width: 100%;
   height: 180px;
 
@@ -174,7 +164,7 @@
    PRODUCT NAME
 ========================================= */
 
-.name {
+.fp-name {
   padding: 12px 14px 6px;
 
   font-size: 14px;
@@ -191,13 +181,11 @@
   -webkit-box-orient: vertical;
 }
 
-
-
 /* =========================================
    RATING
 ========================================= */
 
-.stars {
+.fp-stars {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -210,59 +198,47 @@
 }
 
 /* =========================================
-   PRICE
+   PRICE ROW
 ========================================= */
 
-.price {
-  padding: 8px 14px;
-
+.fp-price-row {
   display: flex;
   align-items: center;
   gap: 8px;
 
+  padding: 8px 14px;
+}
+
+.fp-final-price {
   font-size: 20px;
   font-weight: 800;
-
   color: #3d74e0;
 }
 
-.price span {
+.fp-mrp-price {
   font-size: 13px;
   color: #94a3b8;
+
   text-decoration: line-through;
 }
 
-/* =========================================
-   DISCOUNT
-========================================= */
-
-.discount {
-  margin-left: 14px;
-
-  width: fit-content;
-
-  padding: 5px 10px;
-
-  border-radius: 30px;
-
-  font-size: 11px;
+.fp-offer-price {
+  font-size: 12px;
   font-weight: 700;
 
   color: #16a34a;
-
-  background: rgba(34,197,94,.12);
 }
 
 /* =========================================
    ACTION BUTTONS
 ========================================= */
 
-.actions {
+.fp-actions {
   padding: 14px;
   margin-top: auto;
 }
 
-.btn {
+.fp-btn {
   width: 100%;
 
   border: none;
@@ -287,7 +263,7 @@
   transition: .3s ease;
 }
 
-.btn:hover {
+.fp-btn:hover {
   transform: translateY(-2px);
 }
 
@@ -295,7 +271,7 @@
    WISHLIST
 ========================================= */
 
-.wishlist {
+.fp-wishlist {
   position: absolute !important;
 
   top: 10px !important;
@@ -320,89 +296,52 @@
 }
 
 /* =========================================
-   RESPONSIVE
+   GRID
 ========================================= */
 
+.fp-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px;
+}
+
 @media(max-width:1400px) {
-  .grid {
+  .fp-grid {
     grid-template-columns: repeat(4,1fr);
   }
 }
 
 @media(max-width:1100px) {
-  .grid {
+  .fp-grid {
     grid-template-columns: repeat(3,1fr);
   }
 }
 
 @media(max-width:768px) {
-  .grid {
+  .fp-grid {
     grid-template-columns: repeat(2,1fr);
   }
 }
 
 @media(max-width:500px) {
-  .grid {
+  .fp-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.price-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  padding: 8px 14px;
-}
-
-.final-price {
-  font-size: 20px;
-  font-weight: 800;
-  color: #3d74e0;
-}
-
-.mrp-price {
-  font-size: 13px;
-  color: #94a3b8;
-
-  text-decoration: line-through;
-}
-
-.offer-price {
-  font-size: 12px;
-  font-weight: 700;
-
-  color: #16a34a;
-}
-
 /* =========================================
-   SELECTED BANNER (TOP OF PRODUCTS PAGE)
+   SELECTED BANNER
 ========================================= */
 
-.selected-banner {
+.fp-selected-banner {
   width: 100%;
   margin: 15px 0 25px;
   border-radius: 18px;
 
-  /* IMPORTANT: allow shadow to show */
   overflow: visible;
 }
 
-.selected-banner img {
-  width: 100%;
-  height: 420px;
-
-  object-fit: cover;
-  display: block;
-
-  border-radius: 18px;
-
-  /* ✅ real visible shadow */
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-}
-
-/* BANNER IMAGE */
-.selected-banner img {
+.fp-selected-banner img {
   width: 100%;
   height: 420px;
 
@@ -412,70 +351,12 @@
   transform: scale(1);
   transition: transform 0.6s ease;
 
-  /* ✅ only shadow */
-  border: none;
-  box-shadow: 0 35px 40px rgba(0, 0, 0, 0.25);
-
   border-radius: 18px;
+
+  box-shadow: 0 35px 40px rgba(0, 0, 0, 0.25);
 }
 
-/* hover zoom effect */
-.selected-banner img:hover {
+.fp-selected-banner img:hover {
   transform: scale(1.02);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
-}
-
-/* TITLE ON BANNER */
-.selected-banner h2 {
-  position: absolute;
-  bottom: 15px;
-  left: 20px;
-
-  margin: 0;
-
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
-
-  background: rgba(0, 0, 0, 0.4);
-  padding: 8px 14px;
-  border-radius: 10px;
-
-  backdrop-filter: blur(6px);
-}
-
-/* ANIMATION */
-@keyframes bannerFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.grid {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 18px;
-}
-
-@media (max-width: 1200px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 500px) {
-  .grid {
-    grid-template-columns: 1fr !important;
-  }
 }
