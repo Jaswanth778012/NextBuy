@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {FaTicketAlt} from "react-icons/fa"
+import { FaTicketAlt } from "react-icons/fa";
 
 import SupportStatsCards from "../components/adminSupport/SupportStatsCards";
 import SupportSearchBar from "../components/adminSupport/SupportSearchBar";
@@ -19,27 +19,41 @@ import {
 import "../styles/AdminSupportDashboard.css";
 
 function SupportDashboardAdmin() {
-  const [tickets, setTickets] = useState([]);
-  const [filteredTickets, setFilteredTickets] = useState([]);
 
-  const [selectedTicket, setSelectedTicket] =
+  const [tickets, setTickets] =
+    useState([]);
+
+  const [filteredTickets,
+    setFilteredTickets] =
+    useState([]);
+
+  const [selectedTicket,
+    setSelectedTicket] =
     useState(null);
 
-  const [mergeTicket, setMergeTicket] =
+  const [mergeTicket,
+    setMergeTicket] =
     useState(null);
 
-  const [stats, setStats] = useState(null);
+  const [stats,
+    setStats] =
+    useState(null);
 
-  const [loading, setLoading] =
+  const [loading,
+    setLoading] =
     useState(true);
 
-  const [search, setSearch] =
+  const [search,
+    setSearch] =
     useState("");
 
-  const [page, setPage] =
+  const [page,
+    setPage] =
     useState(1);
 
-  const rowsPerPage = 10;
+  const [ticketsPerPage,
+    setTicketsPerPage] =
+    useState(10);
 
   useEffect(() => {
     fetchData();
@@ -49,68 +63,91 @@ function SupportDashboardAdmin() {
     handleSearch();
   }, [search, tickets]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [ticketsPerPage]);
+
   const fetchData = async () => {
+
     try {
+
       setLoading(true);
 
-      const [ticketRes, statsRes] =
-        await Promise.all([
-          getAllTickets(),
-          getSupportStats(),
-        ]);
+      const [
+        ticketRes,
+        statsRes,
+      ] = await Promise.all([
+        getAllTickets(),
+        getSupportStats(),
+      ]);
 
       setTickets(ticketRes.data);
       setFilteredTickets(ticketRes.data);
 
       setStats(statsRes.data);
+
     } catch (error) {
+
       console.error(error);
+
     } finally {
+
       setLoading(false);
+
     }
   };
 
   const handleSearch = () => {
+
     if (!search.trim()) {
+
       setFilteredTickets(tickets);
       return;
+
     }
 
     const keyword =
       search.toLowerCase();
 
-    const result = tickets.filter(
-      (ticket) =>
-        ticket.id
-          ?.toString()
-          .includes(keyword) ||
-        ticket.subject
-          ?.toLowerCase()
-          .includes(keyword) ||
-        ticket.status
-          ?.toLowerCase()
-          .includes(keyword) ||
-        ticket.category
-          ?.toLowerCase()
-          .includes(keyword)
-    );
+    const result =
+      tickets.filter(
+        (ticket) =>
+          ticket.id
+            ?.toString()
+            .includes(keyword) ||
+
+          ticket.subject
+            ?.toLowerCase()
+            .includes(keyword) ||
+
+          ticket.status
+            ?.toLowerCase()
+            .includes(keyword) ||
+
+          ticket.category
+            ?.toLowerCase()
+            .includes(keyword)
+      );
 
     setFilteredTickets(result);
     setPage(1);
   };
 
-  const totalPages = Math.ceil(
-    filteredTickets.length /
-      rowsPerPage
-  );
+  const totalPages =
+    Math.ceil(
+      filteredTickets.length /
+      ticketsPerPage
+    );
 
   const startIndex =
-    (page - 1) * rowsPerPage;
+    (page - 1) *
+    ticketsPerPage;
 
   const paginatedTickets =
     filteredTickets.slice(
       startIndex,
-      startIndex + rowsPerPage
+      startIndex +
+        ticketsPerPage
     );
 
   if (loading) {
@@ -118,94 +155,131 @@ function SupportDashboardAdmin() {
   }
 
   return (
-  <div className="support-hub-page">
+    <div className="support-hub-page">
 
-    {/* HEADER */}
-    <div className="support-hub-header">
-      <div>
-        <h1>Support Center</h1>
+      {/* HEADER */}
+      <div className="support-hub-header">
 
-        <p>
-          Manage customer support tickets,
-          replies and resolutions.
-        </p>
-      </div>
+        <div>
 
-      <div className="support-header-actions">
-        <div className="support-total-card">
-          <FaTicketAlt />
+          <h1>
+            Support Center
+          </h1>
 
-          <span>
-            {stats?.total ?? 0} Tickets
-          </span>
+          <p>
+            Manage customer support
+            tickets, replies and
+            resolutions.
+          </p>
+
         </div>
+
+        <div className="support-header-actions">
+
+          <div className="support-total-card">
+
+            <FaTicketAlt />
+
+            <span>
+              {stats?.total ?? 0}
+              {" "}
+              Tickets
+            </span>
+
+          </div>
+
+        </div>
+
       </div>
+
+      {/* STATS */}
+      <SupportStatsCards
+        stats={stats}
+      />
+
+      {/* SEARCH */}
+      <SupportSearchBar
+        value={search}
+        onChange={setSearch}
+      />
+
+      {/* TABLE */}
+      {filteredTickets.length === 0 ? (
+
+        <EmptyTickets
+          title="No Support Tickets"
+          description="No tickets match the current search or filter criteria."
+        />
+
+      ) : (
+
+        <>
+          <SupportTicketTable
+            tickets={
+              paginatedTickets
+            }
+            refreshTickets={
+              fetchData
+            }
+            setSelectedTicket={
+              setSelectedTicket
+            }
+            setMergeTicket={
+              setMergeTicket
+            }
+          />
+
+          <SupportPagination
+            currentPage={page}
+            totalPages={
+              totalPages
+            }
+            ticketsPerPage={
+              ticketsPerPage
+            }
+            setTicketsPerPage={
+              setTicketsPerPage
+            }
+            setCurrentPage={
+              setPage
+            }
+          />
+        </>
+
+      )}
+
+      {/* RESOLVE MODAL */}
+      {selectedTicket && (
+        <ResolveTicketModal
+          ticket={selectedTicket}
+          onClose={() =>
+            setSelectedTicket(
+              null
+            )
+          }
+          refreshTickets={
+            fetchData
+          }
+        />
+      )}
+
+      {/* MERGE MODAL */}
+      {mergeTicket && (
+        <MergeTicketModal
+          ticket={mergeTicket}
+          onClose={() =>
+            setMergeTicket(
+              null
+            )
+          }
+          refreshTickets={
+            fetchData
+          }
+        />
+      )}
+
     </div>
-
-    {/* STATS */}
-    <SupportStatsCards stats={stats} />
-
-    {/* SEARCH */}
-    <SupportSearchBar
-      value={search}
-      onChange={setSearch}
-    />
-
-    {/* TABLE / EMPTY STATE */}
-    {filteredTickets.length === 0 ? (
-      <EmptyTickets
-        title="No Support Tickets"
-        description="No tickets match the current search or filter criteria."
-      />
-    ) : (
-      <>
-        <SupportTicketTable
-          tickets={paginatedTickets}
-          refreshTickets={fetchData}
-          setSelectedTicket={setSelectedTicket}
-          setMergeTicket={setMergeTicket}
-        />
-
-        <SupportPagination
-          page={page}
-          totalPages={totalPages}
-          onPrev={() =>
-            setPage((prev) =>
-              Math.max(prev - 1, 1)
-            )
-          }
-          onNext={() =>
-            setPage((prev) =>
-              Math.min(prev + 1, totalPages)
-            )
-          }
-        />
-      </>
-    )}
-
-    {/* RESOLVE MODAL */}
-    {selectedTicket && (
-      <ResolveTicketModal
-        ticket={selectedTicket}
-        onClose={() =>
-          setSelectedTicket(null)
-        }
-        refreshTickets={fetchData}
-      />
-    )}
-
-    {/* MERGE MODAL */}
-    {mergeTicket && (
-      <MergeTicketModal
-        ticket={mergeTicket}
-        onClose={() =>
-          setMergeTicket(null)
-        }
-        refreshTickets={fetchData}
-      />
-    )}
-  </div>
-);
+  );
 }
 
 export default SupportDashboardAdmin;

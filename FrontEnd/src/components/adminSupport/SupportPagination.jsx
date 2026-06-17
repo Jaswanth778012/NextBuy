@@ -1,48 +1,76 @@
-import {
-  FaChevronLeft,
-  FaChevronRight,
-} from "react-icons/fa";
-
+import React from "react";
 
 function SupportPagination({
-  page,
+  currentPage,
   totalPages,
-  onPrev,
-  onNext,
+  ticketsPerPage,
+  setTicketsPerPage,
+  setCurrentPage,
 }) {
-  if (totalPages <= 1) {
-    return null;
-  }
-
   return (
-    <div className="support-paging-container">
+    <div className="support-pagination-container">
 
-      <div className="support-paging-info">
-        Page {page} of {totalPages}
+      <div className="support-pagination-left">
+
+        <span>
+          Show
+        </span>
+
+        <select
+          value={ticketsPerPage}
+          onChange={(e) =>
+            setTicketsPerPage(
+              Number(e.target.value)
+            )
+          }
+        >
+          <option value={10}>
+            10
+          </option>
+
+          <option value={20}>
+            20
+          </option>
+
+          <option value={50}>
+            50
+          </option>
+        </select>
+
       </div>
 
-      <div className="support-paging-actions">
+      <div className="support-pagination-right">
 
         <button
-          onClick={onPrev}
-          disabled={page === 1}
-          className="support-page-control"
+          className="support-page-btn"
+          disabled={currentPage === 1}
+          onClick={() =>
+            setCurrentPage(
+              currentPage - 1
+            )
+          }
         >
-          <FaChevronLeft />
           Previous
         </button>
 
-        <div className="support-page-current">
-          {page}
-        </div>
+        <span className="support-page-indicator">
+          {currentPage}
+          {" / "}
+          {totalPages}
+        </span>
 
         <button
-          onClick={onNext}
-          disabled={page === totalPages}
-          className="support-page-control"
+          className="support-page-btn"
+          disabled={
+            currentPage === totalPages
+          }
+          onClick={() =>
+            setCurrentPage(
+              currentPage + 1
+            )
+          }
         >
           Next
-          <FaChevronRight />
         </button>
 
       </div>
