@@ -2,6 +2,7 @@ package com.nextbuy.demo.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
@@ -31,7 +32,7 @@ public class ProductDTO {
 	
 	private Double mrp_price;
 	
-	private String imageUrl;
+	private List<String> imageUrls;
 	
 	private Category category;
 

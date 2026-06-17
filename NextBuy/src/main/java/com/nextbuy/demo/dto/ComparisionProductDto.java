@@ -1,5 +1,6 @@
 package com.nextbuy.demo.dto;
 
+import java.util.List;
 import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
@@ -15,7 +16,7 @@ public class ComparisionProductDto {
 
     private String slug;
 
-    private String imageUrl;
+    private List<String> imageUrls;
 
     private Double mrpPrice;
 

@@ -2,6 +2,7 @@ package com.nextbuy.demo.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.nextbuy.demo.enums.AlertStatus;
 import com.nextbuy.demo.enums.AlertType;
@@ -15,7 +16,7 @@ public class WishlistAlertResponseDto {
 
     private Long productId;
     private String productName;
-    private String productImageUrl;
+    private List<String> productImageUrl;
 
     private BigDecimal currentPrice;
     private BigDecimal originalPrice;

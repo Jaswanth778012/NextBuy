@@ -116,10 +116,12 @@ if (fsdto.getProductIds() != null &&
         LocalDate today = LocalDate.now();
 
         // Auto-disable expired banner
-        if (today.isAfter(banner.getEndDate())) {
-            banner.setActive(false);
-            fsRepo.save(banner);
-        }
+        if (today.isBefore(banner.getStartDate()) ||
+        	    today.isAfter(banner.getEndDate())) {
+
+        	    throw new RuntimeException(
+        	            "Banner is not currently available");
+        	}
 
         // Check active status
         if (!Boolean.TRUE.equals(banner.getActive())) {
@@ -260,8 +262,16 @@ if (fsdto.getProductIds() != null &&
         dto.setSubCategories(banner.getSubCategories());
         
         dto.setProducts(banner.getProducts());
-        
-        dto.setActive(banner.getActive());
+
+        LocalDate today = LocalDate.now();
+
+        boolean isActive =
+                Boolean.TRUE.equals(banner.getActive())
+                && !today.isBefore(banner.getStartDate())
+                && !today.isAfter(banner.getEndDate());
+
+        dto.setActive(isActive);
+
         dto.setCreatedAt(banner.getCreatedAt());
         dto.setUpdatedAt(banner.getUpdatedAt());
 

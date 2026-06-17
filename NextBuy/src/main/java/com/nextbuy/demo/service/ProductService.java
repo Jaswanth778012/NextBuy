@@ -37,7 +37,7 @@ public class ProductService {
 		this.notificationService = notificationService;
 	}
 
-	public String addProduct(ProductDTO Pdto, MultipartFile imageFile) {
+	public String addProduct(ProductDTO Pdto, List<MultipartFile> imageFiles) {
 		Product p = new Product();
 		if(productRepo.existsByNameAndBrand(Pdto.getName(),Pdto.getBrand() )) {
 			return "Product alredy existed !!!";
@@ -59,10 +59,15 @@ public class ProductService {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
     	}
     	p.setProductCondition(Pdto.getProductCondition());
-    	if(imageFile != null && !imageFile.isEmpty()) {
-			String imageUrl = cloudinaryService.uploadProductImage(imageFile);
-			p.setImageUrl(imageUrl);
-		}
+    	if(imageFiles != null &&
+    			   !imageFiles.isEmpty()) {
+
+    			    List<String> imageUrls =
+    			            cloudinaryService
+    			            .uploadProductImages(imageFiles);
+
+    			    p.setImageUrls(imageUrls);
+    			}
     
     	p.setAverageRating(0.0);
     	p.setTotalRating(0.0);
@@ -149,7 +154,7 @@ public class ProductService {
 	            .toList();
 	}
 	//UPDATEPRODUCT
-	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
+	public String updateProduct(Long id ,ProductDTO product, List<MultipartFile> imageFiles) {
 		
 		    Optional<Product> pr = productRepo.findById(id) ;
 		    if(pr.isEmpty()) {
@@ -171,10 +176,15 @@ public class ProductService {
     		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
     	}
     	
-    	if(imageFile != null && !imageFile.isEmpty()) {
-    		String imageUrl = cloudinaryService.uploadProductImage(imageFile);
-    		p.setImageUrl(imageUrl);
-    	}
+    	if(imageFiles != null &&
+    			   !imageFiles.isEmpty()) {
+
+    			    List<String> imageUrls =
+    			            cloudinaryService
+    			            .uploadProductImages(imageFiles);
+
+    			    p.setImageUrls(imageUrls);
+    			}
     	
     	
     	double mrp = product.getMrp_price();
@@ -337,7 +347,7 @@ public class ProductService {
 
 	        dto.setName(product.getName());
 	        dto.setSlug(product.getSlug());
-	        dto.setImageUrl(product.getImageUrl());
+	        dto.setImageUrls(product.getImageUrls());
 	        dto.setMrpPrice(product.getMrp_price());
 	        dto.setFinalPrice(product.getFinalPrice());
 	        dto.setAverageRating(product.getAverageRating());
@@ -410,7 +420,8 @@ public class ProductService {
 	        userDto.setPrice(product.getMrp_price());
 	        userDto.setDiscountPercentage(product.getDiscountPercentage());
 	        userDto.setProductStatus(product.getProductStatus());
-	        userDto.setImageUrl(product.getImageUrl());
+	        userDto.setImageUrls(
+	                product.getImageUrls());
 	        userDto .setAttributes(product.getAttributes());
 	        userDto.setAverageRating(product.getAverageRating());
 	        userDto.setBrand(product.getBrand());

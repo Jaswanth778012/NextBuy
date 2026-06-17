@@ -96,7 +96,7 @@ public class AdminStatsService {
 	        dto.setProductName(product.getName());
 	        dto.setCategory(product.getCategory());
 	        dto.setSubCategory(product.getSubCategory());
-	        dto.setImg(product.getImageUrl());
+	        dto.setImg(product.getImageUrls());
 	        dto.setTotalSold(totalSold);
 
 	        list.add(dto);
@@ -192,7 +192,7 @@ public class AdminStatsService {
 	   TopSellingProductDTO t = new  TopSellingProductDTO();
 	   t.setProductId(product.getId());
 	   t.setProductName(product.getName());
-	   t.setImg(product.getImageUrl());
+	   t.setImg(product.getImageUrls());
 	   t.setCategory(product.getCategory());
 	   t.setSubCategory(product.getSubCategory());
 	   t.setStockQuantity(product.getStockQuantity());

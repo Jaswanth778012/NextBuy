@@ -1,6 +1,7 @@
 package com.nextbuy.demo.dto;
 
 
+import java.util.List;
 import java.util.Map;
 
 import com.nextbuy.demo.entity.Brand;
@@ -30,7 +31,7 @@ public class UserResponceDTO {
 	
 	private Double price;
 	
-	private String imageUrl;
+	private List<String> imageUrls;
 	
 	private Double discountPercentage; 
 	
