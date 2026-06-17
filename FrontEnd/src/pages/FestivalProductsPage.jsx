@@ -119,7 +119,7 @@ function FestivalProductsPage() {
 
             {/* IMAGE (CLICK TO OPEN DETAILS PAGE) */}
             <img
-              src={p.imageUrl || "https://via.placeholder.com/200"}
+              src={p.imageUrls[0] || "https://via.placeholder.com/200"}
               className="fp-img"
               alt={p.name}
               

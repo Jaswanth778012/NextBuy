@@ -26,10 +26,7 @@ import AdminLayout from "./layout/AdminLayout";
 import SentEmails from "./pages/SentEmails";
 import ProductManagement from "./pages/ProductManagement";
 import UserProfile from "./pages/UserProfile";
-import ProductDetail from "./pages/ProductDetail";
 
-// LAYOUTS
-import AdminLayout from "./layout/AdminLayout";
 import Header from "./layout/Header.jsx";
 
 // ============ AUTH GUARD COMPONENTS ============
@@ -86,18 +83,11 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-
+        
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
 
-        {/* Protected User Routes */}
-        <Route path="/wishlist/alerts" element={
-          <ProtectedRoute>
-            <WishlistAlerts />
-          </ProtectedRoute>
-        } />
         <Route path="/profile" element={
           <ProtectedRoute>
             <UserProfile />

@@ -131,6 +131,8 @@
   padding: 30px;
 }
 
+
+
 /* =========================================
    TABLE WRAPPER
 ========================================= */
@@ -191,6 +193,21 @@
   background: rgba(59,130,246,0.05);
 }
 
+.festival-description {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-top: 8px;
+}
+
+.festival-description-cell {
+  max-width: 250px;
+  white-space: normal;
+  word-break: break-word;
+}
 /* =========================================
    THUMB
 ========================================= */

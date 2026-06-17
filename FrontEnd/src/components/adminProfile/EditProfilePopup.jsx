@@ -31,6 +31,8 @@ function EditProfilePopup({
   handleSave,
 
   setShowEditPopup,
+  
+  isSaving,
 
 }) {
 
@@ -202,11 +204,12 @@ function EditProfilePopup({
           </button>
 
           <button
-            className="save-btn"
-            onClick={handleSave}
-          >
-            Save
-          </button>
+  className="save-btn"
+  onClick={handleSave}
+  disabled={isSaving}
+>
+  {isSaving ? "Saving..." : "Save"}
+</button>
 
         </div>
 

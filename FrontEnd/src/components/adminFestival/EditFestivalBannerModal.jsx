@@ -29,7 +29,7 @@ const [formData, setFormData] = useState({
   festivalName: "",
   title: "",
   subtitle: "",
-  redirectUrl: "",
+  description: "",
   startDate: "",
   endDate: "",
   priority: "",
@@ -61,7 +61,7 @@ const [formData, setFormData] = useState({
   festivalName: banner.festivalName || "",
   title: banner.title || "",
   subtitle: banner.subtitle || "",
-  redirectUrl: banner.redirectUrl || "",
+  description: banner.description || "",
  startDate: banner.startDate
   ? banner.startDate.split("T")[0]
   : "",
@@ -184,7 +184,7 @@ const handleProductChange = (selectedOptions) => {
   festivalName: formData.festivalName,
   title: formData.title,
   subtitle: formData.subtitle,
-  redirectUrl: formData.redirectUrl,
+  description: formData.description,
   startDate: formData.startDate,
   endDate: formData.endDate,
   priority: formData.priority,
@@ -201,11 +201,17 @@ await updateFestivalBanner(
   image
 );
 
+toast.success("Festival banner updated successfully");
+
       await fetchBanners();
 
       setShowModal(false);
     } catch (error) {
       console.error("Update Banner Error", error);
+      toast.error(
+      error?.response?.data?.message ||
+      "Failed to update festival banner"
+    );
     } finally {
       setLoading(false);
     }
@@ -368,6 +374,19 @@ await updateFestivalBanner(
     label: product.name,
   }))}
   onChange={handleProductChange}
+/>
+
+<h4 style={{ marginTop: "15px" }}>
+  Description
+</h4>
+
+<textarea
+  name="description"
+  placeholder="Enter banner description..."
+  value={formData.description}
+  onChange={handleChange}
+  rows={4}
+  className="festival-description"
 />
 
           <label className="festival-checkbox">

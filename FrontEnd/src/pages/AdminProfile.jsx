@@ -44,6 +44,9 @@ function AdminProfile() {
     setProfile] =
     useState(null);
 
+    const [isSaving, setIsSaving] = useState(false);
+const [isVerifying, setIsVerifying] = useState(false);
+const [isChangingPassword, setIsChangingPassword] = useState(false);
   // =========================
   // POPUPS
   // =========================
@@ -221,6 +224,8 @@ useEffect(() => {
 
       try {
 
+        setIsSaving(true);
+
         const formData =
           new FormData();
 
@@ -286,6 +291,9 @@ useEffect(() => {
           "Profile Update Failed ❌"
         );
       }
+      finally {
+    setIsSaving(false);
+  }
   };
 
   // =========================
@@ -296,6 +304,8 @@ useEffect(() => {
     async () => {
 
       try {
+        
+        setIsVerifying(true);
 
         await changeAdminPassword(
 
@@ -317,7 +327,9 @@ useEffect(() => {
         toast.error(
           "Wrong Username or Password ❌"
         );
-      }
+      } finally {
+    setIsVerifying(false);
+  }
   };
 
   // =========================
@@ -343,6 +355,8 @@ useEffect(() => {
 
           return;
         }
+
+        setIsChangingPassword(true);
 
         await changeAdminPassword(
 
@@ -379,7 +393,9 @@ useEffect(() => {
         alert(
           "Password Update Failed ❌"
         );
-      }
+      } finally {
+    setIsChangingPassword(false);
+  }
   };
 
   // =========================
@@ -478,6 +494,8 @@ useEffect(() => {
           setShowEditPopup={
             setShowEditPopup
           }
+
+           isSaving={isSaving}
         />
       )}
 
@@ -506,6 +524,8 @@ useEffect(() => {
           setShowPasswordPopup={
             setShowPasswordPopup
           }
+          isVerifying={isVerifying}
+  isChangingPassword={isChangingPassword}
         />
       )}
 
