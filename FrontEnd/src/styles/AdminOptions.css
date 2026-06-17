@@ -1,18 +1,31 @@
 /* =========================
    ADMIN OPTIONS PAGE
 ========================= */
-
-
 .admin-options-page{
    
     min-height: 100vh;
 
-    padding: 45px;
+    padding: 1p5x;
+
+     width: 100%;
+  animation: fadeUp 0.35s ease;
 
     font-family: "Poppins", sans-serif;
 
    
     background: transparent;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .admin-options-page h1{
 

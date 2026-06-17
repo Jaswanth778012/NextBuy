@@ -16,7 +16,7 @@ export const viewAllProducts = () => {
 
 export const addProduct = (
   product,
-  image
+  images
 ) => {
 
   const formData =
@@ -33,10 +33,19 @@ export const addProduct = (
     )
   );
 
-  if (image) {
-    formData.append(
-      "image",
-      image
+  if (
+    images &&
+    images.length > 0
+  ) {
+
+    images.forEach(
+      (image) => {
+
+        formData.append(
+          "image",
+          image
+        );
+      }
     );
   }
 
@@ -59,7 +68,7 @@ export const addProduct = (
 export const updateProduct = (
   id,
   product,
-  image
+  images
 ) => {
 
   const formData =
@@ -76,12 +85,21 @@ export const updateProduct = (
     )
   );
 
-  if (image) {
-    formData.append(
-      "image",
-      image
-    );
-  }
+  if (
+  images &&
+  images.length > 0
+) {
+
+  images.forEach(
+    (image) => {
+
+      formData.append(
+        "image",
+        image
+      );
+    }
+  );
+}
 
   return API.patch(
     `/Product/updateProduct/${id}`,

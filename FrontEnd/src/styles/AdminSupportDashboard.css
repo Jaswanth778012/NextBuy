@@ -1,5 +1,19 @@
 .support-hub-page {
-  padding: 30px;
+  padding: 10px;
+  width: 100%;
+  animation: fadeUp 0.35s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .support-hub-header {
