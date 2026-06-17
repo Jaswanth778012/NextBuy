@@ -55,7 +55,7 @@ public class FestivalBannerService {
         banner.setFestivalName(fsdto.getFestivalName());
         banner.setTitle(fsdto.getTitle());
         banner.setSubtitle(fsdto.getSubtitle());
-        banner.setRedirectUrl(fsdto.getRedirectUrl());
+        banner.setDescription(fsdto.getDescription());
         banner.setStartDate(fsdto.getStartDate());
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? 1 : fsdto.getPriority());
@@ -144,12 +144,14 @@ if (fsdto.getProductIds() != null &&
 
         // Otherwise search by category/subcategory
         List<String> categories =
-                banner.getCategories() == null
+                banner.getCategories() == null ||
+                banner.getCategories().isEmpty()
                         ? null
                         : List.copyOf(banner.getCategories());
 
         List<String> subCategories =
-                banner.getSubCategories() == null
+                banner.getSubCategories() == null ||
+                banner.getSubCategories().isEmpty()
                         ? null
                         : List.copyOf(banner.getSubCategories());
 
@@ -181,7 +183,7 @@ if (fsdto.getProductIds() != null &&
         banner.setFestivalName(fsdto.getFestivalName());
         banner.setTitle(fsdto.getTitle());
         banner.setSubtitle(fsdto.getSubtitle());
-        banner.setRedirectUrl(fsdto.getRedirectUrl());
+        banner.setDescription(fsdto.getDescription());
         banner.setStartDate(fsdto.getStartDate());
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? banner.getPriority() : fsdto.getPriority());
@@ -238,11 +240,22 @@ if (fsdto.getProductIds() != null &&
     	        return productRepo.findAllById(request.getProductIds());
     	    }
 
-        return productRepo.multisearchProducts(
-                request.getCategories(),
-                request.getSubCategories()
-                
-        );
+    	    List<String> categories =
+    	            request.getCategories() == null ||
+    	            request.getCategories().isEmpty()
+    	                    ? null
+    	                    : request.getCategories();
+
+    	    List<String> subCategories =
+    	            request.getSubCategories() == null ||
+    	            request.getSubCategories().isEmpty()
+    	                    ? null
+    	                    : request.getSubCategories();
+
+    	    return productRepo.multisearchProducts(
+    	            categories,
+    	            subCategories
+    	    );
     }
     
     
@@ -254,7 +267,7 @@ if (fsdto.getProductIds() != null &&
         dto.setTitle(banner.getTitle());
         dto.setSubtitle(banner.getSubtitle());
         dto.setImageUrl(banner.getImageUrl());
-        dto.setRedirectUrl(banner.getRedirectUrl());
+        dto.setDescription(banner.getDescription());
         dto.setStartDate(banner.getStartDate());
         dto.setEndDate(banner.getEndDate());
         dto.setPriority(banner.getPriority());

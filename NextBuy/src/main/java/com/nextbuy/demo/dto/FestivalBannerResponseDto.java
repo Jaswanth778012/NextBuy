@@ -19,7 +19,7 @@ public class FestivalBannerResponseDto {
     private String title;
     private String subtitle;
     private String imageUrl;
-    private String redirectUrl;
+    private String description;
     
     private LocalDate startDate;
     private LocalDate endDate;
