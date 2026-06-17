@@ -20,7 +20,7 @@ import ConfirmDeleteModal from "../components/adminDelete/ConfirmDeleteModal";
 
 import AddBrandModal from "../components/adminBrand/AddBrandModal";
 import EditBrandModal from "../components/adminBrand/EditBrandModal";
-
+import BrandPagination from "../components/adminBrand/BrandPagination";
 import { toast } from "react-toastify";
 
 import "../styles/BrandManagement.css";
@@ -55,7 +55,9 @@ function BrandManagement() {
     setSelectedBrand] =
     useState(null);
 
-  const itemsPerPage = 10;
+  const [brandsPerPage,
+    setBrandsPerPage] =
+    useState(10);
 
   const fetchBrands =
     async () => {
@@ -80,6 +82,10 @@ function BrandManagement() {
   useEffect(() => {
     fetchBrands();
   }, []);
+
+   useEffect(() => {
+  setCurrentPage(1);
+}, [search]);
 
   const handleDelete =
     async () => {
@@ -121,19 +127,25 @@ function BrandManagement() {
           )
     );
 
-  const totalPages =
-    Math.ceil(
-      filteredBrands.length /
-        itemsPerPage
-    );
+ const indexOfLastProduct =
+    currentPage *
+    brandsPerPage;
 
-  const paginatedBrands =
-    filteredBrands.slice(
-      (currentPage - 1) *
-        itemsPerPage,
-      currentPage *
-        itemsPerPage
-    );
+  const indexOfFirstProduct =
+    indexOfLastProduct -
+    brandsPerPage;
+
+ const paginatedBrands =
+  filteredBrands.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+const totalPages =
+  Math.ceil(
+    filteredBrands.length /
+    brandsPerPage
+  );
 
   return (
     <div className="brand-page">
@@ -343,78 +355,27 @@ function BrandManagement() {
 
           {/* PAGINATION */}
 
-          {totalPages > 1 && (
-            <div className="brand-pagination-container">
+          {filteredBrands.length >
+        0 && (
 
-              <div className="brand-pagination-left">
-                Showing{" "}
-                {
-                  paginatedBrands.length
-                }
-                {" "}
-                of{" "}
-                {
-                  filteredBrands.length
-                }
-                {" "}
-                brands
-              </div>
+        <BrandPagination
+          currentPage={
+            currentPage
+          }
+          totalPages={
+            totalPages
+          }
+          brandsPerPage={
+            brandsPerPage
+          }
+          setBrandsPerPage={
+            setBrandsPerPage
+          }
+          setCurrentPage={
+            setCurrentPage
+          }
+        />
 
-              <div className="brand-pagination-right">
-
-                <button
-                  className="brand-page-btn"
-                  disabled={
-                    currentPage ===
-                    1
-                  }
-                  onClick={() =>
-                    setCurrentPage(
-                      (
-                        prev
-                      ) =>
-                        prev - 1
-                    )
-                  }
-                >
-                  Previous
-                </button>
-
-                <div className="brand-page-indicator">
-                  Page{" "}
-                  {
-                    currentPage
-                  }
-                  {" "}
-                  of{" "}
-                  {
-                    totalPages
-                  }
-                </div>
-
-                <button
-                  className="brand-page-btn"
-                  disabled={
-                    currentPage ===
-                    totalPages
-                  }
-                  onClick={() =>
-                    setCurrentPage(
-                      (
-                        prev
-                      ) =>
-                        prev + 1
-                    )
-                  }
-                >
-                  Next
-                </button>
-
-              </div>
-
-            </div>
-          )}
-        </>
       )}
 
       <AddBrandModal
@@ -459,6 +420,10 @@ function BrandManagement() {
           handleDelete
         }
       />
+
+      </>
+)}
+      
     </div>
   );
 }

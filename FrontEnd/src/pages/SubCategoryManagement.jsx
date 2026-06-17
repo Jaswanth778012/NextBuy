@@ -24,7 +24,7 @@ import ConfirmDeleteModal from "../components/adminDelete/ConfirmDeleteModal";
 
 import AddSubCategoryModal from "../components/adminSubCategory/AddSubCategoryModal";
 import EditSubCategoryModal from "../components/adminSubCategory/EditSubCategoryModal";
-
+import SubCategoryPagination from "../components/adminSubCategory/SubCategoryPagination";
 import { toast } from "react-toastify";
 
 import "../styles/SubCategoryManagement.css";
@@ -66,7 +66,9 @@ function SubCategoryManagement() {
     setSelectedSubCategory] =
     useState(null);
 
-  const itemsPerPage = 10;
+   const [subcategoryPerPage,
+      setSubcategoryPerPage] =
+      useState(10);
 
   const fetchData =
     async () => {
@@ -103,6 +105,9 @@ function SubCategoryManagement() {
     fetchData();
   }, []);
 
+     useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
   const handleDelete =
     async () => {
       try {
@@ -143,19 +148,25 @@ function SubCategoryManagement() {
           )
     );
 
-  const totalPages =
-    Math.ceil(
-      filteredSubCategories.length /
-        itemsPerPage
-    );
+  const indexOfLastProduct =
+    currentPage *
+    subcategoryPerPage;
 
-  const paginatedSubCategories =
-    filteredSubCategories.slice(
-      (currentPage - 1) *
-        itemsPerPage,
-      currentPage *
-        itemsPerPage
-    );
+  const indexOfFirstProduct =
+    indexOfLastProduct -
+    subcategoryPerPage;
+
+ const paginatedSubCategories=
+  filteredSubCategories.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+const totalPages =
+  Math.ceil(
+    filteredSubCategories.length /
+    subcategoryPerPage
+  );
 
   return (
     <div className="subcategory-page">
@@ -343,73 +354,27 @@ function SubCategoryManagement() {
 
           {/* PAGINATION */}
 
-          {totalPages > 1 && (
-            <div className="subcategory-pagination-container">
+           {filteredSubCategories.length >
+        0 && (
 
-              <div className="subcategory-pagination-left">
-                Showing{" "}
-                {
-                  paginatedSubCategories.length
-                }{" "}
-                of{" "}
-                {
-                  filteredSubCategories.length
-                }{" "}
-                sub categories
-              </div>
+        <SubCategoryPagination
+          currentPage={
+            currentPage
+          }
+          totalPages={
+            totalPages
+          }
+          subcategoryPerPage={
+            subcategoryPerPage
+          }
+          setSubcategoryPerPage={
+            setSubcategoryPerPage
+          }
+          setCurrentPage={
+            setCurrentPage
+          }
+        />
 
-              <div className="subcategory-pagination-right">
-                <button
-                  className="subcategory-page-btn"
-                  disabled={
-                    currentPage ===
-                    1
-                  }
-                  onClick={() =>
-                    setCurrentPage(
-                      (
-                        prev
-                      ) =>
-                        prev - 1
-                    )
-                  }
-                >
-                  Previous
-                </button>
-
-                <div className="subcategory-page-indicator">
-                  Page{" "}
-                  {
-                    currentPage
-                  }{" "}
-                  of{" "}
-                  {
-                    totalPages
-                  }
-                </div>
-
-                <button
-                  className="subcategory-page-btn"
-                  disabled={
-                    currentPage ===
-                    totalPages
-                  }
-                  onClick={() =>
-                    setCurrentPage(
-                      (
-                        prev
-                      ) =>
-                        prev + 1
-                    )
-                  }
-                >
-                  Next
-                </button>
-              </div>
-
-            </div>
-          )}
-        </>
       )}
 
       <AddSubCategoryModal
@@ -460,6 +425,8 @@ function SubCategoryManagement() {
           handleDelete
         }
       />
+        </>
+      )}
     </div>
   );
 }

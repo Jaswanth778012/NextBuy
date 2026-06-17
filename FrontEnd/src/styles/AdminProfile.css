@@ -1232,3 +1232,243 @@
   background: rgba(229, 199, 247, 0.35); /* lilac hover */
   color: #3d74e0;
 }
+
+/* =========================================
+   ADMIN PROFILE DARK MODE
+========================================= */
+
+.dark-mode .admin-profile-container {
+  background:
+    linear-gradient(
+      135deg,
+      #020617 0%,
+      #0f172a 50%,
+      #111827 100%
+    );
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.dark-mode .profile-sidebar {
+  background:
+    rgba(15,23,42,0.82);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,0.35);
+}
+
+.dark-mode .profile-sidebar::before {
+  background:
+    rgba(59,130,246,0.12);
+}
+
+.dark-mode .profile-sidebar h2 {
+  color: #f8fafc;
+}
+
+.dark-mode .profile-sidebar p {
+  color: #cbd5e1;
+}
+
+.dark-mode .profile-sidebar img {
+  border:
+    4px solid rgba(148,163,184,0.2);
+}
+
+/* =========================
+   PROFILE SECTIONS
+========================= */
+
+.dark-mode .profile-section {
+  background:
+    rgba(15,23,42,0.82);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,0.35);
+}
+
+.dark-mode .profile-section::before {
+  background:
+    rgba(59,130,246,0.08);
+}
+
+.dark-mode .profile-section h3 {
+  color: #f8fafc;
+}
+
+/* =========================
+   PROFILE CARDS
+========================= */
+
+.dark-mode .profile-item {
+  background:
+    rgba(30,41,59,0.85);
+
+  border:
+    1px solid rgba(148,163,184,0.12);
+}
+
+.dark-mode .profile-item:hover {
+  background:
+    rgba(51,65,85,0.95);
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,0.28);
+}
+
+.dark-mode .profile-item::before {
+  background:
+    rgba(148,163,184,0.08);
+}
+
+.dark-mode .profile-item label {
+  color: #94a3b8;
+}
+
+.dark-mode .profile-item p {
+  color: #f8fafc;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.dark-mode .back-btn {
+  background:
+    rgba(30,41,59,0.9);
+
+  color: #e2e8f0;
+
+  border:
+    1px solid rgba(148,163,184,0.12);
+}
+
+.dark-mode .back-btn:hover {
+  background:
+    rgba(51,65,85,0.95);
+
+  color: #60a5fa;
+}
+
+.dark-mode .change-password-btn {
+  box-shadow:
+    0 10px 25px rgba(59,130,246,0.25);
+}
+
+.dark-mode .edit-profile-btn {
+  box-shadow:
+    0 10px 25px rgba(59,130,246,0.25);
+}
+
+/* =========================
+   POPUPS
+========================= */
+
+.dark-mode .edit-popup,
+.dark-mode .edit-popup1 {
+  background:
+    rgba(15,23,42,0.95);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+}
+
+.dark-mode .edit-popup h2,
+.dark-mode .edit-popup1 h2 {
+  color: #f8fafc;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.dark-mode .edit-grid input,
+.dark-mode .edit-grid1 input,
+.dark-mode .edit-input-wrapper input,
+.dark-mode .field-input-enhanced,
+.dark-mode .enhanced-password-field input {
+  background:
+    rgba(30,41,59,0.85);
+
+  color: #f8fafc;
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+}
+
+.dark-mode .edit-grid input::placeholder,
+.dark-mode .edit-grid1 input::placeholder,
+.dark-mode .edit-input-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+.dark-mode .edit-field-icon,
+.dark-mode .field-icon {
+  color: #60a5fa;
+}
+
+.dark-mode .field-icon-box {
+  background:
+    rgba(59,130,246,0.15);
+}
+
+.dark-mode .enhanced-password-field,
+.dark-mode .input-with-icon-field {
+  background:
+    rgba(30,41,59,0.85);
+
+  border:
+    1px solid rgba(148,163,184,0.15);
+}
+
+.dark-mode .password-eye {
+  color: #cbd5e1;
+}
+
+.dark-mode .password-eye:hover {
+  color: #60a5fa;
+}
+
+/* =========================
+   FILE UPLOAD
+========================= */
+
+.dark-mode .edit-file-upload-box,
+.dark-mode .file-upload-box {
+  background:
+    rgba(30,41,59,0.85);
+}
+
+.dark-mode .edit-file-upload-box label,
+.dark-mode .file-upload-box label {
+  color: #f8fafc;
+}
+
+.dark-mode .edit-file-upload-box input,
+.dark-mode .file-upload-box input {
+  color: #e2e8f0;
+}
+
+/* =========================
+   MODAL BUTTONS
+========================= */
+
+.dark-mode .cancel-btn {
+  background:
+    rgba(51,65,85,0.9);
+
+  color: #f8fafc;
+}
+
+.dark-mode .cancel-btn:hover {
+  background:
+    rgba(71,85,105,0.95);
+}

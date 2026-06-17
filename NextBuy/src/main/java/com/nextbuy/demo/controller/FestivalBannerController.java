@@ -3,11 +3,14 @@ package com.nextbuy.demo.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.FestivalBannerRequestDto;
 import com.nextbuy.demo.dto.FestivalBannerResponseDto;
+import com.nextbuy.demo.dto.ProductSearchRequestDTO;
+import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.service.FestivalBannerService;
 
 @RestController
@@ -21,8 +24,9 @@ public class FestivalBannerController {
     }
 
     @PostMapping("/create")
+	@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> createBanner(
-            @RequestPart("fes") FestivalBannerRequestDto festivalBannerRequestDto,
+            @RequestPart("fs") FestivalBannerRequestDto festivalBannerRequestDto,
             @RequestPart("image") MultipartFile image
     ) {
         String message = festivalBannerService.createBanner(
@@ -34,6 +38,7 @@ public class FestivalBannerController {
     }
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<FestivalBannerResponseDto>> getAllBanners() {
         return ResponseEntity.ok(
                 festivalBannerService.getAllBanners()
@@ -41,13 +46,15 @@ public class FestivalBannerController {
     }
 
     @GetMapping("/getActive")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<FestivalBannerResponseDto>> getActiveBanners() {
         return ResponseEntity.ok(
                 festivalBannerService.getActiveBanners()
         );
     }
 
-    @GetMapping("/getBannerById{id}")
+    @GetMapping("/getBannerById/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FestivalBannerResponseDto> getBannerById(
             @PathVariable Long id
     ) {
@@ -57,6 +64,7 @@ public class FestivalBannerController {
     }
 
     @PutMapping("/updateBanner/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateBanner(
             @PathVariable Long id,
             @RequestPart("fs") FestivalBannerRequestDto festivalBannerRequestDto,
@@ -72,6 +80,7 @@ public class FestivalBannerController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteBanner(
             @PathVariable Long id
     ) {
@@ -79,8 +88,23 @@ public class FestivalBannerController {
                 festivalBannerService.deleteBanner(id)
         );
     }
-    @GetMapping("/festivalBannerProducts/{id}")
-    public String getFestivalProductsBybannerId(@PathVariable Long id) {
-    	return festivalBannerService.getFestivalProductsBybannerId(id);
+    @GetMapping("/festivalProducts/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<List<Product>> getFestivalProducts(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                festivalBannerService.getFestivalProductsBybannerId(id)
+        );
+    }
+    
+    @PostMapping("/BannerProducts")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Product>> searchProducts(
+            @RequestBody ProductSearchRequestDTO request) {
+
+        return ResponseEntity.ok(
+                festivalBannerService.searchProducts(request)
+        );
     }
 }

@@ -104,6 +104,20 @@ function AdminProfile() {
       confirmPassword: "",
     });
 
+    const [theme, setTheme] = useState("light");
+
+useEffect(() => {
+  const savedTheme =
+    localStorage.getItem("adminTheme");
+
+  if (
+    savedTheme === "light" ||
+    savedTheme === "dark"
+  ) {
+    setTheme(savedTheme);
+  }
+}, []);
+
   // =========================
   // AUTH CHECK
   // =========================
@@ -376,7 +390,13 @@ function AdminProfile() {
 
     return (
 
-      <div className="admin-profile-page">
+      <div
+  className={`admin-profile-page ${
+    theme === "dark"
+      ? "dark-mode"
+      : ""
+  }`}
+>
 
         <div className="dashboard-status-card">
 
@@ -402,7 +422,13 @@ function AdminProfile() {
 
   return (
 
-    <div className="admin-profile-page">
+          <div
+  className={`admin-profile-page ${
+    theme === "dark"
+      ? "dark-mode"
+      : ""
+  }`}
+>
 
       <div className="admin-profile-container">
 

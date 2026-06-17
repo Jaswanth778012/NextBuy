@@ -5,6 +5,7 @@ package com.nextbuy.demo.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.dto.UserResponceDTO;
 import com.nextbuy.demo.enums.ProductStatus;
-import com.nextbuy.demo.service.CommonService;
 import com.nextbuy.demo.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -68,6 +68,7 @@ public class ProductController {
     		return productService.updateDisCount(id, discount);
     	}
     
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/compare")
     public ResponseEntity<?> compareProducts(
             @RequestParam List<String> products) {

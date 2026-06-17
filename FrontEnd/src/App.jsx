@@ -1,6 +1,7 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { ToastContainer } from "react-toastify";
+import FestivalProductsPage from "./pages/FestivalProductsPage";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,6 +26,10 @@ import BroadcastCenter from "./pages/BroadcastCenter";
 import CategoryManagement from "./pages/CategoryManagement";
 import SubCategoryManagement from "./pages/SubCategoryManagement";
 import BrandManagement from "./pages/BrandManagement";
+import AdminCupon from "./pages/AdminCupon";
+import FestivalBannerManagement from "./pages/FestivalBannerManagement";
+import SupportDashboardAdmin from "./pages/SupportDashboardAdmin";
+import TicketDetailsPage from "./pages/TicketDetailsPage";
 // =========================
 // LAYOUTS
 // =========================
@@ -52,6 +57,10 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+        <Route
+  path="/festival-products/:id"
+  element={<FestivalProductsPage />}
+/>
 
         {/* =========================
             ADMIN LAYOUT ROUTES
@@ -61,11 +70,12 @@ function App() {
           {/* DASHBOARD */}
 
           <Route path="dashboard" element={<AdminDashboard />} />
-
-          <Route path="options" element={<AdminOptions />} />
           <Route path="userManagement" element={<UserManagement />} />
-          <Route path="orderManagement" element={<OrdersManagement />} />
           <Route path="productManagement" element={<ProductManagement />} />
+          <Route path="orderManagement" element={<OrdersManagement />} />
+          <Route path="couponManagement" element={<AdminCupon/>}/>
+           <Route path="options" element={<AdminOptions />} />
+           <Route path="festivalBannerManagement" element={<FestivalBannerManagement />}/>
           <Route
             path="categoryManagement"
             element={<CategoryManagement />}
@@ -86,6 +96,8 @@ function App() {
 
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails />} />
+          <Route path="support" element={<SupportDashboardAdmin />}/>
+          <Route path="support/:ticketId" element={<TicketDetailsPage />}/>
           {/* DEFAULT ADMIN ROUTE */}
 
           <Route index element={<Navigate to="dashboard" replace />} />

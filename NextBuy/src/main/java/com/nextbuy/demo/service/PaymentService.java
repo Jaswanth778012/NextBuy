@@ -9,16 +9,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nextbuy.demo.dto.PaymentVerificationDto;
+import com.nextbuy.demo.entity.Cupon;
 import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.entity.OrderItem;
 import com.nextbuy.demo.entity.Payment;
 import com.nextbuy.demo.entity.Product;
+import com.nextbuy.demo.entity.UserCupon;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.OrderStatus;
 import com.nextbuy.demo.enums.PaymentStatus;
+import com.nextbuy.demo.repository.CuponRepository;
 import com.nextbuy.demo.repository.OrderRepository;
 import com.nextbuy.demo.repository.PaymentRepository;
 import com.nextbuy.demo.repository.ProductRepository;
+import com.nextbuy.demo.repository.UserCuponRepository;
 import com.razorpay.RazorpayClient;
 import com.razorpay.Utils;
 	
@@ -29,6 +33,8 @@ import com.razorpay.Utils;
 		private  OrderRepository orderRepository;
 		private  PaymentRepository paymentRepository;
 		private ProductRepository productRepository;
+		private CuponRepository cuponRepository;
+		private UserCuponRepository userCuponRepository;
 		
 		private EmailService emailService;
 		private InvoiceService invoiceService;
@@ -38,12 +44,14 @@ import com.razorpay.Utils;
 		@Value("${razorpay.key.secret}")
 		private String razorpayKeySecret;
 	
-		public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository, EmailService emailService, InvoiceService invoiceService) {
+		public PaymentService(OrderRepository orderRepository, PaymentRepository paymentRepository, ProductRepository productRepository, EmailService emailService, InvoiceService invoiceService, CuponRepository cuponRepository, UserCuponRepository userCuponRepository) {
 			this.orderRepository = orderRepository;
 			this.paymentRepository = paymentRepository;
 			this.productRepository = productRepository;
 			this.emailService = emailService;
 			this.invoiceService = invoiceService;
+			this.cuponRepository = cuponRepository;
+			this.userCuponRepository = userCuponRepository;
 		}
 		
 		public JSONObject createRazorpayOrder(Long orderId) {
@@ -246,7 +254,20 @@ import com.razorpay.Utils;
 			payment.setPaidAt(LocalDateTime.now());
 	
 			order.setStatus(OrderStatus.CONFIRMED);
-	
+			
+			if (order.getAppliedCupon() != null) 
+			{ 
+				Cupon cupon = order.getAppliedCupon();  
+				cupon.setUsageCount( cupon.getUsageCount() + 1 ); 
+				cuponRepository.save(cupon); 
+				
+				UserCupon userCupon = new UserCupon(); 
+				userCupon.setUser(order.getUser()); 
+				userCupon.setCupon(cupon); 
+				userCupon.setOrder(order); 
+				userCupon.setUsedAt(LocalDateTime.now()); 
+				userCuponRepository.save(userCupon); 
+			}
 			paymentRepository.save(payment);
 			orderRepository.save(order);
 			

@@ -14,7 +14,7 @@ import {
 import {
   getSubCategoriesByCategory,
 } from "../../services/adminSubCategoryService";
-
+import { toast } from "react-toastify";
 import {
   getAllBrands,
 } from "../../services/adminBrandService";
@@ -217,123 +217,167 @@ function AddProductModal({
       );
     };
 
-  const handleSubmit =
-    async (e) => {
+const handleSubmit = async (e) => {
 
-      e.preventDefault();
+  e.preventDefault();
 
-      try {
+  try {
 
-        setLoading(true);
+    setLoading(true);
 
-        const attributeObject =
-          {};
+    const attributeObject = {};
 
-        productData.attributes
-          .forEach(
-            (attribute) => {
+    productData.attributes.forEach(
+      (attribute) => {
 
-              if (
-                attribute.key &&
-                attribute.value
-              ) {
+        if (
+          attribute.key &&
+          attribute.value
+        ) {
 
-                attributeObject[
-                  attribute.key
-                ] =
-                  attribute.value;
-              }
-            }
-          );
-
-        const selectedCategory =
-  categories.find(
-    (cat) =>
-      cat.id ===
-      Number(productData.categoryId)
-  );
-
-const selectedSubCategory =
-  subCategories.find(
-    (sub) =>
-      sub.id ===
-      Number(productData.subCategoryId)
-  );
-
-const selectedBrand =
-  brands.find(
-    (brand) =>
-      brand.id ===
-      Number(productData.brandId)
-  );
-
-const payload = {
-
-  name: productData.name,
-
-  description:
-    productData.description,
-
-  category: selectedCategory,
-
-  subCategory:
-    selectedSubCategory,
-
-  brand: selectedBrand,
-
-  mrp_price: Number(
-    productData.price
-  ),
-
-  stockQuantity: Number(
-    productData.stockQuantity
-  ),
-
-  discountPercentage:
-    Number(
-      productData.discountPercentage
-    ),
-
-  gstPercentage: Number(
-    productData.gstPercentage
-  ),
-
-  deliveryTimeInDays:
-    Number(
-      productData.deliveryTimeInDays
-    ),
-
-  productStatus:
-    productData.productStatus,
-
-  productCondition:
-    productData.productCondition,
-
-  attributes:
-    attributeObject,
-};
-
-        await addProduct(
-          payload,
-          image
-        );
-
-        await fetchProducts();
-
-        setShowModal(false);
-
-      } catch (error) {
-
-        console.error(
-          "Add Product Error:",
-          error
-        );
-
-      } finally {
-
-        setLoading(false);
+          attributeObject[
+            attribute.key
+          ] = attribute.value;
+        }
       }
+    );
+
+    const selectedCategory =
+      categories.find(
+        (cat) =>
+          cat.id ===
+          Number(
+            productData.categoryId
+          )
+      );
+
+    const selectedSubCategory =
+      subCategories.find(
+        (sub) =>
+          sub.id ===
+          Number(
+            productData.subCategoryId
+          )
+      );
+
+    const selectedBrand =
+      brands.find(
+        (brand) =>
+          brand.id ===
+          Number(
+            productData.brandId
+          )
+      );
+
+    const payload = {
+
+      name: productData.name,
+
+      description:
+        productData.description,
+
+      category:
+        selectedCategory,
+
+      subCategory:
+        selectedSubCategory,
+
+      brand:
+        selectedBrand,
+
+      mrp_price: Number(
+        productData.price
+      ),
+
+      stockQuantity: Number(
+        productData.stockQuantity
+      ),
+
+      discountPercentage:
+        Number(
+          productData.discountPercentage
+        ),
+
+      gstPercentage: Number(
+        productData.gstPercentage
+      ),
+
+      deliveryTimeInDays:
+        Number(
+          productData.deliveryTimeInDays
+        ),
+
+      productStatus:
+        productData.productStatus,
+
+      productCondition:
+        productData.productCondition,
+
+      attributes:
+        attributeObject,
     };
+
+    const response =
+      await addProduct(
+        payload,
+        image
+      );
+
+    console.log(
+      "Add Product Response:",
+      response
+    );
+
+    toast.success(
+      "Product added successfully 🎉"
+    );
+
+    await fetchProducts();
+
+    setShowModal(false);
+
+    // Optional: Reset form
+
+    setProductData({
+      name: "",
+      description: "",
+      categoryId: "",
+      subCategoryId: "",
+      brandId: "",
+      price: "",
+      stockQuantity: "",
+      discountPercentage: "",
+      gstPercentage: "",
+      deliveryTimeInDays: "",
+      productStatus: "DRAFT",
+      productCondition: "NEW",
+      attributes: [
+        {
+          key: "",
+          value: "",
+        },
+      ],
+    });
+
+    setImage(null);
+
+  } catch (error) {
+
+    console.error(
+      "Add Product Error:",
+      error
+    );
+
+    toast.error(
+      error?.response?.data?.message ||
+      "Failed to add product ❌"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   if (!showModal) {
     return null;

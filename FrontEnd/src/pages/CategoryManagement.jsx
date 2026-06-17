@@ -20,7 +20,7 @@ import ConfirmDeleteModal from "../components/adminDelete/ConfirmDeleteModal";
 
 import AddCategoryModal from "../components/adminCategory/AddCategoryModal";
 import EditCategoryModal from "../components/adminCategory/EditCategoryModal";
-
+import CategoryPagination from "../components/adminCategory/CategoryPagination";
 import { toast } from "react-toastify";
 
 import "../styles/CategoryManagement.css";
@@ -55,7 +55,9 @@ function CategoryManagement() {
     setCurrentPage] =
     useState(1);
 
-  const itemsPerPage = 10;
+     const [categoryPerPage,
+        setCategoryPerPage] =
+        useState(10);
 
   const fetchCategories =
     async () => {
@@ -80,6 +82,10 @@ function CategoryManagement() {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+       useEffect(() => {
+      setCurrentPage(1);
+    }, [search]);
 
   const handleDelete =
     async () => {
@@ -116,19 +122,25 @@ function CategoryManagement() {
           )
     );
 
-  const totalPages =
-    Math.ceil(
-      filteredCategories.length /
-        itemsPerPage
-    );
+const indexOfLastProduct =
+    currentPage *
+    categoryPerPage;
 
-  const paginatedCategories =
-    filteredCategories.slice(
-      (currentPage - 1) *
-        itemsPerPage,
-      currentPage *
-        itemsPerPage
-    );
+  const indexOfFirstProduct =
+    indexOfLastProduct -
+    categoryPerPage;
+
+ const paginatedCategories=
+  filteredCategories.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+const totalPages =
+  Math.ceil(
+    filteredCategories.length /
+    categoryPerPage
+  );
 
   return (
     <div className="category-page">
@@ -296,74 +308,27 @@ function CategoryManagement() {
 
           {/* PAGINATION */}
 
-          {totalPages > 1 && (
-            <div className="category-pagination-container">
-              <div className="category-pagination-left">
-                Showing{" "}
-                {
-                  paginatedCategories.length
-                }
-                {" "}
-                of{" "}
-                {
-                  filteredCategories.length
-                }
-                {" "}
-                categories
-              </div>
+          {filteredCategories.length >
+        0 && (
 
-              <div className="category-pagination-right">
-                <button
-                  className="category-page-btn"
-                  disabled={
-                    currentPage ===
-                    1
-                  }
-                  onClick={() =>
-                    setCurrentPage(
-                      (
-                        prev
-                      ) =>
-                        prev - 1
-                    )
-                  }
-                >
-                  Previous
-                </button>
+        <CategoryPagination
+          currentPage={
+            currentPage
+          }
+          totalPages={
+            totalPages
+          }
+          categoryPerPage={
+            categoryPerPage
+          }
+          setCategoryPerPage={
+            setCategoryPerPage
+          }
+          setCurrentPage={
+            setCurrentPage
+          }
+        />
 
-                <div className="category-page-indicator">
-                  Page{" "}
-                  {
-                    currentPage
-                  }
-                  {" "}
-                  of{" "}
-                  {
-                    totalPages
-                  }
-                </div>
-
-                <button
-                  className="category-page-btn"
-                  disabled={
-                    currentPage ===
-                    totalPages
-                  }
-                  onClick={() =>
-                    setCurrentPage(
-                      (
-                        prev
-                      ) =>
-                        prev + 1
-                    )
-                  }
-                >
-                  Next
-                </button>
-              </div>
-            </div>
-          )}
-        </>
       )}
 
       <AddCategoryModal
@@ -408,6 +373,8 @@ function CategoryManagement() {
           handleDelete
         }
       />
+       </>
+      )}
     </div>
   );
 }

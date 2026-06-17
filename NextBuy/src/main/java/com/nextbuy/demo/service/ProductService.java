@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nextbuy.demo.dto.ComparisionProductDto;
 import com.nextbuy.demo.dto.ProductDTO;
 import com.nextbuy.demo.dto.UserResponceDTO;
+import com.nextbuy.demo.entity.NotificationType;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.ProductStatus;
@@ -26,12 +27,14 @@ public class ProductService {
 	ProductRepository  productRepo;
 	BrandRepository brandRepo;
 	CloudinaryService cloudinaryService;
+	NotificationService notificationService;
 	
-	public ProductService(ProductRepository productRepo, BrandRepository brandRepo, CloudinaryService cloudinaryService) {
+	public ProductService(ProductRepository productRepo, BrandRepository brandRepo, CloudinaryService cloudinaryService, NotificationService notificationService) {
 		super();
 		this.productRepo = productRepo;
 		this.brandRepo = brandRepo;
 		this.cloudinaryService = cloudinaryService;
+		this.notificationService = notificationService;
 	}
 
 	public String addProduct(ProductDTO Pdto, MultipartFile imageFile) {
@@ -139,13 +142,11 @@ public class ProductService {
 	
 	//VIEW_ALL_PRODUCTS
 	public List<UserResponceDTO> viewAllProducts(){
-		
-		 List<Product> pr = productRepo.findAll();
-		 if(pr.isEmpty()) {
-			 throw new RuntimeException("Username is required");
-		 }
-		return pr.stream().map(this::mapToResponseDto).toList();
-		
+
+	    return productRepo.findAll()
+	            .stream()
+	            .map(this::mapToResponseDto)
+	            .toList();
 	}
 	//UPDATEPRODUCT
 	public String updateProduct(Long id ,ProductDTO product, MultipartFile imageFile) {
@@ -218,23 +219,75 @@ public class ProductService {
 		
 	}
 	//UPDATE-PRODUCT-STOCKQANTITY
-	public String updateProductStockQantity(Long id,int stock) {
-		   Optional<Product> pr = productRepo.findById(id);
-		  if(pr.isEmpty()) {
-			  return "Product not Found";
-		  }
-		  Product p =pr.get();
-		  p.setStockQuantity(stock);
-		  if(p.getStockQuantity() <= 0) {
-	    		p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
-	    	}else if(p.getStockQuantity() >= 50) {
-	    		p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
-	    	}else {
-	    		p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
-	    	}
+	public String updateProductStockQantity(Long id, int stock) {
 
-		  productRepo.save(p);
-		  return "Stock Quantity Updated Successfully!!";
+	    Optional<Product> pr = productRepo.findById(id);
+
+	    if (pr.isEmpty()) {
+	        return "Product not Found";
+	    }
+
+	    Product p = pr.get();
+
+	    int previousStock = p.getStockQuantity();
+
+	    p.setStockQuantity(stock);
+
+	    if (stock <= 0) {
+
+	        p.setStockStatus(AvailabilityStockStatus.OUT_OFF_STOCK);
+
+	        notificationService.createNotification(
+	                NotificationType.OUT_OF_STOCK,
+	                "Out Of Stock",
+	                p.getName() + " is out of stock",
+	                p.getId(),
+	                "PRODUCT",
+	                "CRITICAL"
+	        );
+
+	    } else if (stock <= 50) {
+
+	        p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
+
+	        // Create notification only when crossing threshold
+	        if (previousStock > 50) {
+
+	            notificationService.createNotification(
+	                    NotificationType.LOW_STOCK,
+	                    "Low Stock Alert",
+	                    p.getName() + " stock is only " + stock,
+	                    p.getId(),
+	                    "PRODUCT",
+	                    "HIGH"
+	            );
+	        }
+
+	    } else if (stock <= 100) {
+
+	        p.setStockStatus(AvailabilityStockStatus.LIMITED_STOCK);
+
+	        // Create notification only when crossing threshold
+	        if (previousStock > 100) {
+
+	            notificationService.createNotification(
+	                    NotificationType.LIMITED_STOCK,
+	                    "Limited Stock Alert",
+	                    p.getName() + " stock reduced to " + stock,
+	                    p.getId(),
+	                    "PRODUCT",
+	                    "MEDIUM"
+	            );
+	        }
+
+	    } else {
+
+	        p.setStockStatus(AvailabilityStockStatus.AVAILABLE);
+	    }
+
+	    productRepo.save(p);
+
+	    return "Stock Quantity Updated Successfully!!";
 	}
 	
 	public List<ComparisionProductDto> compareProducts(

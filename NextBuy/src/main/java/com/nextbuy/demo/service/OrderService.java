@@ -16,11 +16,13 @@ import com.nextbuy.demo.dto.OrderTrakingDTO;
 import com.nextbuy.demo.entity.Address;
 import com.nextbuy.demo.entity.Cart;
 import com.nextbuy.demo.entity.CartItem;
+import com.nextbuy.demo.entity.Cupon;
 import com.nextbuy.demo.entity.Order;
 import com.nextbuy.demo.entity.OrderItem;
 import com.nextbuy.demo.entity.Payment;
 import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.entity.User;
+import com.nextbuy.demo.entity.UserCupon;
 import com.nextbuy.demo.enums.AvailabilityStockStatus;
 import com.nextbuy.demo.enums.OrderItemStatus;
 import com.nextbuy.demo.enums.OrderStatus;
@@ -28,7 +30,9 @@ import com.nextbuy.demo.enums.PaymentMethod;
 import com.nextbuy.demo.enums.PaymentStatus;
 import com.nextbuy.demo.repository.AddressRepository;
 import com.nextbuy.demo.repository.CartRepository;
+import com.nextbuy.demo.repository.CuponRepository;
 import com.nextbuy.demo.repository.OrderRepository;
+import com.nextbuy.demo.repository.UserCuponRepository;
 import com.nextbuy.demo.repository.UserRepository;
 
 
@@ -43,15 +47,20 @@ public class OrderService {
 	private OrderRepository orderRepo;
 	private PaymentService paymentService;
 	private EmailService emailService;
+	private CuponRepository cuponRepository;
+	private UserCuponRepository userCuponRepository;
+	
 
 	public OrderService(UserRepository userRepo, CartRepository cartRepo, AddressRepository addressRepo,
-			OrderRepository orderRepo, PaymentService paymentService, EmailService emailService) {
+			OrderRepository orderRepo, PaymentService paymentService, EmailService emailService, CuponRepository cuponRepository, UserCuponRepository userCuponRepository) {
 		this.userRepo = userRepo;
 		this.cartRepo = cartRepo;
 		this.addressRepo = addressRepo;
 		this.orderRepo = orderRepo;
 		this.paymentService = paymentService;
 		this.emailService = emailService;
+		this.cuponRepository = cuponRepository;
+		this.userCuponRepository = userCuponRepository;
 	}
 
 	@Value("${razorpay.key.id}")
@@ -71,7 +80,15 @@ public class OrderService {
 
 		Address address = addressRepo.findByIdAndUser(dto.getAddressId(), user)
 				.orElseThrow(() -> new RuntimeException("Address Not Found"));
-
+		
+		if (cart.getAppliedCupon() != null) 
+		{ 
+			boolean alreadyUsed = userCuponRepository.existsByUserAndCupon( user, cart.getAppliedCupon() ); 
+			if (alreadyUsed) 
+			{ 
+				throw new RuntimeException( "Coupon already used by this user" ); 
+			} 
+		}
 		
 		Order order = new Order();
 		order.setUser(user);
@@ -188,6 +205,27 @@ public class OrderService {
 		
 		Order savedOrder = orderRepo.save(order);
 		
+		// save coupon usage only for COD
+		if(savedOrder.getAppliedCupon() != null
+		        && dto.getPaymentMethod() == PaymentMethod.COD)
+		{
+		    Cupon cupon = savedOrder.getAppliedCupon();
+
+		    // increase global usage count
+		    cupon.setUsageCount(cupon.getUsageCount() + 1);
+
+		    cuponRepository.save(cupon);
+
+		    // save user coupon usage
+		    UserCupon userCupon = new UserCupon();
+
+		    userCupon.setUser(user);
+		    userCupon.setCupon(cupon);
+		    userCupon.setOrder(savedOrder);
+		    userCupon.setUsedAt(LocalDateTime.now());
+
+		    userCuponRepository.save(userCupon);
+		}
 
 		if (dto.getPaymentMethod() == PaymentMethod.RAZORPAY) {
 			 paymentService.createRazorpayOrder(savedOrder.getId());
@@ -370,47 +408,67 @@ public class OrderService {
 	}
 
 	public String cancelOrder(String username, Long orderId, String reason) {
-		Order order = getOrderById(username, orderId);
 
-		if (order.getStatus() == OrderStatus.DELIVERED) {
-			throw new RuntimeException("Delivered Order cannot be Cancelled");
-		}
+	    Order order = getOrderById(username, orderId);
 
-		if (order.getStatus() == OrderStatus.CANCELLED) {
-			throw new RuntimeException("Order already cancelled");
-		}
+	    // allow cancellation only before shipment
+	    if (order.getStatus() == OrderStatus.SHIPPED
+	            || order.getStatus() == OrderStatus.OUT_FOR_DELIVERY
+	            || order.getStatus() == OrderStatus.DELIVERED
+	            || order.getStatus() == OrderStatus.RETURNED) {
 
-		// restore stock
-		restoreStock(order);
+	        throw new RuntimeException(
+	                "Order cannot be cancelled after it has been shipped");
+	    }
 
-		// refund online payment
-		if (order.getPayment() != null
-		        && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
-		        && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
-		    paymentService.refundPayment(order.getId());
-		}
+	    if (order.getStatus() == OrderStatus.CANCELLED) {
+	        throw new RuntimeException("Order already cancelled");
+	    }
 
-		order.setStatus(OrderStatus.CANCELLED);
-		order.setCancelledAt(LocalDateTime.now());
-		order.setCancelReason(reason);
+	    // restore stock
+	    restoreStock(order);
 
-		orderRepo.save(order);
-		
-		 String subject = "Order Cancelled - NextBuy";
+	    // refund only for successful online payments
+	    if (order.getPayment() != null
+	            && order.getPayment().getPaymentStatus() == PaymentStatus.SUCCESS
+	            && order.getPayment().getPaymentMethod() == PaymentMethod.RAZORPAY) {
 
-	        String body =
-	                "Hello " + order.getUser().getUsername() + ",\n\n" +
-	                "Your order has been cancelled successfully.\n\n" +
-	                "Order Number : " + order.getOrderNumber() + "\n\n" +
-	                "Refund will be processed shortly if payment was completed.";
+	        paymentService.refundPayment(order.getId());
+	    }
 
-	        emailService.sendEmail(
-	                order.getUser().getEmail(),
-	                subject,
-	                body
-	        );
+	    // cancel all order items
+	    for (OrderItem item : order.getOrderItems()) {
+	        item.setStatus(OrderItemStatus.CANCELLED);
+	    }
 
-		return "Order Cancelled Successfully";
+	    order.setStatus(OrderStatus.CANCELLED);
+	    order.setCancelledAt(LocalDateTime.now());
+	    order.setCancelReason(reason);
+
+	    orderRepo.save(order);
+
+	    String subject = "Order Cancelled - NextBuy";
+
+	    String body =
+	            "Hello " + order.getUser().getUsername() + ",\n\n" +
+	            "Your order has been cancelled successfully.\n\n" +
+	            "Order Number : " + order.getOrderNumber() + "\n\n";
+
+	    if (order.getPayment().getPaymentMethod() == PaymentMethod.COD) {
+	        body += "Since this was a Cash On Delivery order, no refund is required.\n\n";
+	    } else {
+	        body += "Your refund will be processed shortly.\n\n";
+	    }
+
+	    body += "Thank you for shopping with NextBuy.";
+
+	    emailService.sendEmail(
+	            order.getUser().getEmail(),
+	            subject,
+	            body
+	    );
+
+	    return "Order Cancelled Successfully";
 	}
 
 

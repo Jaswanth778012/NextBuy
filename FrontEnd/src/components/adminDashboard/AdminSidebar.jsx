@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+
 import {
   FaTachometerAlt,
   FaUsers,
@@ -8,7 +9,12 @@ import {
   FaTags,
   FaCog,
   FaBell,
+  FaTicketAlt,
+  FaImages,
+  FaHeadset,
 } from "react-icons/fa";
+
+
 
 import {
   useLocation,
@@ -245,6 +251,29 @@ function AdminSidebar({
             )}
         </div>
 
+        {/* FESTIVAL BANNERS */}
+
+<button
+  className={`nav-item ${
+    location.pathname ===
+    "/admin/festivalBannerManagement"
+      ? "active"
+      : ""
+  }`}
+  onClick={() =>
+    navigate(
+      "/admin/festivalBannerManagement"
+    )
+  }
+>
+  <FaImages />
+  {sidebarOpen && (
+    <span>
+      Festival Banners
+    </span>
+  )}
+</button>
+
         {/* ORDERS */}
 
         <button
@@ -267,6 +296,31 @@ function AdminSidebar({
             </span>
           )}
         </button>
+
+        {/* SUPPORT */}
+
+<button
+  className={`nav-item ${
+    location.pathname.includes(
+      "/admin/support"
+    )
+      ? "active"
+      : ""
+  }`}
+  onClick={() =>
+    navigate("/admin/support")
+  }
+>
+  <FaHeadset />
+
+  {sidebarOpen && (
+    <span>
+      Support
+    </span>
+  )}
+</button>
+
+        <button className={`nav-item ${ location.pathname === "/admin/couponManagement" ? "active" : "" }`} onClick={() => navigate( "/admin/couponManagement" ) } > <FaTicketAlt /> {sidebarOpen && ( <span> Coupons </span> )} </button>
 
         {/* OPTIONS */}
 
