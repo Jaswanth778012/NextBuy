@@ -9,18 +9,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.CreateTicketDto;
+import com.nextbuy.demo.dto.MergeTicketDto;
 import com.nextbuy.demo.dto.SupportReplyRequestDto;
 import com.nextbuy.demo.dto.SupportStatsDto;
-import com.nextbuy.demo.dto.TicketStatusDto;
 import com.nextbuy.demo.entity.SupportTicket;
 import com.nextbuy.demo.entity.SupportTicketReply;
-import com.nextbuy.demo.repository.SupportTicketReplyRepository;
-import com.nextbuy.demo.repository.SupportTicketRepository;
+import com.nextbuy.demo.enums.TicketStatus;
 import com.nextbuy.demo.service.SupportService;
 
 import jakarta.validation.Valid;
@@ -92,6 +93,7 @@ public class SupportController {
 	}
 	
 	@GetMapping("/ticket/{ticketId}/messages")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<List<SupportTicketReply>> getConversation(
 	        @PathVariable Long ticketId) {
 
@@ -101,19 +103,39 @@ public class SupportController {
 	}
 	
 	@PatchMapping("/admin/ticket/{ticketId}/status")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<String> updateTicketStatus(
 	        @PathVariable Long ticketId,
-	        @RequestBody TicketStatusDto dto) {
+	        @RequestParam TicketStatus status) {
 
 	    return ResponseEntity.ok(
 	            supportService.updateTicketStatus(
 	                    ticketId,
-	                    dto.getStatus()
+	                    status
 	            )
 	    );
 	}
 	
+	@PutMapping("/admin/tickets/{ticketId}/resolve")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<String> resolveTicket(@PathVariable Long ticketId) {
+
+	    return ResponseEntity.ok(
+	            supportService.resolveTicket(ticketId)
+	    );
+	}
+
+	@PutMapping("/tickets/{ticketId}/reopen")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<String> reopenTicket(@PathVariable Long ticketId) {
+
+	    return ResponseEntity.ok(
+	            supportService.reopenTicket(ticketId)
+	    );
+	}
+	
 	@GetMapping("/admin/stats")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<SupportStatsDto> getStats() {
 
 	    return ResponseEntity.ok(
@@ -122,7 +144,21 @@ public class SupportController {
 	}
 	
 	  @GetMapping("/ticket/{ticketId}")
+	  @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	    public ResponseEntity<SupportTicket> getTicket(@PathVariable Long ticketId) {
 	        return ResponseEntity.ok(supportService.getTicketById(ticketId));
 	    }
+	  
+	  @PostMapping("/admin/tickets/merge")
+	  @PreAuthorize("hasRole('ADMIN')")
+	  public ResponseEntity<String> mergeTickets(
+	          @RequestBody MergeTicketDto dto) {
+
+	      return ResponseEntity.ok(
+	              supportService.mergeTickets(
+	                      dto.getSourceTicketId(),
+	                      dto.getTargetTicketId()
+	              )
+	      );
+	  }
 }

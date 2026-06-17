@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class ProductSearchRequestDTO {
 	 private List<String> categories;
 	    private List<String> subCategories;
+	    private List<Long> productIds;
 	    
 	    
 	    

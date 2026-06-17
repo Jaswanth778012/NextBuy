@@ -28,8 +28,8 @@ function AddProductModal({
   const [loading, setLoading] =
     useState(false);
 
-  const [image, setImage] =
-    useState(null);
+  const [images, setImages] =
+    useState([]);
 
   const [categories,
     setCategories] =
@@ -320,7 +320,7 @@ const handleSubmit = async (e) => {
     const response =
       await addProduct(
         payload,
-        image
+        images
       );
 
     console.log(
@@ -359,7 +359,7 @@ const handleSubmit = async (e) => {
       ],
     });
 
-    setImage(null);
+    setImages([]);
 
   } catch (error) {
 
@@ -726,15 +726,46 @@ const handleSubmit = async (e) => {
           )}
 
           <input
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setImage(
-                e.target.files[0]
-              )
-            }
+  type="file"
+  accept="image/*"
+  multiple
+  onChange={(e) =>
+    setImages(
+      Array.from(
+        e.target.files
+      )
+    )
+  }
+/>
+        {images.length > 0 && (
+
+  <>
+
+    <p>
+      Selected Images:
+      {images.length}
+    </p>
+
+    <div className="product-images-preview">
+
+      {images.map(
+        (file, index) => (
+
+          <img
+            key={index}
+            src={URL.createObjectURL(file)}
+            alt={`preview-${index}`}
+            className="product-preview-image"
           />
 
+        )
+      )}
+
+    </div>
+
+  </>
+
+)}
           <button
             type="submit"
             className="product-create-submit"

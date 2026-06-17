@@ -12,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
@@ -53,7 +55,13 @@ public class FestivalBanner {
     @Column(name = "subcategory_name")
     private List<String> subCategories;
     
-    
+    @ManyToMany
+    @JoinTable(
+        name = "festival_banner_products",
+        joinColumns = @JoinColumn(name = "banner_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products;
     
     
     private LocalDate startDate;

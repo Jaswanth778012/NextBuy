@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,6 +53,12 @@ public class SupportTicket {
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;
+    
+    @ManyToOne
+    @JoinColumn(name = "merged_into_ticket_id")
+    private SupportTicket mergedInto;
+
+    private boolean merged;
 
     @OneToMany(mappedBy = "ticket",
             cascade = CascadeType.ALL,
@@ -61,6 +68,12 @@ public class SupportTicket {
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
         status = TicketStatus.OPEN;
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

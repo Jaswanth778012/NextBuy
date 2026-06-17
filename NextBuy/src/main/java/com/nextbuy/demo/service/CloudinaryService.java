@@ -57,7 +57,14 @@ public class CloudinaryService {
 			throw new RuntimeException("Failed to upload product image to Cloudinary", e);
 		}
 	}
+    
+    public List<String> uploadProductImages(
+            List<MultipartFile> files) {
 
+        return files.stream()
+                .map(this::uploadProductImage)
+                .toList();
+    }
     
     public void deleteFile(String publicId) {
         try {

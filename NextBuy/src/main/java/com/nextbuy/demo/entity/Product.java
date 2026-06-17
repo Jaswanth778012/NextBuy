@@ -2,6 +2,7 @@ package com.nextbuy.demo.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,14 @@ public class Product {
 	
 	private Double mrp_price;
 	
-	private String imageUrl;
+	@ElementCollection
+	@CollectionTable(
+	    name = "product_images",
+	    joinColumns = @JoinColumn(name = "product_id")
+	)
+	
+	@Column(name = "image_url")
+	private List<String> imageUrls = new ArrayList<>();
 	
 	private Integer stockQuantity;
 	

@@ -45,7 +45,7 @@ export const createFestivalBanner = (
     new FormData();
 
   formData.append(
-    "fes",
+    "fs",
     new Blob(
       [JSON.stringify(banner)],
       {

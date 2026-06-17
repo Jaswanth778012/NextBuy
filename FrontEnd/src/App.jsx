@@ -1,5 +1,6 @@
 ﻿import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 
 // PAGES
@@ -17,7 +18,11 @@ import SubCategoryManagement from "./pages/SubCategoryManagement";
 import BrandManagement from "./pages/BrandManagement";
 import AdminCupon from "./pages/AdminCupon";
 import FestivalBannerManagement from "./pages/FestivalBannerManagement";
-import WishlistAlerts from "./pages/WishlistAlerts";
+// =========================
+// LAYOUTS
+// =========================
+
+import AdminLayout from "./layout/AdminLayout";
 import SentEmails from "./pages/SentEmails";
 import ProductManagement from "./pages/ProductManagement";
 import UserProfile from "./pages/UserProfile";
@@ -83,16 +88,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetail />} />
 
-        <Route path="/login" element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        } />
-        <Route path="/register" element={
-          <PublicRoute>
-            <Register />
-          </PublicRoute>
-        } />
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
 
         {/* Protected User Routes */}
         <Route path="/wishlist/alerts" element={
@@ -116,14 +114,36 @@ function App() {
           <Route path="userManagement" element={<UserManagement />} />
           <Route path="productManagement" element={<ProductManagement />} />
           <Route path="orderManagement" element={<OrdersManagement />} />
-          <Route path="couponManagement" element={<AdminCupon />} />
-          <Route path="options" element={<AdminOptions />} />
-          <Route path="festivalBannerManagement" element={<FestivalBannerManagement />} />
-          <Route path="categoryManagement" element={<CategoryManagement />} />
-          <Route path="subCategoryManagement" element={<SubCategoryManagement />} />
-          <Route path="brandManagement" element={<BrandManagement />} />
+          <Route path="couponManagement" element={<AdminCupon/>}/>
+           <Route path="options" element={<AdminOptions />} />
+           <Route
+  path="festivalBannerManagement"
+  element={
+    <FestivalBannerManagement />
+  }
+/>
+          <Route
+            path="categoryManagement"
+            element={<CategoryManagement />}
+          />
+
+          {/* Sub Categories */}
+          <Route
+            path="subCategoryManagement"
+            element={<SubCategoryManagement />}
+          />
+
+          {/* Brands */}
+          <Route
+            path="brandManagement"
+            element={<BrandManagement />}
+          />
+
+
           <Route path="broadcast" element={<BroadcastCenter />} />
           <Route path="sent-emails" element={<SentEmails />} />
+          {/* DEFAULT ADMIN ROUTE */}
+
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
 
