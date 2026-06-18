@@ -42,6 +42,9 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 
 						.requestMatchers("/auth/**","/festival-banner/**").permitAll()
+						.requestMatchers(
+							    "/festival-banner/getActive"
+							).permitAll()
 
 						
 						.requestMatchers("/Product/viewAllProducts").permitAll()
