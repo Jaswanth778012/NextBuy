@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
+import WishlistModal from "../components/wishlist/WishlistModal";
 import "../styles/FestivalProducts.css";
 
 function FestivalProductsPage() {
@@ -9,7 +10,9 @@ function FestivalProductsPage() {
 
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [wishlist, setWishlist] = useState([]);
+  const [showWishlistModal, setShowWishlistModal] = useState(false);
+
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   const bannerImage = location.state?.bannerImage;
   const bannerTitle = location.state?.bannerTitle;
@@ -21,8 +24,8 @@ function FestivalProductsPage() {
   const loadProducts = async () => {
     try {
       const res = await fetch(
-  `http://localhost:9090/festival-banner/festivalProducts/${id}`
-);
+        `http://localhost:9090/festival-banner/festivalProducts/${id}`,
+      );
 
       const data = await res.json();
       setProducts(data || []);
@@ -32,62 +35,44 @@ function FestivalProductsPage() {
   };
 
   const getStoredUser = () => {
-  try {
-    return JSON.parse(localStorage.getItem("user"));
-  } catch {
-    return null;
-  }
-};
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      return null;
+    }
+  };
 
-const user = getStoredUser();
+  const user = getStoredUser();
 
-const isCustomer =
-  user?.role === "USER" ||
-  user?.role === "user";
+  const isCustomer = user?.role === "USER" || user?.role === "user";
 
   const addToCart = (p) => {
-  if (!isCustomer) {
-    navigate("/login");
-    return;
-  }
+    if (!isCustomer) {
+      navigate("/login");
+      return;
+    }
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  cart.push(p);
+    cart.push(p);
 
-  localStorage.setItem(
-    "cart",
-    JSON.stringify(cart)
-  );
-};
-
-  const toggleWishlist = (p) => {
-
-  if (!isCustomer) {
-    navigate("/login");
-    return;
-  }
-
-  let list = [...wishlist];
-
-  const exists = list.find(
-    (x) => x.id === p.id
-  );
-
-  if (exists) {
-    list = list.filter(
-      (x) => x.id !== p.id
-    );
-  } else {
-    list.push(p);
-  }
-
-  setWishlist(list);
-};
-
-  const isWishlisted = (id) => {
-    return wishlist.some((p) => p.id === id);
+    localStorage.setItem("cart", JSON.stringify(cart));
   };
+
+  const toggleWishlist = (product) => {
+    if (!isCustomer) {
+      navigate("/login");
+      return;
+    }
+
+    setSelectedProductId(product.id);
+
+    setShowWishlistModal(true);
+  };
+
+  // const isWishlisted = (id) => {
+  //   return wishlist.some((p) => p.id === id);
+  // };
 
   const renderStars = (rating = 4) => {
     const fullStars = Math.floor(rating);
@@ -102,7 +87,7 @@ const isCustomer =
           }}
         >
           ★
-        </span>
+        </span>,
       );
     }
 
@@ -111,13 +96,12 @@ const isCustomer =
 
   return (
     <div className="fp-page">
-
       {/* HERO */}
       <div className="fp-hero">
         <h1>🎉 Festival Special Sale</h1>
         <p>
-          Celebrate this festive season with exclusive discounts,
-          limited offers, and handpicked products just for you.
+          Celebrate this festive season with exclusive discounts, limited
+          offers, and handpicked products just for you.
         </p>
       </div>
 
@@ -134,37 +118,25 @@ const isCustomer =
       <div className="fp-grid">
         {products.map((p) => (
           <div className="fp-card" key={p.id}>
-
             {/* WISHLIST */}
             {(!user || isCustomer) && (
-  <div
-    className="fp-wishlist"
-    onClick={() => toggleWishlist(p)}
-    style={{
-      fontSize: "18px",
-      cursor: "pointer",
-    }}
-  >
-    {isWishlisted(p.id) ? "❤️" : "🤍"}
-  </div>
-)}
+              <div className="fp-wishlist" onClick={() => toggleWishlist(p)}>
+                🤍
+              </div>
+            )}
 
             {/* IMAGE (CLICK TO OPEN DETAILS PAGE) */}
             <img
               src={p.imageUrls[0] || "https://via.placeholder.com/200"}
               className="fp-img"
               alt={p.name}
-              
-             
             />
 
             {/* NAME */}
             <div className="fp-name">{p.name}</div>
 
             {/* STARS */}
-            <div className="fp-stars">
-              {renderStars(p.averageRating)}
-            </div>
+            <div className="fp-stars">{renderStars(p.averageRating)}</div>
 
             {/* PRICE ROW */}
             <div className="fp-price-row">
@@ -176,22 +148,27 @@ const isCustomer =
             </div>
 
             {/* ACTIONS */}
-           {!user || isCustomer ? (
-  <div className="fp-actions">
-    <button
-      className="fp-btn"
-      onClick={() => addToCart(p)}
-    >
-      Add to Cart
-    </button>
-  </div>
-) : null}
-
+            {!user || isCustomer ? (
+              <div className="fp-actions">
+                <button className="fp-btn" onClick={() => addToCart(p)}>
+                  Add to Cart
+                </button>
+              </div>
+            ) : null}
           </div>
         ))}
       </div>
 
+       <WishlistModal
+      show={showWishlistModal}
+      onClose={() =>
+        setShowWishlistModal(false)
+      }
+      productId={selectedProductId}
+    />
     </div>
+
+    
   );
 }
 

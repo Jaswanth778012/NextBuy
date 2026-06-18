@@ -1,12 +1,33 @@
-﻿import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+﻿import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// PAGES
+// =========================
+// PUBLIC PAGES
+// =========================
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import FestivalProductsPage from "./pages/FestivalProductsPage";
+
+import WishlistPage from "./pages/WishlistPage";
+import WishlistDetailsPage from "./pages/WishlistDetailsPage";
+import WishlistAlertsPage from "./pages/WishlistAlertsPage";
+
+import UserProfile from "./pages/UserProfile";
+
+// =========================
+// ADMIN PAGES
+// =========================
+
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProfile from "./pages/AdminProfile";
 import AdminOptions from "./pages/AdminOptions";
@@ -18,24 +39,28 @@ import SubCategoryManagement from "./pages/SubCategoryManagement";
 import BrandManagement from "./pages/BrandManagement";
 import AdminCupon from "./pages/AdminCupon";
 import FestivalBannerManagement from "./pages/FestivalBannerManagement";
-import FestivalProductsPage from "./pages/FestivalProductsPage.jsx";
+import ProductManagement from "./pages/ProductManagement";
+import SentEmails from "./pages/SentEmails";
+
 // =========================
 // LAYOUTS
 // =========================
 
+import PublicLayout from "./layout/PublicLayout";
 import AdminLayout from "./layout/AdminLayout";
-import SentEmails from "./pages/SentEmails";
-import ProductManagement from "./pages/ProductManagement";
-import UserProfile from "./pages/UserProfile";
 
-import Header from "./layout/Header.jsx";
-
-// ============ AUTH GUARD COMPONENTS ============
+// =========================
+// AUTH HELPERS
+// =========================
 
 const getStoredUser = () => {
   try {
-    const raw = localStorage.getItem('user');
-    if (!raw || raw === 'null') return null;
+    const raw = localStorage.getItem("user");
+
+    if (!raw || raw === "null") {
+      return null;
+    }
+
     return JSON.parse(raw);
   } catch {
     return null;
@@ -45,25 +70,61 @@ const getStoredUser = () => {
 const isAuthenticated = () => {
   const token = localStorage.getItem("token");
   const user = getStoredUser();
-  return !!token && !!user && token !== "null" && token !== "undefined";
+
+  return (
+    !!token &&
+    !!user &&
+    token !== "null" &&
+    token !== "undefined"
+  );
 };
 
 const isAdmin = () => {
   const user = getStoredUser();
-  return user?.role === "ADMIN" || user?.role === "admin";
+
+  return (
+    user?.role === "ADMIN" ||
+    user?.role === "admin"
+  );
 };
 
-// Redirect authenticated users away from login/register
+const isUser = () => {
+  const user = getStoredUser();
+
+  return (
+    user?.role === "USER" ||
+    user?.role === "user"
+  );
+};
+
+// =========================
+// PUBLIC ROUTE
+// =========================
+
 function PublicRoute({ children }) {
-  return isAuthenticated() ? <Navigate to="/" replace /> : children;
+  return isAuthenticated()
+    ? <Navigate to="/" replace />
+    : children;
 }
 
-// Protect routes that require login
-function ProtectedRoute({ children, requireAdmin = false }) {
+// =========================
+// PROTECTED ROUTE
+// =========================
+
+function ProtectedRoute({
+  children,
+  requireAdmin = false,
+}) {
   const location = useLocation();
 
   if (!isAuthenticated()) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location }}
+        replace
+      />
+    );
   }
 
   if (requireAdmin && !isAdmin()) {
@@ -73,83 +134,224 @@ function ProtectedRoute({ children, requireAdmin = false }) {
   return children;
 }
 
-// ============ APP COMPONENT ============
+// =========================
+// USER ROUTE
+// =========================
+
+function UserRoute({ children }) {
+  const location = useLocation();
+
+  if (!isAuthenticated()) {
+    return (
+      <Navigate
+        to="/login"
+        state={{ from: location }}
+        replace
+      />
+    );
+  }
+
+  if (!isUser()) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
+// =========================
+// APP
+// =========================
 
 function App() {
   return (
     <BrowserRouter>
-      <ToastContainer position="top-right" autoClose={3000} theme="light" />
-      <Header />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        theme="light"
+      />
 
       <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
 
-                <Route
-  path="/festival-products/:id"
-  element={<FestivalProductsPage />}
-/>
-        
-        <Route path="/login" element={<Login />} />
+        {/* =========================
+            PUBLIC LAYOUT ROUTES
+        ========================= */}
 
-        <Route path="/register" element={<Register />} />
+        <Route element={<PublicLayout />}>
 
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <UserProfile />
-          </ProtectedRoute>
-        } />
+          <Route
+            path="/"
+            element={<Home />}
+          />
 
-        {/* Admin Routes */}
-        <Route path="/admin" element={
-          <ProtectedRoute requireAdmin={true}>
-            <AdminLayout />
-          </ProtectedRoute>
-        }>
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="userManagement" element={<UserManagement />} />
-          <Route path="productManagement" element={<ProductManagement />} />
-          <Route path="orderManagement" element={<OrdersManagement />} />
-          <Route path="couponManagement" element={<AdminCupon/>}/>
-           <Route path="options" element={<AdminOptions />} />
-           <Route
-  path="festivalBannerManagement"
-  element={
-    <FestivalBannerManagement />
-  }
-/>
+          <Route
+            path="/festival-products/:id"
+            element={<FestivalProductsPage />}
+          />
+
+          {/* USER ONLY */}
+
+          <Route
+            path="/profile"
+            element={
+              <UserRoute>
+                <UserProfile />
+              </UserRoute>
+            }
+          />
+
+          <Route
+            path="/wishlist"
+            element={
+              <UserRoute>
+                <WishlistPage />
+              </UserRoute>
+            }
+          />
+
+          <Route
+            path="/wishlist/:wishlistId"
+            element={
+              <UserRoute>
+                <WishlistDetailsPage />
+              </UserRoute>
+            }
+          />
+
+          <Route
+            path="/wishlist/alerts"
+            element={
+              <UserRoute>
+                <WishlistAlertsPage />
+              </UserRoute>
+            }
+          />
+
+        </Route>
+
+        {/* =========================
+            AUTH ROUTES
+        ========================= */}
+
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+
+        {/* =========================
+            ADMIN ROUTES
+        ========================= */}
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requireAdmin={true}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            path="dashboard"
+            element={<AdminDashboard />}
+          />
+
+          <Route
+            path="userManagement"
+            element={<UserManagement />}
+          />
+
+          <Route
+            path="productManagement"
+            element={<ProductManagement />}
+          />
+
+          <Route
+            path="orderManagement"
+            element={<OrdersManagement />}
+          />
+
+          <Route
+            path="couponManagement"
+            element={<AdminCupon />}
+          />
+
+          <Route
+            path="options"
+            element={<AdminOptions />}
+          />
+
+          <Route
+            path="festivalBannerManagement"
+            element={<FestivalBannerManagement />}
+          />
+
           <Route
             path="categoryManagement"
             element={<CategoryManagement />}
           />
 
-          {/* Sub Categories */}
           <Route
             path="subCategoryManagement"
             element={<SubCategoryManagement />}
           />
 
-          {/* Brands */}
           <Route
             path="brandManagement"
             element={<BrandManagement />}
           />
 
+          <Route
+            path="broadcast"
+            element={<BroadcastCenter />}
+          />
 
-          <Route path="broadcast" element={<BroadcastCenter />} />
-          <Route path="sent-emails" element={<SentEmails />} />
-          {/* DEFAULT ADMIN ROUTE */}
+          <Route
+            path="sent-emails"
+            element={<SentEmails />}
+          />
 
-          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route
+            index
+            element={
+              <Navigate
+                to="dashboard"
+                replace
+              />
+            }
+          />
         </Route>
 
-        <Route path="/admin/profile" element={
-          <ProtectedRoute requireAdmin={true}>
-            <AdminProfile />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute requireAdmin>
+              <AdminProfile />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* =========================
+            FALLBACK
+        ========================= */}
+
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
+
       </Routes>
     </BrowserRouter>
   );

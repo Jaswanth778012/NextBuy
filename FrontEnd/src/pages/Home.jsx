@@ -51,7 +51,6 @@ function Home() {
       {/* FESTIVAL BANNER */}
       
     <div className="festival-banner-wrapper">
-  <h1>FESTIVAL BANNER</h1>
   <FestivalBanner />
 </div>
 
