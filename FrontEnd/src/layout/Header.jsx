@@ -203,7 +203,7 @@ const Header = () => {
                         )}
                     </div>
 
-                    {isLoggedIn ? (
+                    {isLoggedIn && role?.toUpperCase() !== "ADMIN" ? (
                         <div className="action-item dropdown-wrapper user-menu-wrapper" ref={userMenuRef}>
                             <button 
                                 className="user-pill-btn"

@@ -18,6 +18,7 @@ import SubCategoryManagement from "./pages/SubCategoryManagement";
 import BrandManagement from "./pages/BrandManagement";
 import AdminCupon from "./pages/AdminCupon";
 import FestivalBannerManagement from "./pages/FestivalBannerManagement";
+import FestivalProductsPage from "./pages/FestivalProductsPage.jsx";
 // =========================
 // LAYOUTS
 // =========================
@@ -83,6 +84,11 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
+
+                <Route
+  path="/festival-products/:id"
+  element={<FestivalProductsPage />}
+/>
         
         <Route path="/login" element={<Login />} />
 

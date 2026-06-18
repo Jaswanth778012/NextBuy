@@ -50,12 +50,10 @@ function Home() {
 
       {/* FESTIVAL BANNER */}
       
-      {token && (
-        <div className="festival-banner-wrapper">
-          <h1>FESTIVAL BANNER</h1>
-          <FestivalBanner />
-        </div>
-      )}
+    <div className="festival-banner-wrapper">
+  <h1>FESTIVAL BANNER</h1>
+  <FestivalBanner />
+</div>
 
     </div>
   );

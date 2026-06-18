@@ -21,13 +21,8 @@ function FestivalProductsPage() {
   const loadProducts = async () => {
     try {
       const res = await fetch(
-        `http://localhost:9090/festival-banner/festivalProducts/${id}`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
+  `http://localhost:9090/festival-banner/festivalProducts/${id}`
+);
 
       const data = await res.json();
       setProducts(data || []);
@@ -36,24 +31,59 @@ function FestivalProductsPage() {
     }
   };
 
+  const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user"));
+  } catch {
+    return null;
+  }
+};
+
+const user = getStoredUser();
+
+const isCustomer =
+  user?.role === "USER" ||
+  user?.role === "user";
+
   const addToCart = (p) => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart.push(p);
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
+  if (!isCustomer) {
+    navigate("/login");
+    return;
+  }
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  cart.push(p);
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
+};
 
   const toggleWishlist = (p) => {
-    let list = [...wishlist];
-    const exists = list.find((x) => x.id === p.id);
 
-    if (exists) {
-      list = list.filter((x) => x.id !== p.id);
-    } else {
-      list.push(p);
-    }
+  if (!isCustomer) {
+    navigate("/login");
+    return;
+  }
 
-    setWishlist(list);
-  };
+  let list = [...wishlist];
+
+  const exists = list.find(
+    (x) => x.id === p.id
+  );
+
+  if (exists) {
+    list = list.filter(
+      (x) => x.id !== p.id
+    );
+  } else {
+    list.push(p);
+  }
+
+  setWishlist(list);
+};
 
   const isWishlisted = (id) => {
     return wishlist.some((p) => p.id === id);
@@ -106,16 +136,18 @@ function FestivalProductsPage() {
           <div className="fp-card" key={p.id}>
 
             {/* WISHLIST */}
-            <div
-              className="fp-wishlist"
-              onClick={() => toggleWishlist(p)}
-              style={{
-                fontSize: "18px",
-                cursor: "pointer",
-              }}
-            >
-              {isWishlisted(p.id) ? "❤️" : "🤍"}
-            </div>
+            {(!user || isCustomer) && (
+  <div
+    className="fp-wishlist"
+    onClick={() => toggleWishlist(p)}
+    style={{
+      fontSize: "18px",
+      cursor: "pointer",
+    }}
+  >
+    {isWishlisted(p.id) ? "❤️" : "🤍"}
+  </div>
+)}
 
             {/* IMAGE (CLICK TO OPEN DETAILS PAGE) */}
             <img
@@ -144,14 +176,16 @@ function FestivalProductsPage() {
             </div>
 
             {/* ACTIONS */}
-            <div className="fp-actions">
-              <button
-                className="fp-btn"
-                onClick={() => addToCart(p)}
-              >
-                Add to Cart
-              </button>
-            </div>
+           {!user || isCustomer ? (
+  <div className="fp-actions">
+    <button
+      className="fp-btn"
+      onClick={() => addToCart(p)}
+    >
+      Add to Cart
+    </button>
+  </div>
+) : null}
 
           </div>
         ))}
