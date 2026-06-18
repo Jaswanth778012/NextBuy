@@ -46,7 +46,6 @@ public class FestivalBannerController {
     }
 
     @GetMapping("/getActive")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<FestivalBannerResponseDto>> getActiveBanners() {
         return ResponseEntity.ok(
                 festivalBannerService.getActiveBanners()
@@ -54,7 +53,6 @@ public class FestivalBannerController {
     }
 
     @GetMapping("/getBannerById/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FestivalBannerResponseDto> getBannerById(
             @PathVariable Long id
     ) {
@@ -89,7 +87,6 @@ public class FestivalBannerController {
         );
     }
     @GetMapping("/festivalProducts/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<Product>> getFestivalProducts(
             @PathVariable Long id) {
 
@@ -99,7 +96,6 @@ public class FestivalBannerController {
     }
     
     @PostMapping("/BannerProducts")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Product>> searchProducts(
             @RequestBody ProductSearchRequestDTO request) {
 
