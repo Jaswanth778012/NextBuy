@@ -122,6 +122,10 @@ predicates.add(cb.equal(root.get("stockStatus").as(String.class), stockStatus));
 if (brandId != null) {
 predicates.add(cb.equal(root.get("brand").get("id"), brandId));
 }
+
+predicates.add(
+	    cb.equal(root.get("productStatus"), ProductStatus.ACTIVE)
+	);
 return cb.and(predicates.toArray(new Predicate[0]));
 };
 return productRepo.findAll(spec, pageable);
