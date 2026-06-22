@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
+import userService from "../services/userService";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth, notifyAuthChange } from '../hooks/useAuth';
 import './Header.css';
@@ -8,7 +10,9 @@ const Header = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, isLoggedIn, role } = useAuth();
-    
+    const [profile, setProfile] = useState(null);
+    console.log("Header User:", user);
+console.log("Header dpUrl:", user?.dpUrl);
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,6 +50,21 @@ const Header = () => {
         }
     }, [searchOpen]);
 
+    useEffect(() => {
+    const fetchProfile = async () => {
+        try {
+            const response = await userService.getMyProfile();
+            setProfile(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    if (isLoggedIn) {
+        fetchProfile();
+    }
+}, [isLoggedIn]);
+
     // ✅ Conditional return AFTER all hooks
     if (isAdminPath || isAuthPath) return null;
 
@@ -77,7 +96,12 @@ const Header = () => {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     };
 
-    const displayName = user?.name || user?.username || user?.email || 'User';
+   const displayName =
+   
+    user?.username ||
+    'User';
+   console.log(user);
+console.log(user?.dpUrl);
 
     const navLinks = [
         { label: 'New Arrival', path: '/products?sort=newest' },
@@ -213,10 +237,23 @@ const Header = () => {
                                 className="user-pill-btn"
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                             >
-                                <div className="avatar-ring-sm">
-                                    <div className="avatar-sm">{getInitials(displayName)}</div>
-                                </div>
-                                <span className="user-name-sm">{displayName}</span>
+                               <div className="avatar-ring-sm">
+  {profile?.dpUrl ? (
+    <img
+     src={profile.dpUrl}
+      alt="Profile"
+      className="avatar-sm-img"
+    />
+  ) : (
+    <div className="avatar-sm">
+      {getInitials(displayName)}
+    </div>
+  )}
+</div>
+
+<span className="user-name-sm">
+  {displayName}
+</span>
                                 <svg 
                                     width="12" 
                                     height="12" 
