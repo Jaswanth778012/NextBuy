@@ -210,12 +210,8 @@ const handleUpdateProfile = async (e) => {
  
 const handleDeleteProfile = async () => {
   try {
-    console.log("Delete button clicked");
-
-    if (!deletePassword?.trim()) {
-      toast.error("Please enter your password");
-      return;
-    }
+    console.log("Username:", user?.username);
+    console.log("Password:", deletePassword);
 
     const response = await userService.deleteProfile(
       user?.username,
@@ -223,26 +219,12 @@ const handleDeleteProfile = async () => {
     );
 
     console.log("SUCCESS:", response);
-    console.log("DATA:", response?.data);
-
-    // Show backend message
-    toast.success(response?.data || "Account deleted successfully");
-
-    // Optional: logout and redirect
-    // localStorage.clear();
-    // navigate("/login");
-
   } catch (err) {
     console.log("FULL ERROR:", err);
-    console.log("RESPONSE:", err?.response);
-    console.log("DATA:", err?.response?.data);
+    console.log("RESPONSE:", err.response);
+    console.log("DATA:", err.response?.data);
 
-    toast.error(
-      err?.response?.data?.message ||
-      err?.response?.data ||
-      err?.message ||
-      "Failed to delete account"
-    );
+    toast.error(err?.response?.data || "Failed to delete account");
   }
 };
 
