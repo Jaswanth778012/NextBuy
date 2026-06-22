@@ -31,13 +31,15 @@ public class CuponController {
 	}
 	
 	@PostMapping("/create")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String cuponCreate(@RequestBody CuponRequestDto requestDto)
 	{
 		return cuponService.createCupon(requestDto);
 	}
 	
-	@PreAuthorize("hasRole('USER')")
+	
 	@PostMapping("/apply/{code}")
+	@PreAuthorize("hasRole('USER')")
 	public String applyCupon(Principal principal, @PathVariable String code)
 	{
 		return cuponService.applyCoupon(principal.getName(), code);
@@ -45,6 +47,7 @@ public class CuponController {
 	
 	
 	@PutMapping("/update/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String updateCupon(
 	        @PathVariable Long id,
 	        @RequestBody CuponRequestDto requestDto)
@@ -53,13 +56,14 @@ public class CuponController {
 	}
 	
 	@DeleteMapping("/delete/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public String deleteCupon(@PathVariable Long id)
 	{
 	    return cuponService.deleteCupon(id);
 	}
 	
-	@PreAuthorize("hasRole('USER')")
 	@DeleteMapping("/remove")
+	@PreAuthorize("hasRole('USER')")
 	public String removeCupon(Principal principal)
 	{
 		return cuponService.removeCupon(principal.getName());
@@ -67,6 +71,7 @@ public class CuponController {
 	
 	
 	@GetMapping("/all")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<Cupon>> getAllCupons() {
 	    return ResponseEntity.ok(cuponService.getAllCupons());
 	}
@@ -76,8 +81,9 @@ public class CuponController {
 	    return ResponseEntity.ok(cuponService.getAvailableCupons());
 	}
 	
-	@PreAuthorize("hasRole('USER')")
+
 	@GetMapping("/availableforUser")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<List<Cupon>> getAvailableCouponsForUser(
 	        Principal principal)
 	{
