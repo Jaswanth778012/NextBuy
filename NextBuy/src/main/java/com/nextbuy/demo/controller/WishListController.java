@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nextbuy.demo.dto.WishListRequestDto;
 import com.nextbuy.demo.entity.WishList;
+import com.nextbuy.demo.entity.WishListItem;
 import com.nextbuy.demo.service.WishListService;
 
 @RestController
@@ -53,8 +54,14 @@ public class WishListController {
 	}
 	
 	@GetMapping("/getWishListProducts/{wishListId}")
-	public List<String> getWishListProducts(Principal principal, @PathVariable Long wishListId) {
-		return wishListService.getWishListById(principal.getName(), wishListId);
+	public List<WishListItem> getWishListProducts(
+	        Principal principal,
+	        @PathVariable Long wishListId) {
+
+	    return wishListService.getWishListById(
+	            principal.getName(),
+	            wishListId
+	    );
 	}
 	
 	@DeleteMapping("/removeProduct/{wishListId}/{productId}")
