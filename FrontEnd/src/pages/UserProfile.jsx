@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { getWishlists } from "../services/wishlistService";
 import userService from "../services/userService";
 import { notifyAuthChange } from "../hooks/useAuth";
-
+import { getAlerts } from "../services/wishlistAlertService";
 import ProfileSidebar from "../components/userProfile/ProfileSidebar";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
 import ChangePasswordForm from "../components/userProfile/ChangePasswordForm";
@@ -19,7 +19,8 @@ function UserProfile() {
 const [showImagePopup, setShowImagePopup] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
+  const [alertCount, setAlertCount] = useState(0);
+const [wishlistCount, setWishlistCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -59,9 +60,11 @@ const handleImageChange = (e) => {
     confirmPassword: "",
   });
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+ useEffect(() => {
+  fetchProfile();
+  fetchWishlistCount();
+   fetchAlertCount();
+}, []);
 
   const fetchProfile = async () => {
     try {
@@ -89,7 +92,26 @@ const handleImageChange = (e) => {
       setLoading(false);
     }
   };
+  const fetchAlertCount = async () => {
+  try {
+    const data = await getAlerts();
 
+    console.log("Alerts:", data);
+
+    setAlertCount(data.length);
+  } catch (error) {
+    console.log(error);
+  }
+};
+ const fetchWishlistCount = async () => {
+  try {
+    const data = await getWishlists();
+
+    setWishlistCount(data.length);
+  } catch (error) {
+    console.log(error);
+  }
+};
   const handleInputChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -256,7 +278,9 @@ const handleDeleteProfile = async () => {
       {/* LEFT SIDEBAR */}
       <ProfileSidebar
         user={user}
+          wishlistCount={wishlistCount}
         editMode={editMode}
+         alertCount={alertCount}
         setEditMode={setEditMode}
         showPasswordForm={showPasswordForm}
         setShowPasswordForm={setShowPasswordForm}
