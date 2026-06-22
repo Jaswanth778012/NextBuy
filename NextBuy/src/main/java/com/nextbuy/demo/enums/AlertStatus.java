@@ -4,6 +4,5 @@ public enum AlertStatus {
     ACTIVE,
     TRIGGERED,
     PAUSED,
-    EXPIRED,
-    DISABLED
+    EXPIRED
 }

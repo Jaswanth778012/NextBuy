@@ -1,4 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  FaEye,
+  FaEyeSlash,
+  FaLock,
+} from "react-icons/fa";
 
 function ChangePasswordForm({
   passwordData,
@@ -7,86 +12,117 @@ function ChangePasswordForm({
   saving,
   setShowPasswordForm,
 }) {
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
-    <div className="content-section">
-      <h3 className="section-title">
-        Change Password
-      </h3>
-
-      <form
-        onSubmit={handleChangePassword}
-        className="profile-form"
+    <div
+      className="user-password-overlay"
+      onClick={() => setShowPasswordForm(false)}
+    >
+      <div
+        className="user-password-popup"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* CURRENT PASSWORD */}
-        <div className="form-group">
-          <label>Current Password</label>
+        <h2>Change Password</h2>
 
-          <input
-            type="password"
-            name="currentPassword"
-            value={passwordData.currentPassword}
-            onChange={handlePasswordChange}
-            required
-            placeholder="Enter current password"
-          />
-        </div>
+        <div className="user-password-grid">
 
-        {/* NEW PASSWORD + CONFIRM PASSWORD */}
-        <div className="form-row">
-
-          <div className="form-group">
-            <label>New Password</label>
+          {/* Current Password */}
+          <div className="user-input-box">
+            <span className="user-icon-box">
+              <FaLock className="user-icon" />
+            </span>
 
             <input
-              type="password"
+              type={showCurrentPassword ? "text" : "password"}
+              name="currentPassword"
+              placeholder="Current Password"
+              value={passwordData.currentPassword}
+              onChange={handlePasswordChange}
+            />
+
+            <span
+              className="user-eye"
+              onClick={() =>
+                setShowCurrentPassword(!showCurrentPassword)
+              }
+            >
+              {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
+          {/* New Password */}
+          <div className="user-input-box">
+            <span className="user-icon-box">
+              <FaLock className="user-icon" />
+            </span>
+
+            <input
+              type={showNewPassword ? "text" : "password"}
               name="newPassword"
+              placeholder="New Password"
               value={passwordData.newPassword}
               onChange={handlePasswordChange}
-              required
-              placeholder="Minimum 6 characters"
             />
+
+            <span
+              className="user-eye"
+              onClick={() =>
+                setShowNewPassword(!showNewPassword)
+              }
+            >
+              {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
           </div>
 
-          <div className="form-group">
-            <label>Confirm New Password</label>
+          {/* Confirm Password */}
+          <div className="user-input-box">
+            <span className="user-icon-box">
+              <FaLock className="user-icon" />
+            </span>
 
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
+              placeholder="Confirm Password"
               value={passwordData.confirmPassword}
               onChange={handlePasswordChange}
-              required
-              placeholder="Re-enter new password"
             />
+
+            <span
+              className="user-eye"
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
           </div>
 
         </div>
 
-        {/* ACTION BUTTONS */}
-        <div className="form-actions">
+        <div className="user-popup-buttons">
 
           <button
-            type="button"
-            className="btn-secondary"
-            onClick={() =>
-              setShowPasswordForm(false)
-            }
+            className="user-cancel-btn"
+            onClick={() => setShowPasswordForm(false)}
+            disabled={saving}
           >
             Cancel
           </button>
 
           <button
-            type="submit"
-            className="btn-primary"
+            className="user-save-btn"
+            onClick={handleChangePassword}
             disabled={saving}
           >
-            {saving
-              ? "Updating..."
-              : "Update Password"}
+            {saving ? "Updating..." : "Update Password"}
           </button>
 
         </div>
-      </form>
+      </div>
     </div>
   );
 }
