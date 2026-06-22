@@ -50,8 +50,8 @@ public class SecurityConfig {
 						.requestMatchers("/Product/viewAllProducts").permitAll()
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/Brands/**","/Categories/**","/Subcategories/**").permitAll()
-						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Cupon/**","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**").hasRole("ADMIN")
-		            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/Cupon/apply/**","/Cupon/remove/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**","/wishlist-alerts/**").hasRole("USER")
+						.requestMatchers("/Admin/**","/Product/**","/Brands/**","/Payments/refund/**","/adminOrder/**","/Categories/**","/Subcategories/**","/AdminStats/**").hasRole("ADMIN")
+		            .requestMatchers("/User/**", "/Rating/**", "/Reviews/**","/SaveForLater/**","/Wishlist/**","/Cart/**","/Orders/**","/Payments/verify/**","/Address/**","/wishlist-alerts/**").hasRole("USER")
 	            
 	            	.requestMatchers("/Common/**").hasAnyRole("USER","ADMIN")
 	            
