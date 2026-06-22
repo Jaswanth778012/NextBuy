@@ -123,17 +123,17 @@ function EditProfilePopup({
 </div>
 
             <div className="profile-file-box">
-              <label>
-                <FaImage /> Profile Image
-              </label>
+  <label>
+    <FaImage className="edit-upload-icon" />
+    Choose Profile Image
+  </label>
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </div>
-
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+  />
+</div>
           </div>
 
           <div className="profile-edit-buttons">

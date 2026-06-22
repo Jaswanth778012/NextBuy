@@ -41,6 +41,7 @@ import AdminCupon from "./pages/AdminCupon";
 import FestivalBannerManagement from "./pages/FestivalBannerManagement";
 import ProductManagement from "./pages/ProductManagement";
 import SentEmails from "./pages/SentEmails";
+import SupportDashboardAdmin from "./pages/SupportDashboardAdmin";
 
 // =========================
 // LAYOUTS
@@ -297,6 +298,11 @@ function App() {
             path="festivalBannerManagement"
             element={<FestivalBannerManagement />}
           />
+
+          <Route 
+            path="support"
+            element={<SupportDashboardAdmin/>}
+            />
 
           <Route
             path="categoryManagement"

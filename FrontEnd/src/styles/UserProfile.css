@@ -173,10 +173,12 @@
 }
 
 .user-stat-value {
-    margin-right: 5px;
+   
+    padding-left: 2px;
+    padding-right: 5px;
   font-size: 15px;
   font-weight: 700;
-  margin-right: 2px;
+ 
   color: #222;
 }
 
@@ -1074,4 +1076,29 @@
 .user-name-sm {
   font-size: 14px;
   font-weight: 600;
+}
+.profile-file-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+}
+
+.profile-file-box label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 12px;
+}
+
+.profile-file-box input {
+    font-size: 14px;
+    color: black;
 }
