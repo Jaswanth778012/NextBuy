@@ -80,7 +80,7 @@ public class WishListService {
     }
     
     @Transactional
-    public String removeProductFromWishList(String username, Long productId, Long wishListId) {
+    public String removeProductFromWishList(String username, Long wishListId, Long productId) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         WishList wishList = wishListRepository.findById(wishListId)
