@@ -2,6 +2,8 @@ import React from "react";
 
 function UserProfileSidebar({
   user,
+    wishlistCount,
+      alertCount,
   editMode,
   setEditMode,
   showPasswordForm,
@@ -98,9 +100,9 @@ function UserProfileSidebar({
           </div>
 
           <div className="user-stat-item">
-            <span className="user-stat-value">
-              {user?.wishlistCount || 0}
-            </span>
+           <span className="user-stat-value">
+  {wishlistCount}
+</span>
             <span className="user-stat-label">
               Wishlist
             </span>
@@ -108,8 +110,8 @@ function UserProfileSidebar({
 
           <div className="user-stat-item">
             <span className="user-stat-value">
-              {user?.alertCount || 0}
-            </span>
+  {alertCount}
+</span>
             <span className="user-stat-label">
               Alerts
             </span>
