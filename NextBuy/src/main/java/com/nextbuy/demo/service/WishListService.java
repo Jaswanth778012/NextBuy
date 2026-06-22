@@ -13,6 +13,7 @@ import com.nextbuy.demo.entity.Product;
 import com.nextbuy.demo.entity.User;
 import com.nextbuy.demo.entity.WishList;
 import com.nextbuy.demo.entity.WishListItem;
+import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.exception.ResourceNotFoundException;
 import com.nextbuy.demo.exception.WishlistException;
 import com.nextbuy.demo.repository.CartItemRepository;
@@ -119,7 +120,20 @@ public class WishListService {
     public List<WishList> getWishlists(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return wishListRepository.findByUser(user);
+        List<WishList> wishlists = wishListRepository.findByUser(user);
+
+        wishlists.forEach(w ->
+            w.setWishlistItems(
+                w.getWishlistItems()
+                 .stream()
+                 .filter(item ->
+                     item.getProduct() != null &&
+                     item.getProduct().getProductStatus() == ProductStatus.ACTIVE)
+                 .toList()
+            )
+        );
+
+        return wishlists;
     }
     
     @Transactional(readOnly = true)
@@ -143,7 +157,12 @@ public class WishListService {
                     "Unauthorized access to wishlist");
         }
 
-        return wishList.getWishlistItems();
+        return wishList.getWishlistItems()
+                .stream()
+                .filter(item ->
+                        item.getProduct() != null
+                        && item.getProduct().getProductStatus() == ProductStatus.ACTIVE)
+                .toList();
     }
     
     @Transactional
@@ -175,6 +194,11 @@ public class WishListService {
         for (WishListItem wishListItem : wishList.getWishlistItems()) {
 
             Product product = wishListItem.getProduct();
+            
+            if (product == null ||
+                    product.getProductStatus() != ProductStatus.ACTIVE) {
+                    continue; // skip inactive products
+                }
 
             CartItem existingCartItem = cart.getCartItems().stream()
                     .filter(item -> item.getProduct().getId().equals(product.getId()))
