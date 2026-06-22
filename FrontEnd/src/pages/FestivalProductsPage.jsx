@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import WishlistModal from "../components/wishlist/WishlistModal";
+import { getWishlistProducts, getWishlists } from "../services/wishlistService";
 import "../styles/FestivalProducts.css";
 
 function FestivalProductsPage() {
@@ -8,6 +9,7 @@ function FestivalProductsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [wishlistedProducts, setWishlistedProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const [selected, setSelected] = useState(null);
   const [showWishlistModal, setShowWishlistModal] = useState(false);
@@ -17,9 +19,13 @@ function FestivalProductsPage() {
   const bannerImage = location.state?.bannerImage;
   const bannerTitle = location.state?.bannerTitle;
 
-  useEffect(() => {
-    loadProducts();
-  }, [id]);
+useEffect(() => {
+  loadProducts();
+
+  if (isCustomer) {
+    loadWishlistedProducts();
+  }
+}, [id]);
 
   const loadProducts = async () => {
     try {
@@ -33,6 +39,25 @@ function FestivalProductsPage() {
       console.log(err);
     }
   };
+
+ const loadWishlistedProducts = async () => {
+  try {
+    const wishlists = await getWishlists();
+
+    const productIds = [];
+
+    wishlists.forEach((wishlist) => {
+      wishlist.wishlistItems?.forEach((item) => {
+        productIds.push(item.product.id);
+      });
+    });
+
+    setWishlistedProducts(productIds);
+
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const getStoredUser = () => {
     try {
@@ -70,6 +95,11 @@ function FestivalProductsPage() {
     setShowWishlistModal(true);
   };
 
+  const isWishlisted = (productId) => {
+  return wishlistedProducts.includes(
+    productId
+  );
+};
   // const isWishlisted = (id) => {
   //   return wishlist.some((p) => p.id === id);
   // };
@@ -120,9 +150,14 @@ function FestivalProductsPage() {
           <div className="fp-card" key={p.id}>
             {/* WISHLIST */}
             {(!user || isCustomer) && (
-              <div className="fp-wishlist" onClick={() => toggleWishlist(p)}>
-                🤍
-              </div>
+              <div
+  className="fp-wishlist"
+  onClick={() => toggleWishlist(p)}
+>
+  {isWishlisted(p.id)
+    ? "❤️"
+    : "🤍"}
+</div>
             )}
 
             {/* IMAGE (CLICK TO OPEN DETAILS PAGE) */}
@@ -160,12 +195,11 @@ function FestivalProductsPage() {
       </div>
 
        <WishlistModal
-      show={showWishlistModal}
-      onClose={() =>
-        setShowWishlistModal(false)
-      }
-      productId={selectedProductId}
-    />
+  show={showWishlistModal}
+  onClose={() => setShowWishlistModal(false)}
+  productId={selectedProductId}
+  onWishlistUpdated={loadWishlistedProducts}
+/>
     </div>
 
     
