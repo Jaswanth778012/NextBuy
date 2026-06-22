@@ -365,7 +365,7 @@ public class ProductService {
 	public  List<Product> searchCategory(String category) {
 		return productRepo.findAll()
 			   .stream()
-			   .filter(p->p.getCategory().getName().equalsIgnoreCase(category))
+			   .filter(p->p.getCategory().getName().equalsIgnoreCase(category)&& p.getProductStatus()==ProductStatus.ACTIVE)
 			   .distinct()
 			   .sorted((a,b) ->
 		        a.getName().compareTo(b.getName()))
