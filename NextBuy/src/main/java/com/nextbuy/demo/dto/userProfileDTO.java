@@ -24,7 +24,7 @@ public class userProfileDTO {
 	
 	private String state;
 	
-	
+	private Long pincode;
 	private String country;
 	
 	
