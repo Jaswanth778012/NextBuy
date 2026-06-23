@@ -354,10 +354,22 @@ function FestivalProductsPage() {
         {p.name || p.productName}
       </h4>
 
-      <div className="fp-stock-chip">
-  {p.stockStatus === "AVAILABLE"
-    ? "🟢 In Stock"
-    : "🟠 Limited"}
+      <div
+  className={`fp-stock-chip ${
+    p.stockStatus === "AVAILABLE"
+      ? "available"
+      : p.stockStatus === "LIMITED_STOCK"
+      ? "limited"
+      : "out-stock"
+  }`}
+>
+  {p.stockStatus === "AVAILABLE" && "🟢 In Stock"}
+
+  {p.stockStatus === "LIMITED_STOCK" &&
+    "🟠 Limited Stock"}
+
+  {p.stockStatus === "OUT_OFF_STOCK" &&
+    "🔴 Out of Stock"}
 </div>
     </div>
 

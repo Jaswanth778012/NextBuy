@@ -319,18 +319,25 @@ overflow: hidden;
 }
 
 .fp-stock-chip {
-flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
 
-padding: 5px 10px;
+.fp-stock-chip.available {
+  background: #dcfce7;
+  color: #15803d;
+}
 
-border-radius: 14px;
+.fp-stock-chip.limited {
+  background: #fef3c7;
+  color: #b45309;
+}
 
-background: #ecfdf5;
-
-color: #16a34a;
-
-font-size: 12px;
-font-weight: 700;
+.fp-stock-chip.out-stock {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 /* =========================================
