@@ -1,22 +1,18 @@
 package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.FestivalBannerRequestDto;
 import com.nextbuy.demo.dto.FestivalBannerResponseDto;
 import com.nextbuy.demo.dto.ProductSearchRequestDTO;
-
 import com.nextbuy.demo.entity.FestivalBanner;
 import com.nextbuy.demo.entity.Product;
+import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.FestivalBannerRepository;
 import com.nextbuy.demo.repository.ProductRepository;
 
@@ -130,11 +126,13 @@ if (fsdto.getProductIds() != null &&
 
         // If specific products are assigned, return them directly
         if (banner.getProducts() != null &&
-            !banner.getProducts().isEmpty()) {
+        	    !banner.getProducts().isEmpty()) {
 
-            return banner.getProducts();
-        }
-        
+        	    return banner.getProducts()
+        	            .stream()
+        	            .filter(p -> p.getProductStatus() == ProductStatus.ACTIVE)
+        	            .toList();
+        	}
         System.out.println("Categories = " + banner.getCategories());
         System.out.println("SubCategories = " + banner.getSubCategories());
 
@@ -161,7 +159,9 @@ if (fsdto.getProductIds() != null &&
         );
         return products == null
                 ? Collections.emptyList()
-                : products;
+                : products.stream()
+                          .filter(p -> p.getProductStatus() == ProductStatus.ACTIVE)
+                          .toList();
     }
     
 
@@ -252,10 +252,10 @@ if (fsdto.getProductIds() != null &&
     	                    ? null
     	                    : request.getSubCategories();
 
-    	    return productRepo.multisearchProducts(
-    	            categories,
-    	            subCategories
-    	    );
+    	    return productRepo.findAllById(request.getProductIds())
+    	            .stream()
+    	            .filter(p -> p.getProductStatus() == ProductStatus.ACTIVE)
+    	            .toList();
     }
     
     

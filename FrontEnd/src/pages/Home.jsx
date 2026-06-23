@@ -6,6 +6,7 @@ import "../styles/Home.css";
 function Home() {
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
   useEffect(() => {
@@ -36,22 +37,16 @@ function Home() {
         <h1>Welcome to Ecommerce 🛍️</h1>
 
         <p className="home-subtitle">
-          Discover amazing products, exclusive offers,
-          and festival special deals crafted just for you.
+          Discover amazing products, exclusive offers, and festival special
+          deals crafted just for you.
         </p>
 
-        {!role ? (
-          <button
-            className="auth-btn"
-            onClick={handleLogin}
-          >
+        {!token ? (
+          <button className="auth-btn" onClick={handleLogin}>
             Login
           </button>
         ) : (
-          <button
-            className="auth-btn"
-            onClick={handleLogout}
-          >
+          <button className="auth-btn" onClick={handleLogout}>
             Logout
           </button>
         )}

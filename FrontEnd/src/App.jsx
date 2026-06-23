@@ -17,7 +17,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import FestivalProductsPage from "./pages/FestivalProductsPage";
-
+import CartPage from "./pages/CartPage";
 import WishlistPage from "./pages/WishlistPage";
 import WishlistDetailsPage from "./pages/WishlistDetailsPage";
 import WishlistAlertsPage from "./pages/WishlistAlertsPage";
@@ -31,7 +31,7 @@ import UserProfile from "./pages/UserProfile";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProfile from "./pages/AdminProfile";
 import AdminOptions from "./pages/AdminOptions";
-import UserManagement from "./pages/UserManegement";
+import UserManagement from "./pages/UserManagement";
 import OrdersManagement from "./pages/OrdersManagement";
 import BroadcastCenter from "./pages/BroadcastCenter";
 import CategoryManagement from "./pages/CategoryManagement";
@@ -190,7 +190,14 @@ function App() {
             element={<FestivalProductsPage />}
           />
 
-          {/* USER ONLY */}
+          <Route
+            path="/cart"
+            element={
+              <UserRoute>
+                <CartPage />
+              </UserRoute>
+            }
+          />
 
           <Route
             path="/profile"
