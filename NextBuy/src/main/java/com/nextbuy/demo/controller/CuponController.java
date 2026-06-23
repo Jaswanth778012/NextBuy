@@ -77,6 +77,7 @@ public class CuponController {
 	}
 	
 	@GetMapping("/available")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<Cupon>> getAvailableCupons() {
 	    return ResponseEntity.ok(cuponService.getAvailableCupons());
 	}
