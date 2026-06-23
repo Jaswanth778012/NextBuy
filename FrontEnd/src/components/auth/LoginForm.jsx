@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
-import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+
 import { loginUser } from "../../services/authService";
-import { notifyAuthChange } from "../../hooks/useAuth";
+import {
+  notifyAuthChange,
+  normalizeRole,
+  isAdminRole,
+} from "../../hooks/useAuth";
+
 import "../../styles/LoginIcon.css";
 
 function LoginForm({ setShowForgot }) {
   const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,38 +39,62 @@ function LoginForm({ setShowForgot }) {
       });
 
       const data = response.data;
-      const role = data.role;
 
-      // ✅ Store token
-      localStorage.setItem("token", data.token);
+      console.log("LOGIN RESPONSE:", data);
 
-      // ✅ Store role
-      localStorage.setItem("role", role);
+      const token =
+        data.token ||
+        data.jwtToken ||
+        data.accessToken;
 
-      // ✅ CRITICAL FIX: Store user object so useAuth.js works
-      const userObj = data.user || {
-        username: data.username || username,
+      if (!token) {
+        toast.error("Login failed: token not received from backend");
+        return;
+      }
+
+      const backendRole =
+        data.role ||
+        data.user?.role ||
+        data.roles?.[0] ||
+        data.user?.roles?.[0] ||
+        data.authorities?.[0]?.authority;
+
+      const role = normalizeRole(backendRole);
+
+      const userObj = {
+        id: data.user?.id || data.id || null,
+        username: data.user?.username || data.username || username,
+        name:
+          data.user?.name ||
+          data.name ||
+          data.user?.username ||
+          data.username ||
+          username,
+        email: data.user?.email || data.email || "",
         role: role,
-        email: data.email,
-        name: data.name || data.username || username,
       };
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role || "");
       localStorage.setItem("user", JSON.stringify(userObj));
 
-      // ✅ Notify all auth listeners (Header, etc.)
       notifyAuthChange();
 
       toast.success("Login successful!");
 
-      // Navigate based on role
-      if (role === "ADMIN") {
+      if (isAdminRole(role)) {
         navigate("/admin/dashboard", { replace: true });
       } else {
         navigate("/", { replace: true });
       }
-
     } catch (error) {
       console.error("Login error:", error);
-      toast.error(error?.response?.data?.message || "Invalid Credentials");
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.response?.data ||
+          "Invalid Credentials"
+      );
     } finally {
       setLoading(false);
     }
@@ -78,6 +108,7 @@ function LoginForm({ setShowForgot }) {
       <form onSubmit={handleLogin}>
         <div className="input-box">
           <FaUser className="input-icon" />
+
           <input
             className="login-input"
             type="text"
@@ -92,6 +123,7 @@ function LoginForm({ setShowForgot }) {
         <div className="password-wrapper">
           <div className="input-box">
             <RiLockPasswordFill className="input-icon" />
+
             <input
               className="login-input password-input"
               type={showPassword ? "text" : "password"}
@@ -102,6 +134,7 @@ function LoginForm({ setShowForgot }) {
               autoComplete="current-password"
             />
           </div>
+
           <span
             className="eye-iconn"
             onClick={() => setShowPassword(!showPassword)}
@@ -123,6 +156,7 @@ function LoginForm({ setShowForgot }) {
 
         <div className="input-boxx">
           <GiThink className="input-iconn" />
+
           <button
             className="secondary-btn"
             type="button"

@@ -15,45 +15,35 @@ function Home() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
   return (
     <div className="home-container">
-
       <div className="home-header">
-
         <h1>Welcome to Ecommerce 🛍️</h1>
 
         <p className="home-subtitle">
-          Discover amazing products, exclusive offers,
-          and festival special deals crafted just for you.
+          Discover amazing products, exclusive offers, and festival special
+          deals crafted just for you.
         </p>
 
         {!token ? (
-          <button
-            className="auth-btn"
-            onClick={handleLogin}
-          >
+          <button className="auth-btn" onClick={handleLogin}>
             Login
           </button>
         ) : (
-          <button
-            className="auth-btn"
-            onClick={handleLogout}
-          >
+          <button className="auth-btn" onClick={handleLogout}>
             Logout
           </button>
         )}
-
       </div>
 
       {/* FESTIVAL BANNER */}
-      
-    <div className="festival-banner-wrapper">
-  <FestivalBanner />
-</div>
-
+      <div className="festival-banner-wrapper">
+        <FestivalBanner />
+      </div>
     </div>
   );
 }

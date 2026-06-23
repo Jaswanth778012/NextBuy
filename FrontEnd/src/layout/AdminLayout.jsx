@@ -1,418 +1,172 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   Outlet,
   useNavigate,
 } from "react-router-dom";
 
-import AdminSidebar
-from "../components/adminDashboard/AdminSidebar";
+import AdminSidebar from "../components/adminDashboard/AdminSidebar";
+import AdminHeader from "../components/adminDashboard/AdminHeader";
+import SearchResultModal from "../components/adminDashboard/SearchResultModal";
 
-import AdminHeader
-from "../components/adminDashboard/AdminHeader";
+import { globalSearch } from "../services/adminService";
 
 import {
-  globalSearch,
-} from "../services/adminService";
-
-import SearchResultModal
-from "../components/adminDashboard/SearchResultModal";
+  useAuth,
+  notifyAuthChange,
+} from "../hooks/useAuth";
 
 import "../styles/AdminDashboard.css";
 
 function AdminLayout() {
+  const navigate = useNavigate();
 
-  const navigate =
-    useNavigate();
+  const { isLoggedIn } = useAuth();
 
-  const token =
-    localStorage.getItem("token");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [theme, setTheme] = useState("light");
 
-  // =========================
-  // SIDEBAR
-  // =========================
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
 
-  const [sidebarOpen,
-    setSidebarOpen] =
-    useState(true);
+  const [selectedResult, setSelectedResult] = useState(null);
+  const [selectedType, setSelectedType] = useState("");
 
-  // =========================
-  // THEME
-  // =========================
-
-  const [theme,
-    setTheme] =
-    useState("light");
-
-  // =========================
-  // SEARCH
-  // =========================
-
-  const [searchKeyword,
-    setSearchKeyword] =
-    useState("");
-
-  const [searchResults,
-    setSearchResults] =
-    useState(null);
-
-  const [selectedResult,
-    setSelectedResult] =
-    useState(null);
-
-  const [selectedType,
-    setSelectedType] =
-    useState("");
-
-  const searchTimeoutRef =
-    useRef(null);
-
-  // =========================
-  // CHECK LOGIN
-  // =========================
+  const searchTimeoutRef = useRef(null);
 
   useEffect(() => {
-
-    if (!token) {
-
-      navigate("/login");
+    if (!isLoggedIn) {
+      navigate("/login", { replace: true });
     }
-
-  }, [token, navigate]);
-
-  // =========================
-  // LOAD THEME
-  // =========================
+  }, [isLoggedIn, navigate]);
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem("adminTheme");
 
-    const savedTheme =
-      localStorage.getItem(
-        "adminTheme"
-      );
-
-    if (
-
-      savedTheme === "light" ||
-
-      savedTheme === "dark"
-
-    ) {
-
+    if (savedTheme === "light" || savedTheme === "dark") {
       setTheme(savedTheme);
     }
-
   }, []);
 
-  // =========================
-  // SAVE THEME
-  // =========================
-
   useEffect(() => {
-
-    localStorage.setItem(
-      "adminTheme",
-      theme
-    );
-
+    localStorage.setItem("adminTheme", theme);
   }, [theme]);
 
-  // =========================
-  // TOGGLE THEME
-  // =========================
-
   const toggleTheme = () => {
-
-    setTheme((prev) =>
-
-      prev === "light"
-        ? "dark"
-        : "light"
-    );
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
-
-  // =========================
-  // LOGOUT
-  // =========================
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
 
-    localStorage.removeItem(
-      "token"
-    );
+    notifyAuthChange();
 
-    localStorage.removeItem(
-      "role"
-    );
-
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
-  // =========================
-  // GLOBAL SEARCH
-  // =========================
+  const handleGlobalSearch = (e) => {
+    const keyword = e.target.value;
 
-  const handleGlobalSearch =
-    (e) => {
+    setSearchKeyword(keyword);
 
-      const keyword =
-        e.target.value;
+    if (!keyword.trim()) {
+      setSearchResults(null);
+      return;
+    }
 
-      setSearchKeyword(
-        keyword
-      );
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
 
-      // EMPTY SEARCH
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const data = await globalSearch(keyword);
+        setSearchResults(data);
+      } catch (error) {
+        console.log("Global search error:", error);
+      }
+    }, 400);
+  };
 
-      if (!keyword.trim()) {
-
+  useEffect(() => {
+    const closeSearch = (e) => {
+      if (!e.target.closest(".search-container")) {
         setSearchResults(null);
-
-        return;
-      }
-
-      // CLEAR OLD TIMER
-
-      if (
-        searchTimeoutRef.current
-      ) {
-
-        clearTimeout(
-          searchTimeoutRef.current
-        );
-      }
-
-      // DEBOUNCE SEARCH ✨
-
-      searchTimeoutRef.current =
-        setTimeout(async () => {
-
-          try {
-
-            const data =
-              await globalSearch(
-                keyword
-              );
-
-            setSearchResults(
-              data
-            );
-
-          } catch (error) {
-
-            console.log(error);
-          }
-
-        }, 400);
-  };
-
-  // =========================
-  // CLOSE SEARCH DROPDOWN
-  // =========================
-
-  useEffect(() => {
-
-    const closeSearch =
-      (e) => {
-
-        if (
-
-          !e.target.closest(
-            ".search-container"
-          )
-
-        ) {
-
-          setSearchResults(
-            null
-          );
-        }
-      };
-
-    document.addEventListener(
-      "click",
-      closeSearch
-    );
-
-    return () => {
-
-      document.removeEventListener(
-        "click",
-        closeSearch
-      );
-    };
-
-  }, []);
-
-  // =========================
-  // CLEANUP TIMER
-  // =========================
-
-  useEffect(() => {
-
-    return () => {
-
-      if (
-        searchTimeoutRef.current
-      ) {
-
-        clearTimeout(
-          searchTimeoutRef.current
-        );
       }
     };
 
+    document.addEventListener("click", closeSearch);
+
+    return () => {
+      document.removeEventListener("click", closeSearch);
+    };
   }, []);
 
-  // =========================
-  // PREVENT PAGE FLASH
-  // =========================
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
-  if (!token) {
-
+  if (!isLoggedIn) {
     return null;
   }
 
   return (
-
     <div
       className={`admin-layout ${
-        theme === "dark"
-          ? "dark-mode"
-          : ""
+        theme === "dark" ? "dark-mode" : ""
       }`}
     >
-
-      {/* =========================
-          SIDEBAR
-      ========================== */}
-
       <AdminSidebar
-
-        sidebarOpen={
-          sidebarOpen
-        }
-
-        setSidebarOpen={
-          setSidebarOpen
-        }
-
-        handleLogout={
-          handleLogout
-        }
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        handleLogout={handleLogout}
       />
-
-      {/* =========================
-          MAIN AREA
-      ========================== */}
 
       <div
         className={`admin-main ${
-          sidebarOpen
-            ? ""
-            : "expanded"
+          sidebarOpen ? "" : "expanded"
         }`}
       >
-
-        {/* =========================
-            HEADER
-        ========================== */}
-
         <AdminHeader
-
-          searchKeyword={
-            searchKeyword
-          }
-
-          handleGlobalSearch={
-            handleGlobalSearch
-          }
-
-          searchResults={
-            searchResults
-          }
-
-          setSelectedResult={
-            setSelectedResult
-          }
-
-          setSelectedType={
-            setSelectedType
-          }
-
-          setSearchResults={
-            setSearchResults
-          }
-
-          setSearchKeyword={
-            setSearchKeyword
-          }
-
+          searchKeyword={searchKeyword}
+          handleGlobalSearch={handleGlobalSearch}
+          searchResults={searchResults}
+          setSelectedResult={setSelectedResult}
+          setSelectedType={setSelectedType}
+          setSearchResults={setSearchResults}
+          setSearchKeyword={setSearchKeyword}
           theme={theme}
-
-          toggleTheme={
-            toggleTheme
-          }
+          toggleTheme={toggleTheme}
         />
 
-        {/* =========================
-            PAGE CONTENT
-        ========================== */}
-
         <div className="admin-page-content">
-
           <Outlet
             context={{
-
               sidebarOpen,
-
               theme,
-
               selectedResult,
-
               selectedType,
-
               setSelectedResult,
-
               setSelectedType,
-
               setSearchResults,
-
               setSearchKeyword,
             }}
           />
-
         </div>
-
       </div>
 
-      {/* =========================
-          SEARCH RESULT MODAL
-      ========================== */}
-
       <SearchResultModal
-
-        selectedResult={
-          selectedResult
-        }
-
-        selectedType={
-          selectedType
-        }
-
-        setSelectedResult={
-          setSelectedResult
-        }
-
-        sidebarOpen={
-          sidebarOpen
-        }
+        selectedResult={selectedResult}
+        selectedType={selectedType}
+        setSelectedResult={setSelectedResult}
+        sidebarOpen={sidebarOpen}
       />
-
     </div>
   );
 }
