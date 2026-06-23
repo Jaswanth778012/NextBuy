@@ -33,11 +33,11 @@ public class FestivalBanner {
     private String festivalName;
     private String title;
     private String subtitle;
+    private String description;
 
     @Column(length = 1000)
     private String imageUrl;
 
-    private String redirectUrl;
 
     @ElementCollection
     @CollectionTable(

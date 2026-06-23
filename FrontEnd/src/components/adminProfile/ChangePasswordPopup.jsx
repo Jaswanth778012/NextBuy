@@ -13,6 +13,8 @@ function ChangePasswordPopup({
   handlePasswordSave,
   handleVerifyPassword,
   setShowPasswordPopup,
+  isVerifying,
+  isChangingPassword, 
 }) {
   const [isVerified, setIsVerified] = useState(false);
 
@@ -21,9 +23,12 @@ function ChangePasswordPopup({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const verifyPassword = async () => {
-    await handleVerifyPassword();
+  const success = await handleVerifyPassword();
+
+  if (success) {
     setIsVerified(true);
-  };
+  }
+};
 
   return (
     <div
@@ -137,26 +142,37 @@ function ChangePasswordPopup({
         </div>
 
         <div className="popup-buttons">
-          <button
-            className="cancel-btn"
-            onClick={() => {
-              setShowPasswordPopup(false);
-              setIsVerified(false);
-            }}
-          >
-            Cancel
-          </button>
+  <button
+    className="cancel-btn"
+    onClick={() => {
+      setShowPasswordPopup(false);
+      setIsVerified(false);
+    }}
+    disabled={isVerifying || isChangingPassword}
+  >
+    Cancel
+  </button>
 
-          {!isVerified ? (
-            <button className="save-btn" onClick={verifyPassword}>
-              Verify
-            </button>
-          ) : (
-            <button className="save-btn" onClick={handlePasswordSave}>
-              Update Password
-            </button>
-          )}
-        </div>
+  {!isVerified ? (
+    <button
+      className="save-btn"
+      onClick={verifyPassword}
+      disabled={isVerifying}
+    >
+      {isVerifying ? "Verifying..." : "Verify"}
+    </button>
+  ) : (
+    <button
+      className="save-btn"
+      onClick={handlePasswordSave}
+      disabled={isChangingPassword}
+    >
+      {isChangingPassword
+        ? "Changing Password..."
+        : "Update Password"}
+    </button>
+  )}
+</div>
       </div>
     </div>
   );

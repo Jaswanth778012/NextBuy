@@ -20,7 +20,7 @@ public class FestivalBannerRequestDto {
 	    private String subtitle;
 	    private String imagePublicId;
 	    private String imageUrl;
-	    private String redirectUrl;
+	    private String description;
 	    private LocalDate startDate;
 	    private LocalDate endDate;
 	    private Integer priority;

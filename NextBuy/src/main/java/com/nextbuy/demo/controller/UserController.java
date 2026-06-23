@@ -69,7 +69,23 @@ public class UserController {
 		   String username = jwtService.extractUsername(token);
 		   return userService.passwordUpdated(username, oldpassword, newpassword,Confirm);
      }
-     
+     @PostMapping("/verifyPassword/{password}")
+     public boolean verifyPassword(
+             HttpServletRequest request,
+             @PathVariable String password) {
+
+         String token =
+             request.getHeader("Authorization")
+                    .substring(7);
+
+         String username =
+             jwtService.extractUsername(token);
+
+         return userService.verifyPassword(
+             username,
+             password
+         );
+     }
      
      
 }

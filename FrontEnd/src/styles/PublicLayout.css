@@ -1,0 +1,37 @@
+.public-layout {
+  width: 100%;
+  max-width: 1280px;
+
+  margin: 0 auto;
+
+  padding: 0 2.5rem;
+
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .public-layout {
+    padding: 0 1.25rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .public-layout {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .public-layout {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .public-layout {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

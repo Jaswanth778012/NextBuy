@@ -306,8 +306,7 @@ public class SupportService {
 	      ticketRepo.save(source);
 	      
 	      ticketRepo.save(target);
-	      
-	      ticketRepo.delete(source);
+
 	      return "Tickets merged successfully";
 	  }
 }

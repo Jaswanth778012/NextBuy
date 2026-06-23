@@ -1,5 +1,7 @@
 package com.nextbuy.demo.dto;
 
+import java.util.List;
+
 import com.nextbuy.demo.entity.Category;
 import com.nextbuy.demo.entity.SubCategory;
 
@@ -17,6 +19,6 @@ public class TopSellingProductDTO {
 	    private Long totalSold;
 	    private Category category;
 	    private SubCategory subCategory;
-	    private String img;
+	    private List<String> img;
 	    private Integer stockQuantity;
 }

@@ -42,9 +42,6 @@ import "../styles/AdminProfile.css";
 
 function AdminDashboard() {
 
-  const navigate =
-    useNavigate();
-
   const location =
     useLocation();
 
@@ -58,15 +55,6 @@ function AdminDashboard() {
   const {
     sidebarOpen,
   } = useOutletContext();
-
-  // =========================
-  // TOKEN
-  // =========================
-
-  const token =
-    localStorage.getItem(
-      "token"
-    );
 
   // =========================
   // LOADING + ERROR
@@ -158,16 +146,11 @@ function AdminDashboard() {
         "Welcome Admin 🚀"
       );
 
-      navigate(
-        location.pathname,
-        {
-          replace: true,
-          state: {},
-        }
-      );
+      // Clear state without triggering navigation
+      window.history.replaceState({}, document.title, location.pathname);
     }
 
-  }, [location, navigate]);
+  }, [location]);
 
   // =========================
   // FETCH STATS
@@ -300,18 +283,11 @@ function AdminDashboard() {
 
   useEffect(() => {
 
-    if (!token) {
-
-      navigate("/login");
-
-      return;
-    }
-
     fetchStats();
 
     fetchCategories();
 
-  }, [token, navigate]);
+  }, []);
 
   // =========================
   // CATEGORY CHANGE

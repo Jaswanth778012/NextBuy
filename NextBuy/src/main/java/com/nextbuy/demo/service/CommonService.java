@@ -51,7 +51,7 @@ public class CommonService {
 	        userDto.setSubCategory(product.getSubCategory());
 	        userDto.setPrice(product.getMrp_price());
 	        userDto.setDiscountPercentage(product.getDiscountPercentage());
-	        userDto.setImageUrl(product.getImageUrl());
+	        userDto.setImageUrls(product.getImageUrls());
 	        userDto .setAttributes(product.getAttributes());
 	        userDto.setAverageRating(product.getAverageRating());
 	        userDto.setBrand(product.getBrand());
@@ -122,6 +122,10 @@ predicates.add(cb.equal(root.get("stockStatus").as(String.class), stockStatus));
 if (brandId != null) {
 predicates.add(cb.equal(root.get("brand").get("id"), brandId));
 }
+
+predicates.add(
+	    cb.equal(root.get("productStatus"), ProductStatus.ACTIVE)
+	);
 return cb.and(predicates.toArray(new Predicate[0]));
 };
 return productRepo.findAll(spec, pageable);

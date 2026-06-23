@@ -7,7 +7,7 @@ import { getAllCategories } from "../../services/adminCategoryService";
 import { getSubCategoriesByCategory } from "../../services/adminSubCategoryService";
 
 import { viewAllProducts } from "../../services/adminProductService";
-
+import { toast } from "react-toastify";
 
 import Select from "react-select";
 
@@ -27,7 +27,7 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
   festivalName: "",
   title: "",
   subtitle: "",
-  redirectUrl: "",
+  description: "",
   startDate: "",
   endDate: "",
   priority: "",
@@ -126,6 +126,30 @@ const handleProductChange = (selectedOptions) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+     if (!image) {
+    toast.error("Please select a banner image");
+    return;
+  }
+
+  if (
+    formData.categories.length === 0 &&
+    formData.subCategories.length === 0 &&
+    formData.productIds.length === 0
+  ) {
+    toast.warning(
+      "Select at least one category, subcategory, or product"
+    );
+    return;
+  }
+
+  // Validate dates
+  if (formData.startDate > formData.endDate) {
+    toast.error(
+      "End date must be after start date"
+    );
+    return;
+  }
+
     try {
       setLoading(true);
        console.log("Priority in state:", formData.priority);
@@ -134,7 +158,7 @@ const payload = {
   festivalName: formData.festivalName,
   title: formData.title,
   subtitle: formData.subtitle,
-  redirectUrl: formData.redirectUrl,
+  description: formData.description,
   startDate: formData.startDate,
   endDate: formData.endDate,
   priority: formData.priority,
@@ -148,11 +172,33 @@ const payload = {
   console.log(payload);
       await createFestivalBanner(payload, image);
 
+      toast.success("Festival banner created successfully");
+
       await fetchBanners();
 
       setShowModal(false);
+
+       setFormData({
+      festivalName: "",
+      title: "",
+      subtitle: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      priority: "",
+      active: true,
+      categories: [],
+      subCategories: [],
+      productIds: [],
+    });
+
+    setImage(null);
     } catch (error) {
       console.error("Create Banner Error", error);
+      toast.error(
+      error?.response?.data?.message ||
+      "Failed to create festival banner"
+    );
     } finally {
       setLoading(false);
     }
@@ -311,6 +357,19 @@ const payload = {
     }))}
     onChange={handleProductChange}
   />
+
+  <h4 style={{ marginTop: "15px" }}>
+  Description
+</h4>
+
+<textarea
+  name="description"
+  placeholder="Enter banner description..."
+  value={formData.description}
+  onChange={handleChange}
+  rows={4}
+  className="festival-description"
+/>
 
   <label className="festival-checkbox">
     <input

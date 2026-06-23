@@ -207,17 +207,16 @@ function ProductTable({
 
                     <td>
 
-                      <img
-                        src={
-                          product.imageUrl
-                        }
-                        alt={
-                          product.name
-                        }
-                        className="product-thumb"
-                      />
+  <img
+    src={
+      product.imageUrls?.[0] ||
+      "/no-image.png"
+    }
+    alt={product.name}
+    className="product-thumb"
+  />
 
-                    </td>
+</td>
 
                     <td>
                       {product.name}

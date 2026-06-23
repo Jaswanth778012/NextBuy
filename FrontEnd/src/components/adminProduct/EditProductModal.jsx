@@ -31,8 +31,8 @@ function EditProductModal({
   const [loading, setLoading] =
     useState(false);
 
-  const [image, setImage] =
-    useState(null);
+  const [images, setImages] =
+    useState([]);
 
   const [categories,
     setCategories] =
@@ -295,7 +295,7 @@ function EditProductModal({
   const resetForm =
     () => {
 
-      setImage(null);
+      setImages([]);
       setCategories([]);
       setBrands([]);
       setSubCategories([]);
@@ -370,7 +370,7 @@ const payload = {
         await updateProduct(
           product.id,
           payload,
-          image
+          images
         );
 
         toast.success(
@@ -737,30 +737,43 @@ const payload = {
           )}
 
           <input
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setImage(
-                e.target.files[0]
-              )
-            }
+  type="file"
+  multiple
+  accept="image/*"
+  onChange={(e) =>
+    setImages(
+      Array.from(
+        e.target.files
+      )
+    )
+  }
+/>
+
+          <div className="product-images-preview">
+
+  {images.length > 0
+    ? images.map(
+        (file, index) => (
+          <img
+            key={index}
+            src={URL.createObjectURL(file)}
+            alt={`preview-${index}`}
+            className="product-preview-image"
           />
+        )
+      )
+    : product.imageUrls?.map(
+        (url, index) => (
+          <img
+            key={index}
+            src={url}
+            alt={`product-${index}`}
+            className="product-preview-image"
+          />
+        )
+      )}
 
-          {product.imageUrl && (
-
-            <img
-              src={
-                image
-                  ? URL.createObjectURL(
-                      image
-                    )
-                  : product.imageUrl
-              }
-              alt="Preview"
-              className="product-preview-image"
-            />
-
-          )}
+</div>
 
           <button
             type="submit"

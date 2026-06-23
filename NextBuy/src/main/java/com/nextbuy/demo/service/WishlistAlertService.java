@@ -330,7 +330,7 @@ public class WishlistAlertService {
         dto.setId(alert.getId());
         dto.setProductId(product.getId());
         dto.setProductName(product.getName());
-        dto.setProductImageUrl(product.getImageUrl());
+        dto.setProductImageUrl(product.getImageUrls());
         dto.setCurrentPrice(BigDecimal.valueOf(product.getFinalPrice()));
         dto.setOriginalPrice(alert.getLastNotifiedPrice());
         dto.setAlertType(alert.getAlertType());

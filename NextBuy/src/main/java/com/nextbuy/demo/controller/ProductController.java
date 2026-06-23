@@ -35,9 +35,9 @@ public class ProductController {
 		this.productService = productService;
 	}
     @PostMapping("/addProduct")
-	public String addProduct(@RequestPart("product") @Valid ProductDTO Pdto, @RequestPart(value = "image", required = false)  MultipartFile image) {
+	public String addProduct(@RequestPart("product") @Valid ProductDTO Pdto, @RequestPart(value = "image", required = false)  List<MultipartFile> images) {
     	
-		return productService.addProduct(Pdto, image);
+		return productService.addProduct(Pdto, images);
 	}
     @DeleteMapping("/deleteProduct/{id}")
     public String deleteProduct(@PathVariable Long id) {
@@ -50,8 +50,8 @@ public class ProductController {
 	}
     
     @PatchMapping("/updateProduct/{id}")
-    public String updateProduct(@PathVariable Long id , @RequestPart("product") ProductDTO productDto, @RequestPart(value = "image", required = false) MultipartFile image) {
-    	return productService.updateProduct(id,productDto, image);
+    public String updateProduct(@PathVariable Long id , @RequestPart("product") ProductDTO productDto, @RequestPart(value = "image", required = false) List<MultipartFile> images) {
+    	return productService.updateProduct(id,productDto, images);
     }
     @PatchMapping("/updateProductStockQality/{id}/{stock}")
     public String updateProductStockQality(@PathVariable Long id, @PathVariable int stock) {

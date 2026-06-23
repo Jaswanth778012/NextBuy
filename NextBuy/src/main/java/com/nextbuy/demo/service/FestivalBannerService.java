@@ -1,22 +1,18 @@
 package com.nextbuy.demo.service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nextbuy.demo.dto.FestivalBannerRequestDto;
 import com.nextbuy.demo.dto.FestivalBannerResponseDto;
 import com.nextbuy.demo.dto.ProductSearchRequestDTO;
-
 import com.nextbuy.demo.entity.FestivalBanner;
 import com.nextbuy.demo.entity.Product;
+import com.nextbuy.demo.enums.ProductStatus;
 import com.nextbuy.demo.repository.FestivalBannerRepository;
 import com.nextbuy.demo.repository.ProductRepository;
 
@@ -55,7 +51,7 @@ public class FestivalBannerService {
         banner.setFestivalName(fsdto.getFestivalName());
         banner.setTitle(fsdto.getTitle());
         banner.setSubtitle(fsdto.getSubtitle());
-        banner.setRedirectUrl(fsdto.getRedirectUrl());
+        banner.setDescription(fsdto.getDescription());
         banner.setStartDate(fsdto.getStartDate());
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? 1 : fsdto.getPriority());
@@ -116,10 +112,12 @@ if (fsdto.getProductIds() != null &&
         LocalDate today = LocalDate.now();
 
         // Auto-disable expired banner
-        if (today.isAfter(banner.getEndDate())) {
-            banner.setActive(false);
-            fsRepo.save(banner);
-        }
+        if (today.isBefore(banner.getStartDate()) ||
+        	    today.isAfter(banner.getEndDate())) {
+
+        	    throw new RuntimeException(
+        	            "Banner is not currently available");
+        	}
 
         // Check active status
         if (!Boolean.TRUE.equals(banner.getActive())) {
@@ -128,11 +126,13 @@ if (fsdto.getProductIds() != null &&
 
         // If specific products are assigned, return them directly
         if (banner.getProducts() != null &&
-            !banner.getProducts().isEmpty()) {
+        	    !banner.getProducts().isEmpty()) {
 
-            return banner.getProducts();
-        }
-        
+        	    return banner.getProducts()
+        	            .stream()
+        	            .filter(p -> p.getProductStatus() == ProductStatus.ACTIVE)
+        	            .toList();
+        	}
         System.out.println("Categories = " + banner.getCategories());
         System.out.println("SubCategories = " + banner.getSubCategories());
 
@@ -142,12 +142,14 @@ if (fsdto.getProductIds() != null &&
 
         // Otherwise search by category/subcategory
         List<String> categories =
-                banner.getCategories() == null
+                banner.getCategories() == null ||
+                banner.getCategories().isEmpty()
                         ? null
                         : List.copyOf(banner.getCategories());
 
         List<String> subCategories =
-                banner.getSubCategories() == null
+                banner.getSubCategories() == null ||
+                banner.getSubCategories().isEmpty()
                         ? null
                         : List.copyOf(banner.getSubCategories());
 
@@ -157,7 +159,9 @@ if (fsdto.getProductIds() != null &&
         );
         return products == null
                 ? Collections.emptyList()
-                : products;
+                : products.stream()
+                          .filter(p -> p.getProductStatus() == ProductStatus.ACTIVE)
+                          .toList();
     }
     
 
@@ -179,7 +183,7 @@ if (fsdto.getProductIds() != null &&
         banner.setFestivalName(fsdto.getFestivalName());
         banner.setTitle(fsdto.getTitle());
         banner.setSubtitle(fsdto.getSubtitle());
-        banner.setRedirectUrl(fsdto.getRedirectUrl());
+        banner.setDescription(fsdto.getDescription());
         banner.setStartDate(fsdto.getStartDate());
         banner.setEndDate(fsdto.getEndDate());
         banner.setPriority(fsdto.getPriority() == null ? banner.getPriority() : fsdto.getPriority());
@@ -236,11 +240,22 @@ if (fsdto.getProductIds() != null &&
     	        return productRepo.findAllById(request.getProductIds());
     	    }
 
-        return productRepo.multisearchProducts(
-                request.getCategories(),
-                request.getSubCategories()
-                
-        );
+    	    List<String> categories =
+    	            request.getCategories() == null ||
+    	            request.getCategories().isEmpty()
+    	                    ? null
+    	                    : request.getCategories();
+
+    	    List<String> subCategories =
+    	            request.getSubCategories() == null ||
+    	            request.getSubCategories().isEmpty()
+    	                    ? null
+    	                    : request.getSubCategories();
+
+    	    return productRepo.findAllById(request.getProductIds())
+    	            .stream()
+    	            .filter(p -> p.getProductStatus() == ProductStatus.ACTIVE)
+    	            .toList();
     }
     
     
@@ -252,7 +267,7 @@ if (fsdto.getProductIds() != null &&
         dto.setTitle(banner.getTitle());
         dto.setSubtitle(banner.getSubtitle());
         dto.setImageUrl(banner.getImageUrl());
-        dto.setRedirectUrl(banner.getRedirectUrl());
+        dto.setDescription(banner.getDescription());
         dto.setStartDate(banner.getStartDate());
         dto.setEndDate(banner.getEndDate());
         dto.setPriority(banner.getPriority());
@@ -260,8 +275,16 @@ if (fsdto.getProductIds() != null &&
         dto.setSubCategories(banner.getSubCategories());
         
         dto.setProducts(banner.getProducts());
-        
-        dto.setActive(banner.getActive());
+
+        LocalDate today = LocalDate.now();
+
+        boolean isActive =
+                Boolean.TRUE.equals(banner.getActive())
+                && !today.isBefore(banner.getStartDate())
+                && !today.isAfter(banner.getEndDate());
+
+        dto.setActive(isActive);
+
         dto.setCreatedAt(banner.getCreatedAt());
         dto.setUpdatedAt(banner.getUpdatedAt());
 

@@ -4,40 +4,69 @@ const API = axios.create({
   baseURL: "http://localhost:9090",
 });
 
-let isRedirecting = false;
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+    if (
+      token &&
+      token !== "null" &&
+      token !== "undefined" &&
+      token !== ""
+    ) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
-    const token = localStorage.getItem("token");
+    const requestUrl = (error?.config?.url || "").toLowerCase();
+    const currentPath = window.location.pathname;
 
-    if ((status === 401 || status === 403) && token) {
-      if (isRedirecting) {
+    if (requestUrl.includes("/auth/")) {
+      return Promise.reject(error);
+    }
+
+    if (currentPath === "/login" || currentPath === "/register") {
+      return Promise.reject(error);
+    }
+
+    if (status === 401) {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
         return Promise.reject(error);
       }
 
-      isRedirecting = true;
+      const isProtectedEndpoint =
+        requestUrl.includes("/user/") ||
+        requestUrl.includes("/orders/") ||
+        requestUrl.includes("/cart/") ||
+        requestUrl.includes("/wishlist/") ||
+        requestUrl.includes("/address/") ||
+        requestUrl.includes("/payments/verify/") ||
+        requestUrl.includes("/wishlist-alerts/") ||
+        requestUrl.includes("/cupon/") ||
+        requestUrl.includes("/admin/");
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      if (isProtectedEndpoint) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("role");
 
-      sessionStorage.setItem(
-        "sessionExpired",
-        "Your session has expired. Please login again."
-      );
+        sessionStorage.setItem(
+          "sessionExpired",
+          "Your session has expired. Please login again."
+        );
 
-      window.location.replace("/login");
+        window.location.href = "/login";
+      }
     }
 
     return Promise.reject(error);

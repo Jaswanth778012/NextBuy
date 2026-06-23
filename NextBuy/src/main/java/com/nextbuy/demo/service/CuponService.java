@@ -101,7 +101,7 @@ public class CuponService {
 		
 		double maxDiscount = cart.getTotalPrice()* discount/100;
 		
-		cart.setCuponDiscount(discount);
+		cart.setCuponDiscount(maxDiscount);
 		
 		if (userCouponRepository.existsByUserAndCupon(user, cupon)) {
 		    throw new RuntimeException("Coupon already used by this user");
@@ -115,7 +115,7 @@ public class CuponService {
 		    finalPrice = 0;
 		}
 		
-//		cart.setDiscount(0.0);
+		cart.setDiscount(0.0);
 		
 		cart.setFinalPrice(finalPrice);
 		
