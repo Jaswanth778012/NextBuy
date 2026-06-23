@@ -9,6 +9,11 @@ import { toast } from "react-toastify";
 import WishlistModal from "../components/wishlist/WishlistModal";
 import { useCart } from "../context/CartContext";
 
+import {
+  getWishlists,
+  removeProductFromWishlist,
+} from "../services/wishlistService";
+
 import "../styles/FestivalProducts.css";
 
 function FestivalProductsPage() {
@@ -22,6 +27,7 @@ function FestivalProductsPage() {
   const [showWishlistModal, setShowWishlistModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [addingProductId, setAddingProductId] = useState(null);
+  const [wishlistedProducts, setWishlistedProducts] = useState([]);
 
   const bannerImage = location.state?.bannerImage;
   const bannerTitle = location.state?.bannerTitle;
@@ -50,9 +56,26 @@ function FestivalProductsPage() {
     user?.role === "USER" ||
     user?.role === "user";
 
-  useEffect(() => {
-    loadProducts();
-  }, [id]);
+  const loadWishlistedProducts = async () => {
+    try {
+      const wishlists = await getWishlists();
+
+      const items = [];
+
+      wishlists.forEach((wishlist) => {
+        wishlist.wishlistItems?.forEach((item) => {
+          items.push({
+            productId: item.product.id,
+            wishlistId: wishlist.id,
+          });
+        });
+      });
+
+      setWishlistedProducts(items);
+    } catch (error) {
+      console.error("Wishlist load error:", error);
+    }
+  };
 
   const loadProducts = async () => {
     try {
@@ -73,6 +96,14 @@ function FestivalProductsPage() {
       toast.error("Unable to load festival products");
     }
   };
+
+  useEffect(() => {
+    loadProducts();
+
+    if (isCustomer) {
+      loadWishlistedProducts();
+    }
+  }, [id]);
 
   const getProductId = (product) => {
     return product?.id || product?.productId;
@@ -108,7 +139,9 @@ function FestivalProductsPage() {
 
       await loadCart();
 
-      toast.success(message || "Product added to cart successfully");
+      toast.success(
+        message || "Product added to cart successfully"
+      );
     } catch (error) {
       console.log("Add to cart error:", error);
 
@@ -123,14 +156,28 @@ function FestivalProductsPage() {
     }
   };
 
-  const toggleWishlist = (product) => {
+  const isWishlisted = (productId) => {
+    return wishlistedProducts.some(
+      (item) => item.productId === productId
+    );
+  };
+
+  const getWishlistInfo = (productId) => {
+    return wishlistedProducts.find(
+      (item) => item.productId === productId
+    );
+  };
+
+  const toggleWishlist = async (product) => {
     if (!user) {
       navigate("/login");
       return;
     }
 
     if (!isCustomer) {
-      toast.error("Only customers can add products to wishlist");
+      toast.error(
+        "Only customers can add products to wishlist"
+      );
       return;
     }
 
@@ -141,8 +188,26 @@ function FestivalProductsPage() {
       return;
     }
 
-    setSelectedProductId(productId);
-    setShowWishlistModal(true);
+    const existing = getWishlistInfo(productId);
+
+    if (existing) {
+      try {
+        await removeProductFromWishlist(
+          existing.wishlistId,
+          productId
+        );
+
+        await loadWishlistedProducts();
+
+        toast.success("Removed from wishlist");
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to remove from wishlist");
+      }
+    } else {
+      setSelectedProductId(productId);
+      setShowWishlistModal(true);
+    }
   };
 
   const renderStars = (rating = 4) => {
@@ -154,7 +219,10 @@ function FestivalProductsPage() {
         <span
           key={i}
           style={{
-            color: i <= fullStars ? "#222222" : "#d1d5db",
+            color:
+              i <= fullStars
+                ? "#222222"
+                : "#d1d5db",
           }}
         >
           ★
@@ -198,7 +266,9 @@ function FestivalProductsPage() {
     const mrpPrice = getMrpPrice(product);
 
     if (mrpPrice > finalPrice) {
-      return Math.round(((mrpPrice - finalPrice) / mrpPrice) * 100);
+      return Math.round(
+        ((mrpPrice - finalPrice) / mrpPrice) * 100
+      );
     }
 
     return 0;
@@ -207,11 +277,14 @@ function FestivalProductsPage() {
   return (
     <div className="fp-page">
       <div className="fp-hero">
-        <h1>🎉 {bannerTitle || "Festival Special Sale"}</h1>
+        <h1>
+          🎉 {bannerTitle || "Festival Special Sale"}
+        </h1>
 
         <p>
-          Celebrate this festive season with exclusive discounts,
-          limited offers, and handpicked products just for you.
+          Celebrate this festive season with
+          exclusive discounts, limited offers, and
+          handpicked products just for you.
         </p>
       </div>
 
@@ -219,12 +292,16 @@ function FestivalProductsPage() {
         <div className="fp-selected-banner">
           <img
             src={bannerImage}
-            alt={bannerTitle || "Festival Banner"}
+            alt={
+              bannerTitle || "Festival Banner"
+            }
           />
         </div>
       )}
 
-      <h2 className="fp-title">Festival Products</h2>
+      <h2 className="fp-title">
+        Festival Products
+      </h2>
 
       <div className="fp-grid">
         {products.length > 0 ? (
@@ -232,77 +309,130 @@ function FestivalProductsPage() {
             const productId = getProductId(p);
             const finalPrice = getFinalPrice(p);
             const mrpPrice = getMrpPrice(p);
-            const discountPercentage = getDiscountPercentage(p);
+            const discountPercentage =
+              getDiscountPercentage(p);
 
             return (
               <div className="fp-card" key={productId}>
-                {(!user || isCustomer) && (
-                  <div
-                    className="fp-wishlist"
-                    onClick={() => toggleWishlist(p)}
-                  >
-                    🤍
-                  </div>
-                )}
+  {/* Discount Badge */}
+  {discountPercentage > 0 && (
+    <div className="fp-discount-badge">
+      {discountPercentage}% OFF
+    </div>
+  )}
 
-                <img
-                  src={getImage(p)}
-                  className="fp-img"
-                  alt={p.name || p.productName || "Product"}
-                />
+  {/* Wishlist Button */}
+  {(!user || isCustomer) && (
+    <div className="fp-card-top">
+  <button
+    className="fp-wishlist-btn"
+    onClick={() => toggleWishlist(p)}
+  >
+    {isWishlisted(productId)
+      ? "❤️"
+      : "🤍"}
+  </button>
+</div>
+  )}
 
-                <div className="fp-name">
-                  {p.name || p.productName}
-                </div>
+  {/* Product Image */}
+  <div className="fp-image-wrapper">
+    <img
+      src={getImage(p)}
+      alt={
+        p.name ||
+        p.productName ||
+        "Product"
+      }
+    />
+  </div>
 
-                <div className="fp-stars">
-                  {renderStars(p.averageRating)}
-                </div>
+  {/* Content */}
+  <div className="fp-content">
+    <div className="fp-title-row">
+      <h4 className="fp-name">
+        {p.name || p.productName}
+      </h4>
 
-                <div className="fp-price-row">
-                  <span className="fp-final-price">
-                    ₹{finalPrice.toFixed(2)}
-                  </span>
+      <div className="fp-stock-chip">
+  {p.stockStatus === "AVAILABLE"
+    ? "🟢 In Stock"
+    : "🟠 Limited"}
+</div>
+    </div>
 
-                  {mrpPrice > finalPrice && (
-                    <span className="fp-mrp-price">
-                      ₹{mrpPrice.toFixed(2)}
-                    </span>
-                  )}
+    <div className="fp-meta-row">
+      <span className="fp-brand">
+        {p.brand?.name || "Brand"}
+      </span>
 
-                  {discountPercentage > 0 && (
-                    <span className="fp-offer-price">
-                      {discountPercentage}% OFF
-                    </span>
-                  )}
-                </div>
+      <span className="fp-rating">
+        ⭐ {(p.averageRating || 4.5).toFixed(1)}
+      </span>
+    </div>
 
-                {(!user || isCustomer) && (
-                  <div className="fp-actions">
-                    <button
-                      className="fp-btn"
-                      onClick={() => handleAddToCart(p)}
-                      disabled={addingProductId === productId}
-                    >
-                      {addingProductId === productId
-                        ? "Adding..."
-                        : "Add to Cart"}
-                    </button>
-                  </div>
-                )}
-              </div>
+    <div className="fp-price-row">
+      <span className="fp-final-price">
+        ₹{finalPrice.toLocaleString()}
+      </span>
+
+      {mrpPrice > finalPrice && (
+        <span className="fp-mrp-price">
+          ₹{mrpPrice.toLocaleString()}
+        </span>
+      )}
+    </div>
+
+    {mrpPrice > finalPrice && (
+      <div className="fp-savings">
+        Save ₹
+        {(
+          mrpPrice - finalPrice
+        ).toLocaleString()}
+      </div>
+    )}
+  </div>
+
+  {/* Actions */}
+  {(!user || isCustomer) && (
+    <div className="fp-card-actions">
+      <button
+        className="fp-cart-btn"
+        onClick={() =>
+          handleAddToCart(p)
+        }
+        disabled={
+          addingProductId ===
+          productId
+        }
+      >
+        🛒
+        {addingProductId ===
+        productId
+          ? " Adding..."
+          : " Cart"}
+      </button>
+    </div>
+  )}
+</div>
             );
           })
         ) : (
-          <p className="fp-empty">No festival products found.</p>
+          <p className="fp-empty">
+            No festival products found.
+          </p>
         )}
       </div>
-
-      <WishlistModal
-        show={showWishlistModal}
-        onClose={() => setShowWishlistModal(false)}
-        productId={selectedProductId}
-      />
+<WishlistModal
+  show={showWishlistModal}
+  onClose={() =>
+    setShowWishlistModal(false)
+  }
+  productId={selectedProductId}
+  onWishlistUpdated={
+    loadWishlistedProducts
+  }
+/>
     </div>
   );
 }
