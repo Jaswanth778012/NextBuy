@@ -29,11 +29,18 @@ const userService = {
 
     // PATCH /User/passwordUpdated/{oldpassword}/{newpassword}/{Confirm}
     changePassword: (oldPassword, newPassword, confirmPassword) => 
-        API.patch(`/User/passwordUpdated/${encodeURIComponent(oldPassword)}/${encodeURIComponent(newPassword)}/${encodeURIComponent(confirmPassword)}`),
+        API.patch(`/User/passwordUpdated/${oldPassword}/${newPassword}/${confirmPassword}`),
 
     // DELETE /User/deleteProfile/{username}/{oldpassword}
-    deleteProfile: (username, oldPassword) => 
-        API.delete(`/User/deleteProfile/${encodeURIComponent(username)}/${encodeURIComponent(oldPassword)}`)
-};
+   deleteProfile: (username, oldPassword) => {
+    console.log(
+      `/User/deleteProfile/${encodeURIComponent(username)}/${encodeURIComponent(oldPassword)}`
+    );
 
+    return API.delete(
+      `/User/deleteProfile/${encodeURIComponent(username)}/${encodeURIComponent(oldPassword)}`
+    );
+}
+};
+    
 export default userService;

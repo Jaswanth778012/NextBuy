@@ -1,15 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-} from "react";
-
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { getWishlists } from "../services/wishlistService";
 import userService from "../services/userService";
 import { notifyAuthChange } from "../hooks/useAuth";
-
+import { getAlerts } from "../services/wishlistAlertService";
 import ProfileSidebar from "../components/userProfile/ProfileSidebar";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
 import ChangePasswordForm from "../components/userProfile/ChangePasswordForm";
@@ -20,30 +15,31 @@ import "../styles/UserProfile.css";
 
 function UserProfile() {
   const navigate = useNavigate();
-
   const fileInputRef = useRef(null);
-
+const [showImagePopup, setShowImagePopup] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
+  const [alertCount, setAlertCount] = useState(0);
+const [wishlistCount, setWishlistCount] = useState(0);
   const [editMode, setEditMode] = useState(false);
-
-  const [showPasswordForm, setShowPasswordForm] =
-    useState(false);
-
-  const [showDeleteConfirm, setShowDeleteConfirm] =
-    useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const [user, setUser] = useState(null);
 
-  const [selectedImage, setSelectedImage] =
-    useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
 
-  const [imagePreview, setImagePreview] =
-    useState(null);
+  if (!file) return;
 
-  const [deletePassword, setDeletePassword] =
-    useState("");
+  setSelectedImage(file);
+  setImagePreview(URL.createObjectURL(file));
+
+  console.log("Selected Image:", file);
+};
+  const [deletePassword, setDeletePassword] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -56,41 +52,39 @@ function UserProfile() {
     country: "",
   });
 
-  const [passwordData, setPasswordData] =
-    useState({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+ useEffect(() => {
+  fetchProfile();
+  fetchWishlistCount();
+   fetchAlertCount();
+}, []);
 
   const fetchProfile = async () => {
     try {
       setLoading(true);
 
-      const response =
-        await userService.getMyProfile();
-
+      const response = await userService.getMyProfile();
       const userData = response.data;
 
       setUser(userData);
 
       setFormData({
-        name:
-          userData.name ||
-          userData.username ||
-          "",
-        email: userData.email || "",
-        phone: userData.phone || "",
-        address: userData.address || "",
-        city: userData.city || "",
-        state: userData.state || "",
-        pincode: userData.pincode || "",
-        country: userData.country || "",
-      });
+  name: userData.name || "",
+  email: userData.email || "",
+  phone: userData.mobileNumber || "",
+  address: userData.addressLine1 || "",
+  city: userData.city || "",
+  state: userData.state || "",
+  pincode:userData.pincode||"",
+  country: userData.country || "",
+});
     } catch (err) {
       toast.error("Failed to load profile");
       console.error(err);
@@ -98,7 +92,26 @@ function UserProfile() {
       setLoading(false);
     }
   };
+  const fetchAlertCount = async () => {
+  try {
+    const data = await getAlerts();
 
+    console.log("Alerts:", data);
+
+    setAlertCount(data.length);
+  } catch (error) {
+    console.log(error);
+  }
+};
+ const fetchWishlistCount = async () => {
+  try {
+    const data = await getWishlists();
+
+    setWishlistCount(data.length);
+  } catch (error) {
+    console.log(error);
+  }
+};
   const handleInputChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -113,213 +126,141 @@ function UserProfile() {
     }));
   };
 
-  const handleImageSelect = (e) => {
-    const file = e.target.files[0];
+  
 
-    if (!file) return;
+const handleUpdateProfile = async (e) => {
+  e.preventDefault();
 
-    if (!file.type.startsWith("image/")) {
-      toast.error(
-        "Please select an image file"
-      );
-      return;
-    }
+  if (!formData.name.trim()) {
+    toast.error("Name is required");
+    return;
+  }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(
-        "Image must be less than 5MB"
-      );
-      return;
-    }
+  if (!formData.email.trim()) {
+    toast.error("Email is required");
+    return;
+  }
 
-    setSelectedImage(file);
+  try {
+    setSaving(true);
 
-    setImagePreview(
-      URL.createObjectURL(file)
+    const profilePayload = {
+      name: formData.name,
+      email: formData.email,
+      mobileNumber: formData.phone
+        ? Number(formData.phone)
+        : null,
+      addressLine1: formData.address,
+      city: formData.city,
+      state: formData.state,
+      country: formData.country,
+       pincode: formData.pincode
+    ? Number(formData.pincode)
+    : null,
+    };
+
+    const response = await userService.updateProfile(
+      profilePayload,
+      selectedImage
     );
-  };
 
-  const handleUpdateProfile = async (
-    e
-  ) => {
-    e.preventDefault();
+    toast.success(
+      response?.data || "Profile updated successfully"
+    );
 
-    try {
-      setSaving(true);
+    await fetchProfile();
 
-      const profilePayload = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.pincode,
-        country: formData.country,
-      };
+    setEditMode(false);
+    setSelectedImage(null);
+    setImagePreview(null);
+  } catch (err) {
+    toast.error(
+      err?.response?.data?.message ||
+      err?.response?.data ||
+      "Failed to update profile"
+    );
+  } finally {
+    setSaving(false);
+  }
+};
 
-      const response =
-        await userService.updateProfile(
-          profilePayload,
-          selectedImage
-        );
+  const handleChangePassword = async (e) => {
+    console.log("Function called");
+  if (e) e.preventDefault();
 
-      toast.success(
-        response.data ||
-          "Profile updated successfully"
-      );
+  if (passwordData.newPassword !== passwordData.confirmPassword) {
+    toast.error("New passwords do not match");
+    return;
+  }
 
-      await fetchProfile();
+  try {
+    setSaving(true);
 
-      const storedUser = JSON.parse(
-        localStorage.getItem("user") ||
-          "{}"
-      );
+    const response = await userService.changePassword(
+      passwordData.currentPassword,
+      passwordData.newPassword,
+      passwordData.confirmPassword
+    );
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          ...storedUser,
-          name: formData.name,
-          email: formData.email,
-        })
-      );
+    toast.success(response.data);
 
-      notifyAuthChange();
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
 
-      setEditMode(false);
+    setShowPasswordForm(false);
 
-      setSelectedImage(null);
+  } catch (err) {
+     console.log("Full Error:", err);
+  console.log("Response:", err?.response);
+  console.log("Data:", err?.response?.data);
 
-      setImagePreview(null);
-    } catch (err) {
-      toast.error(
-        err?.response?.data ||
-          "Failed to update profile"
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
+  toast.error(
+    err?.response?.data ||
+    "Failed to change password"
+  );
+    toast.error(
+      err?.response?.data ||
+      "Failed to change password"
+    );
+  } finally {
+    setSaving(false);
+  }
+};
+ 
+const handleDeleteProfile = async () => {
+  try {
+    console.log("Username:", user?.username);
+    console.log("Password:", deletePassword);
 
-  const handleChangePassword =
-    async (e) => {
-      e.preventDefault();
+    const response = await userService.deleteProfile(
+      user?.username,
+      deletePassword
+    );
 
-      if (
-        passwordData.newPassword !==
-        passwordData.confirmPassword
-      ) {
-        toast.error(
-          "New passwords do not match"
-        );
-        return;
-      }
+    console.log("SUCCESS:", response);
+  } catch (err) {
+    console.log("FULL ERROR:", err);
+    console.log("RESPONSE:", err.response);
+    console.log("DATA:", err.response?.data);
 
-      if (
-        passwordData.newPassword.length <
-        6
-      ) {
-        toast.error(
-          "Password must be at least 6 characters"
-        );
-        return;
-      }
+    toast.error(err?.response?.data || "Failed to delete account");
+  }
+};
 
-      try {
-        setSaving(true);
+  const getInitials = (name) =>
+    name
+      ? name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2)
+      : "U";
 
-        const response =
-          await userService.changePassword(
-            passwordData.currentPassword,
-            passwordData.newPassword,
-            passwordData.confirmPassword
-          );
-
-        toast.success(
-          response.data ||
-            "Password changed successfully"
-        );
-
-        setPasswordData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-
-        setShowPasswordForm(false);
-      } catch (err) {
-        toast.error(
-          err?.response?.data ||
-            "Failed to change password"
-        );
-      } finally {
-        setSaving(false);
-      }
-    };
-
-  const handleDeleteProfile =
-    async () => {
-      if (!deletePassword.trim()) {
-        toast.error(
-          "Please enter your password"
-        );
-        return;
-      }
-
-      try {
-        setSaving(true);
-
-        const response =
-          await userService.deleteProfile(
-            user?.username,
-            deletePassword
-          );
-
-        toast.success(
-          response.data ||
-            "Account deleted"
-        );
-
-        localStorage.removeItem(
-          "token"
-        );
-
-        localStorage.removeItem(
-          "user"
-        );
-
-        localStorage.removeItem(
-          "role"
-        );
-
-        notifyAuthChange();
-
-        navigate("/login");
-      } catch (err) {
-        toast.error(
-          err?.response?.data ||
-            "Failed to delete account"
-        );
-      } finally {
-        setSaving(false);
-      }
-    };
-
-  const getInitials = (name) => {
-    if (!name) return "U";
-
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const displayImage =
-    imagePreview ||
-    user?.profileImageUrl;
+  const displayImage = imagePreview || user?.dpUrl;
 
   if (loading) {
     return (
@@ -331,106 +272,90 @@ function UserProfile() {
   }
 
   return (
-    <div className="user-profile-page">
-      <div className="profile-container">
+    
+    <div className="user-profile-container">
 
-        <ProfileSidebar
-          user={user}
-          editMode={editMode}
-          setEditMode={setEditMode}
-          showPasswordForm={
-            showPasswordForm
-          }
-          setShowPasswordForm={
-            setShowPasswordForm
-          }
-          showDeleteConfirm={
-            showDeleteConfirm
-          }
-          setShowDeleteConfirm={
-            setShowDeleteConfirm
-          }
-          displayImage={displayImage}
-          getInitials={getInitials}
-          fileInputRef={fileInputRef}
-          handleImageSelect={
-            handleImageSelect
-          }
-          setSelectedImage={
-            setSelectedImage
-          }
-          setImagePreview={
-            setImagePreview
-          }
-        />
+      {/* LEFT SIDEBAR */}
+      <ProfileSidebar
+        user={user}
+          wishlistCount={wishlistCount}
+        editMode={editMode}
+         alertCount={alertCount}
+        setEditMode={setEditMode}
+        showPasswordForm={showPasswordForm}
+        setShowPasswordForm={setShowPasswordForm}
+        showDeleteConfirm={showDeleteConfirm}
+        setShowDeleteConfirm={setShowDeleteConfirm}
+        displayImage={displayImage}
+        getInitials={getInitials}
+        fileInputRef={fileInputRef}
+      
+        setSelectedImage={setSelectedImage}
+        setImagePreview={setImagePreview}
+          setShowImagePopup={setShowImagePopup}
+      />
 
-        <div className="profile-content">
+      {/* RIGHT CONTENT */}
+      <div className="user-profile-content-area">
 
-          {editMode && (
+        {editMode && (
             <EditProfileForm
-              formData={formData}
-              handleInputChange={
-                handleInputChange
-              }
-              handleUpdateProfile={
-                handleUpdateProfile
-              }
-              saving={saving}
-              setEditMode={
-                setEditMode
-              }
-            />
-          )}
+  formData={formData}
+  handleInputChange={handleInputChange}
+  handleUpdateProfile={handleUpdateProfile}
+  saving={saving}
+  setEditMode={setEditMode}
+  handleImageChange={handleImageChange}
+/>
+        )}
 
-          {showPasswordForm && (
-            <ChangePasswordForm
-              passwordData={
-                passwordData
-              }
-              handlePasswordChange={
-                handlePasswordChange
-              }
-              handleChangePassword={
-                handleChangePassword
-              }
-              saving={saving}
-              setShowPasswordForm={
-                setShowPasswordForm
-              }
-            />
-          )}
+        {showPasswordForm && (
+          <ChangePasswordForm
+  passwordData={passwordData}
+  handlePasswordChange={handlePasswordChange}
+  handleChangePassword={handleChangePassword}
+  saving={saving}
+  setShowPasswordForm={setShowPasswordForm}
+/>
+        )}
 
-          {showDeleteConfirm && (
-            <DeleteAccountForm
-              deletePassword={
-                deletePassword
-              }
-              setDeletePassword={
-                setDeletePassword
-              }
-              handleDeleteProfile={
-                handleDeleteProfile
-              }
-              saving={saving}
-              setShowDeleteConfirm={
-                setShowDeleteConfirm
-              }
-            />
-          )}
+        {showDeleteConfirm && (
+          <DeleteAccountForm
+            deletePassword={deletePassword}
+            setDeletePassword={setDeletePassword}
+            handleDeleteProfile={handleDeleteProfile}
+            saving={saving}
+            setShowDeleteConfirm={setShowDeleteConfirm}
+          />
+        )}
 
-          {!editMode &&
-            !showPasswordForm &&
-            !showDeleteConfirm && (
-              <ProfileInfo
-                user={user}
-                setShowPasswordForm={
-                  setShowPasswordForm
-                }
-              />
-            )}
+        {!editMode && !showPasswordForm && !showDeleteConfirm && (
+          <ProfileInfo
+            user={user}
+            setShowPasswordForm={setShowPasswordForm}
+          />
+        )}
 
-        </div>
       </div>
+      {showImagePopup && displayImage && (
+  <div
+    className="image-preview-overlay"
+    onClick={() => setShowImagePopup(false)}
+  >
+    <div
+      className="image-preview-popup"
+      onClick={(e) => e.stopPropagation()}
+    >
+     
+
+      <img
+        src={displayImage}
+        alt="Profile"
+        className="image-preview-large"
+      />
+    </div>
+  </div>
+)}
     </div>
   );
 }

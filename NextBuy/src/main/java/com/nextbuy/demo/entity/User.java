@@ -49,6 +49,8 @@ public class User {
 	
 	@Column
 	private Long mobileNumber;
+	@Column
+	private Long pincode;
 	
 	@Column(nullable = false , unique = true)
 	private String email;

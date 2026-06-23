@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FestivalBanner from "../components/adminFestival/FestivalBanner";
 import "../styles/Home.css";
@@ -7,6 +7,15 @@ function Home() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+
+  useEffect(() => {
+    if (role === "ADMIN") {
+      navigate("/admin/dashboard", {
+        replace: true,
+      });
+    }
+  }, [role, navigate]);
 
   const handleLogin = () => {
     navigate("/login");
@@ -16,7 +25,10 @@ function Home() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("user");
-    navigate("/login");
+
+    navigate("/login", {
+      replace: true,
+    });
   };
 
   return (
@@ -40,7 +52,6 @@ function Home() {
         )}
       </div>
 
-      {/* FESTIVAL BANNER */}
       <div className="festival-banner-wrapper">
         <FestivalBanner />
       </div>
