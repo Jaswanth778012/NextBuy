@@ -17,6 +17,8 @@ function FestivalBannerTable({
               <th>Title</th>
               <th>Category</th>
               <th>Sub Category</th>
+              <th>Related Categories</th>
+<th>Related Sub Categories</th>
               <th>Product</th>
               <th>Description</th>
               <th>Start Date</th>
@@ -31,7 +33,7 @@ function FestivalBannerTable({
             {banners.length === 0 ? (
               <tr>
                 <td
-                  colSpan="13"
+                  colSpan="15"
                   className="festival-empty"
                 >
                   No Festival Banners Found
@@ -68,6 +70,18 @@ function FestivalBannerTable({
 <td>
   {banner.subCategories?.join(", ") || "-"}
 </td>
+<td>
+  {banner.relatedCategories?.length > 0
+    ? banner.relatedCategories.join(", ")
+    : "-"}
+</td>
+
+<td>
+  {banner.relatedSubCategories?.length > 0
+    ? banner.relatedSubCategories.join(", ")
+    : "-"}
+</td>
+
 
                  <td>
   {banner.products?.length > 0

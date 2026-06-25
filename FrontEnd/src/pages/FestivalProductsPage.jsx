@@ -9,6 +9,16 @@ import { toast } from "react-toastify";
 import WishlistModal from "../components/wishlist/WishlistModal";
 import { useCart } from "../context/CartContext";
 
+import {
+  getFestivalProducts,
+  getRelatedFestivalProducts
+} from "../services/adminFestivalBannerService";
+
+import {
+  getWishlists,
+  removeProductFromWishlist,
+} from "../services/wishlistService";
+
 import "../styles/FestivalProducts.css";
 
 function FestivalProductsPage() {
@@ -19,9 +29,11 @@ function FestivalProductsPage() {
   const { addToCart, loadCart } = useCart();
 
   const [products, setProducts] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [showWishlistModal, setShowWishlistModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [addingProductId, setAddingProductId] = useState(null);
+  const [wishlistedProducts, setWishlistedProducts] = useState([]);
 
   const bannerImage = location.state?.bannerImage;
   const bannerTitle = location.state?.bannerTitle;
@@ -50,29 +62,75 @@ function FestivalProductsPage() {
     user?.role === "USER" ||
     user?.role === "user";
 
-  useEffect(() => {
-    loadProducts();
-  }, [id]);
-
-  const loadProducts = async () => {
+  const loadWishlistedProducts = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:9090/festival-banner/festivalProducts/${id}`
-      );
+      const wishlists = await getWishlists();
 
-      if (!res.ok) {
-        throw new Error("Failed to load festival products");
-      }
+      const items = [];
 
-      const data = await res.json();
+      wishlists.forEach((wishlist) => {
+        wishlist.wishlistItems?.forEach((item) => {
+          items.push({
+            productId: item.product.id,
+            wishlistId: wishlist.id,
+          });
+        });
+      });
 
-      setProducts(Array.isArray(data) ? data : []);
+      setWishlistedProducts(items);
     } catch (error) {
-      console.log("Festival products error:", error);
-      setProducts([]);
-      toast.error("Unable to load festival products");
+      console.error("Wishlist load error:", error);
     }
   };
+
+const loadProducts = async () => {
+  try {
+    const { data } =
+      await getFestivalProducts(id);
+
+    setProducts(
+      Array.isArray(data) ? data : []
+    );
+  } catch (error) {
+    console.log(
+      "Festival products error:",
+      error
+    );
+
+    setProducts([]);
+
+    toast.error(
+      "Unable to load festival products"
+    );
+  }
+};
+
+const loadRelatedProducts = async () => {
+  try {
+    const { data } =
+      await getRelatedFestivalProducts(id);
+
+    setRelatedProducts(
+      Array.isArray(data) ? data : []
+    );
+  } catch (error) {
+    console.log(
+      "Related products error:",
+      error
+    );
+
+    setRelatedProducts([]);
+  }
+};
+
+ useEffect(() => {
+  loadProducts();
+  loadRelatedProducts();
+
+  if (isCustomer) {
+    loadWishlistedProducts();
+  }
+}, [id]);
 
   const getProductId = (product) => {
     return product?.id || product?.productId;
@@ -108,7 +166,9 @@ function FestivalProductsPage() {
 
       await loadCart();
 
-      toast.success(message || "Product added to cart successfully");
+      toast.success(
+        message || "Product added to cart successfully"
+      );
     } catch (error) {
       console.log("Add to cart error:", error);
 
@@ -123,14 +183,28 @@ function FestivalProductsPage() {
     }
   };
 
-  const toggleWishlist = (product) => {
+  const isWishlisted = (productId) => {
+    return wishlistedProducts.some(
+      (item) => item.productId === productId
+    );
+  };
+
+  const getWishlistInfo = (productId) => {
+    return wishlistedProducts.find(
+      (item) => item.productId === productId
+    );
+  };
+
+  const toggleWishlist = async (product) => {
     if (!user) {
       navigate("/login");
       return;
     }
 
     if (!isCustomer) {
-      toast.error("Only customers can add products to wishlist");
+      toast.error(
+        "Only customers can add products to wishlist"
+      );
       return;
     }
 
@@ -141,8 +215,26 @@ function FestivalProductsPage() {
       return;
     }
 
-    setSelectedProductId(productId);
-    setShowWishlistModal(true);
+    const existing = getWishlistInfo(productId);
+
+    if (existing) {
+      try {
+        await removeProductFromWishlist(
+          existing.wishlistId,
+          productId
+        );
+
+        await loadWishlistedProducts();
+
+        toast.success("Removed from wishlist");
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to remove from wishlist");
+      }
+    } else {
+      setSelectedProductId(productId);
+      setShowWishlistModal(true);
+    }
   };
 
   const renderStars = (rating = 4) => {
@@ -154,7 +246,10 @@ function FestivalProductsPage() {
         <span
           key={i}
           style={{
-            color: i <= fullStars ? "#222222" : "#d1d5db",
+            color:
+              i <= fullStars
+                ? "#222222"
+                : "#d1d5db",
           }}
         >
           ★
@@ -198,20 +293,175 @@ function FestivalProductsPage() {
     const mrpPrice = getMrpPrice(product);
 
     if (mrpPrice > finalPrice) {
-      return Math.round(((mrpPrice - finalPrice) / mrpPrice) * 100);
+      return Math.round(
+        ((mrpPrice - finalPrice) / mrpPrice) * 100
+      );
     }
 
     return 0;
   };
 
+  const renderProductCard = (p) => {
+  const productId = getProductId(p);
+
+  const finalPrice =
+    getFinalPrice(p);
+
+  const mrpPrice =
+    getMrpPrice(p);
+
+  const discountPercentage =
+    getDiscountPercentage(p);
+
+  return (
+    <div
+      className="fp-card"
+      key={productId}
+    >
+      {discountPercentage > 0 && (
+        <div className="fp-discount-badge">
+          {discountPercentage}% OFF
+        </div>
+      )}
+
+      {(!user || isCustomer) && (
+        <div className="fp-card-top">
+          <button
+            className="fp-wishlist-btn"
+            onClick={() =>
+              toggleWishlist(p)
+            }
+          >
+            {isWishlisted(productId)
+              ? "❤️"
+              : "🤍"}
+          </button>
+        </div>
+      )}
+
+      <div className="fp-image-wrapper">
+        <img
+          src={getImage(p)}
+          alt={
+            p.name ||
+            p.productName
+          }
+        />
+      </div>
+
+      <div className="fp-content">
+        <div className="fp-title-row">
+          <h4 className="fp-name">
+            {p.name ||
+              p.productName}
+          </h4>
+
+          <div
+            className={`fp-stock-chip ${
+              p.stockStatus ===
+              "AVAILABLE"
+                ? "available"
+                : p.stockStatus ===
+                  "LIMITED_STOCK"
+                ? "limited"
+                : "out-stock"
+            }`}
+          >
+            {p.stockStatus ===
+              "AVAILABLE" &&
+              "🟢 In Stock"}
+
+            {p.stockStatus ===
+              "LIMITED_STOCK" &&
+              "🟠 Limited Stock"}
+
+            {p.stockStatus ===
+              "OUT_OFF_STOCK" &&
+              "🔴 Out of Stock"}
+          </div>
+        </div>
+
+        <div className="fp-meta-row">
+          <span className="fp-brand">
+            {p.brand?.name ||
+              "Brand"}
+          </span>
+
+          <span className="fp-rating">
+            ⭐ {(
+              p.averageRating ||
+              4.5
+            ).toFixed(1)}
+          </span>
+        </div>
+
+        <div className="fp-price-row">
+          <span className="fp-final-price">
+            ₹
+            {finalPrice.toLocaleString()}
+          </span>
+
+          {mrpPrice >
+            finalPrice && (
+            <span className="fp-mrp-price">
+              ₹
+              {mrpPrice.toLocaleString()}
+            </span>
+          )}
+        </div>
+
+        {mrpPrice >
+          finalPrice && (
+          <div className="fp-savings">
+            Save ₹
+            {(
+              mrpPrice -
+              finalPrice
+            ).toLocaleString()}
+          </div>
+        )}
+      </div>
+
+      {(!user ||
+        isCustomer) && (
+        <div className="fp-card-actions">
+          <button
+            className="fp-cart-btn"
+            onClick={() =>
+              handleAddToCart(p)
+            }
+            disabled={
+              addingProductId ===
+                productId ||
+              p.stockStatus ===
+                "OUT_OFF_STOCK"
+            }
+          >
+            {p.stockStatus ===
+            "OUT_OFF_STOCK"
+              ? "Out of Stock"
+              : addingProductId ===
+                productId
+              ? "🛒 Adding..."
+              : "🛒 Cart"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
   return (
     <div className="fp-page">
       <div className="fp-hero">
-        <h1>🎉 {bannerTitle || "Festival Special Sale"}</h1>
+        <h1>
+          🎉 {bannerTitle || "Festival Special Sale"}
+        </h1>
 
         <p>
-          Celebrate this festive season with exclusive discounts,
-          limited offers, and handpicked products just for you.
+          Celebrate this festive season with
+          exclusive discounts, limited offers, and
+          handpicked products just for you.
         </p>
       </div>
 
@@ -219,90 +469,60 @@ function FestivalProductsPage() {
         <div className="fp-selected-banner">
           <img
             src={bannerImage}
-            alt={bannerTitle || "Festival Banner"}
+            alt={
+              bannerTitle || "Festival Banner"
+            }
           />
         </div>
       )}
 
-      <h2 className="fp-title">Festival Products</h2>
+      <h2 className="fp-title">
+        Festival Products
+      </h2>
 
       <div className="fp-grid">
-        {products.length > 0 ? (
-          products.map((p) => {
-            const productId = getProductId(p);
-            const finalPrice = getFinalPrice(p);
-            const mrpPrice = getMrpPrice(p);
-            const discountPercentage = getDiscountPercentage(p);
+  {products.length > 0 ? (
+    products.map(renderProductCard)
+  ) : (
+    <p className="fp-empty">
+      No festival products found.
+    </p>
+  )}
+</div>
 
-            return (
-              <div className="fp-card" key={productId}>
-                {(!user || isCustomer) && (
-                  <div
-                    className="fp-wishlist"
-                    onClick={() => toggleWishlist(p)}
-                  >
-                    🤍
-                  </div>
-                )}
 
-                <img
-                  src={getImage(p)}
-                  className="fp-img"
-                  alt={p.name || p.productName || "Product"}
-                />
 
-                <div className="fp-name">
-                  {p.name || p.productName}
-                </div>
+{relatedProducts.length > 0 && (
+  <>
+    <div className="fp-section-divider">
+  Customers also bought
+</div>
+    <h2
+      className="fp-title"
+      style={{
+        marginTop: "60px",
+      }}
+    >
+      Related Products
+    </h2>
 
-                <div className="fp-stars">
-                  {renderStars(p.averageRating)}
-                </div>
-
-                <div className="fp-price-row">
-                  <span className="fp-final-price">
-                    ₹{finalPrice.toFixed(2)}
-                  </span>
-
-                  {mrpPrice > finalPrice && (
-                    <span className="fp-mrp-price">
-                      ₹{mrpPrice.toFixed(2)}
-                    </span>
-                  )}
-
-                  {discountPercentage > 0 && (
-                    <span className="fp-offer-price">
-                      {discountPercentage}% OFF
-                    </span>
-                  )}
-                </div>
-
-                {(!user || isCustomer) && (
-                  <div className="fp-actions">
-                    <button
-                      className="fp-btn"
-                      onClick={() => handleAddToCart(p)}
-                      disabled={addingProductId === productId}
-                    >
-                      {addingProductId === productId
-                        ? "Adding..."
-                        : "Add to Cart"}
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })
-        ) : (
-          <p className="fp-empty">No festival products found.</p>
-        )}
-      </div>
-
-      <WishlistModal
-        show={showWishlistModal}
-        onClose={() => setShowWishlistModal(false)}
-        productId={selectedProductId}
-      />
+    <div className="fp-grid">
+      {relatedProducts.map(
+        renderProductCard
+      )}
+    </div>
+  </>
+)}
+<WishlistModal
+  show={showWishlistModal}
+  onClose={() =>
+    setShowWishlistModal(false)
+  }
+  productId={selectedProductId}
+  onWishlistUpdated={
+    loadWishlistedProducts
+  }
+/>
     </div>
   );
 }

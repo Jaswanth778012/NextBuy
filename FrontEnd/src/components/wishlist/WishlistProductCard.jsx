@@ -129,7 +129,7 @@ function WishlistProductCard({
           }
         >
           <FaShoppingCart />
-          Add To Cart
+           Cart
         </button>
 
         <button
