@@ -63,6 +63,22 @@ public class FestivalBanner {
     )
     private List<Product> products;
     
+    @ElementCollection
+    @CollectionTable(
+            name = "festival_related_categories",
+            joinColumns = @JoinColumn(name = "festival_banner_id")
+    )
+    @Column(name = "category")
+    private List<String> relatedCategories;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "festival_related_subcategories",
+            joinColumns = @JoinColumn(name = "festival_banner_id")
+    )
+    @Column(name = "subcategory")
+    private List<String> relatedSubCategories;
+    
     
     private LocalDate startDate;
     private LocalDate endDate;

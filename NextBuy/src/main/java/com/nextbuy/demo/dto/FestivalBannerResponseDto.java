@@ -27,6 +27,8 @@ public class FestivalBannerResponseDto {
     private Boolean active;
     private List<String> categories;
     private List<String> subCategories;
+    private List<String> relatedCategories;
+    private List<String> relatedSubCategories;
     private List<Product> products;
 
     

@@ -95,6 +95,19 @@ public class FestivalBannerController {
         );
     }
     
+    @GetMapping("/relatedProducts/{bannerId}")
+    public ResponseEntity<List<Product>>
+    getRelatedProductsByBannerId(
+            @PathVariable Long bannerId) {
+
+        return ResponseEntity.ok(
+                festivalBannerService
+                        .getRelatedProductsByBannerId(
+                                bannerId
+                        )
+        );
+    }
+    
     @PostMapping("/BannerProducts")
     public ResponseEntity<List<Product>> searchProducts(
             @RequestBody ProductSearchRequestDTO request) {

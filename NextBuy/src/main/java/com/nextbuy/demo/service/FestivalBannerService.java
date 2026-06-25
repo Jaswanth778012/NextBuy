@@ -3,6 +3,8 @@ package com.nextbuy.demo.service;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,6 +60,13 @@ public class FestivalBannerService {
         banner.setActive(fsdto.getActive() == null || fsdto.getActive());
         banner.setCategories(fsdto.getCategories());
         banner.setSubCategories(fsdto.getSubCategories()); 
+        banner.setRelatedCategories(
+                fsdto.getRelatedCategories()
+        );
+
+        banner.setRelatedSubCategories(
+                fsdto.getRelatedSubCategories()
+        );
         
 
 if (fsdto.getProductIds() != null &&
@@ -164,6 +173,60 @@ if (fsdto.getProductIds() != null &&
                           .toList();
     }
     
+    public List<Product> getRelatedProductsByBannerId(Long bannerId) {
+
+        FestivalBanner banner = fsRepo.findById(bannerId)
+                .orElseThrow(() ->
+                        new RuntimeException("Festival banner not found"));
+
+        LocalDate today = LocalDate.now();
+
+        if (!Boolean.TRUE.equals(banner.getActive())
+                || today.isBefore(banner.getStartDate())
+                || today.isAfter(banner.getEndDate())) {
+
+            throw new RuntimeException(
+                    "Festival banner is not currently active");
+        }
+
+        List<String> relatedCategories =
+                banner.getRelatedCategories() == null ||
+                banner.getRelatedCategories().isEmpty()
+                        ? null
+                        : List.copyOf(banner.getRelatedCategories());
+
+        List<String> relatedSubCategories =
+                banner.getRelatedSubCategories() == null ||
+                banner.getRelatedSubCategories().isEmpty()
+                        ? null
+                        : List.copyOf(banner.getRelatedSubCategories());
+
+        List<Product> festivalProducts =
+                getFestivalProductsBybannerId(bannerId);
+
+        Set<Long> festivalProductIds =
+                festivalProducts.stream()
+                        .map(Product::getId)
+                        .collect(Collectors.toSet());
+
+        List<Product> relatedProducts =
+                productRepo.multisearchProducts(
+                        relatedCategories,
+                        relatedSubCategories
+                );
+
+        return relatedProducts == null
+                ? Collections.emptyList()
+                : relatedProducts.stream()
+                        .filter(p ->
+                                p.getProductStatus()
+                                        == ProductStatus.ACTIVE)
+                        .filter(p ->
+                                !festivalProductIds.contains(
+                                        p.getId()))
+                        .toList();
+    }
+    
 
     public String updateBanner(
             Long id,
@@ -190,6 +253,13 @@ if (fsdto.getProductIds() != null &&
         banner.setActive(fsdto.getActive() == null ? banner.getActive() : fsdto.getActive());
         banner.setCategories(fsdto.getCategories());
         banner.setSubCategories(fsdto.getSubCategories()); 
+        banner.setRelatedCategories(
+                fsdto.getRelatedCategories()
+        );
+
+        banner.setRelatedSubCategories(
+                fsdto.getRelatedSubCategories()
+        );
         
         if (fsdto.getProductIds() != null) {
 
@@ -273,6 +343,13 @@ if (fsdto.getProductIds() != null &&
         dto.setPriority(banner.getPriority());
         dto.setCategories(banner.getCategories());
         dto.setSubCategories(banner.getSubCategories());
+        dto.setRelatedCategories(
+                banner.getRelatedCategories()
+        );
+
+        dto.setRelatedSubCategories(
+                banner.getRelatedSubCategories()
+        );
         
         dto.setProducts(banner.getProducts());
 
