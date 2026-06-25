@@ -409,21 +409,19 @@ function FestivalProductsPage() {
   {(!user || isCustomer) && (
     <div className="fp-card-actions">
       <button
-        className="fp-cart-btn"
-        onClick={() =>
-          handleAddToCart(p)
-        }
-        disabled={
-          addingProductId ===
-          productId
-        }
-      >
-        🛒
-        {addingProductId ===
-        productId
-          ? " Adding..."
-          : " Cart"}
-      </button>
+  className="fp-cart-btn"
+  onClick={() => handleAddToCart(p)}
+  disabled={
+    addingProductId === productId ||
+    p.stockStatus === "OUT_OFF_STOCK"
+  }
+>
+  {p.stockStatus === "OUT_OFF_STOCK"
+    ? "Out of Stock"
+    : addingProductId === productId
+    ? "🛒 Adding..."
+    : "🛒 Cart"}
+</button>
     </div>
   )}
 </div>
