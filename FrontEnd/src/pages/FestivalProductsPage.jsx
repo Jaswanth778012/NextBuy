@@ -10,6 +10,11 @@ import WishlistModal from "../components/wishlist/WishlistModal";
 import { useCart } from "../context/CartContext";
 
 import {
+  getFestivalProducts,
+  getRelatedFestivalProducts
+} from "../services/adminFestivalBannerService";
+
+import {
   getWishlists,
   removeProductFromWishlist,
 } from "../services/wishlistService";
@@ -24,6 +29,7 @@ function FestivalProductsPage() {
   const { addToCart, loadCart } = useCart();
 
   const [products, setProducts] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [showWishlistModal, setShowWishlistModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [addingProductId, setAddingProductId] = useState(null);
@@ -77,33 +83,54 @@ function FestivalProductsPage() {
     }
   };
 
-  const loadProducts = async () => {
-    try {
-      const res = await fetch(
-        `http://localhost:9090/festival-banner/festivalProducts/${id}`
-      );
+const loadProducts = async () => {
+  try {
+    const { data } =
+      await getFestivalProducts(id);
 
-      if (!res.ok) {
-        throw new Error("Failed to load festival products");
-      }
+    setProducts(
+      Array.isArray(data) ? data : []
+    );
+  } catch (error) {
+    console.log(
+      "Festival products error:",
+      error
+    );
 
-      const data = await res.json();
+    setProducts([]);
 
-      setProducts(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.log("Festival products error:", error);
-      setProducts([]);
-      toast.error("Unable to load festival products");
-    }
-  };
+    toast.error(
+      "Unable to load festival products"
+    );
+  }
+};
 
-  useEffect(() => {
-    loadProducts();
+const loadRelatedProducts = async () => {
+  try {
+    const { data } =
+      await getRelatedFestivalProducts(id);
 
-    if (isCustomer) {
-      loadWishlistedProducts();
-    }
-  }, [id]);
+    setRelatedProducts(
+      Array.isArray(data) ? data : []
+    );
+  } catch (error) {
+    console.log(
+      "Related products error:",
+      error
+    );
+
+    setRelatedProducts([]);
+  }
+};
+
+ useEffect(() => {
+  loadProducts();
+  loadRelatedProducts();
+
+  if (isCustomer) {
+    loadWishlistedProducts();
+  }
+}, [id]);
 
   const getProductId = (product) => {
     return product?.id || product?.productId;
@@ -274,6 +301,156 @@ function FestivalProductsPage() {
     return 0;
   };
 
+  const renderProductCard = (p) => {
+  const productId = getProductId(p);
+
+  const finalPrice =
+    getFinalPrice(p);
+
+  const mrpPrice =
+    getMrpPrice(p);
+
+  const discountPercentage =
+    getDiscountPercentage(p);
+
+  return (
+    <div
+      className="fp-card"
+      key={productId}
+    >
+      {discountPercentage > 0 && (
+        <div className="fp-discount-badge">
+          {discountPercentage}% OFF
+        </div>
+      )}
+
+      {(!user || isCustomer) && (
+        <div className="fp-card-top">
+          <button
+            className="fp-wishlist-btn"
+            onClick={() =>
+              toggleWishlist(p)
+            }
+          >
+            {isWishlisted(productId)
+              ? "❤️"
+              : "🤍"}
+          </button>
+        </div>
+      )}
+
+      <div className="fp-image-wrapper">
+        <img
+          src={getImage(p)}
+          alt={
+            p.name ||
+            p.productName
+          }
+        />
+      </div>
+
+      <div className="fp-content">
+        <div className="fp-title-row">
+          <h4 className="fp-name">
+            {p.name ||
+              p.productName}
+          </h4>
+
+          <div
+            className={`fp-stock-chip ${
+              p.stockStatus ===
+              "AVAILABLE"
+                ? "available"
+                : p.stockStatus ===
+                  "LIMITED_STOCK"
+                ? "limited"
+                : "out-stock"
+            }`}
+          >
+            {p.stockStatus ===
+              "AVAILABLE" &&
+              "🟢 In Stock"}
+
+            {p.stockStatus ===
+              "LIMITED_STOCK" &&
+              "🟠 Limited Stock"}
+
+            {p.stockStatus ===
+              "OUT_OFF_STOCK" &&
+              "🔴 Out of Stock"}
+          </div>
+        </div>
+
+        <div className="fp-meta-row">
+          <span className="fp-brand">
+            {p.brand?.name ||
+              "Brand"}
+          </span>
+
+          <span className="fp-rating">
+            ⭐ {(
+              p.averageRating ||
+              4.5
+            ).toFixed(1)}
+          </span>
+        </div>
+
+        <div className="fp-price-row">
+          <span className="fp-final-price">
+            ₹
+            {finalPrice.toLocaleString()}
+          </span>
+
+          {mrpPrice >
+            finalPrice && (
+            <span className="fp-mrp-price">
+              ₹
+              {mrpPrice.toLocaleString()}
+            </span>
+          )}
+        </div>
+
+        {mrpPrice >
+          finalPrice && (
+          <div className="fp-savings">
+            Save ₹
+            {(
+              mrpPrice -
+              finalPrice
+            ).toLocaleString()}
+          </div>
+        )}
+      </div>
+
+      {(!user ||
+        isCustomer) && (
+        <div className="fp-card-actions">
+          <button
+            className="fp-cart-btn"
+            onClick={() =>
+              handleAddToCart(p)
+            }
+            disabled={
+              addingProductId ===
+                productId ||
+              p.stockStatus ===
+                "OUT_OFF_STOCK"
+            }
+          >
+            {p.stockStatus ===
+            "OUT_OFF_STOCK"
+              ? "Out of Stock"
+              : addingProductId ===
+                productId
+              ? "🛒 Adding..."
+              : "🛒 Cart"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
   return (
     <div className="fp-page">
       <div className="fp-hero">
@@ -304,135 +481,38 @@ function FestivalProductsPage() {
       </h2>
 
       <div className="fp-grid">
-        {products.length > 0 ? (
-          products.map((p) => {
-            const productId = getProductId(p);
-            const finalPrice = getFinalPrice(p);
-            const mrpPrice = getMrpPrice(p);
-            const discountPercentage =
-              getDiscountPercentage(p);
-
-            return (
-              <div className="fp-card" key={productId}>
-  {/* Discount Badge */}
-  {discountPercentage > 0 && (
-    <div className="fp-discount-badge">
-      {discountPercentage}% OFF
-    </div>
+  {products.length > 0 ? (
+    products.map(renderProductCard)
+  ) : (
+    <p className="fp-empty">
+      No festival products found.
+    </p>
   )}
-
-  {/* Wishlist Button */}
-  {(!user || isCustomer) && (
-    <div className="fp-card-top">
-  <button
-    className="fp-wishlist-btn"
-    onClick={() => toggleWishlist(p)}
-  >
-    {isWishlisted(productId)
-      ? "❤️"
-      : "🤍"}
-  </button>
 </div>
-  )}
 
-  {/* Product Image */}
-  <div className="fp-image-wrapper">
-    <img
-      src={getImage(p)}
-      alt={
-        p.name ||
-        p.productName ||
-        "Product"
-      }
-    />
-  </div>
 
-  {/* Content */}
-  <div className="fp-content">
-    <div className="fp-title-row">
-      <h4 className="fp-name">
-        {p.name || p.productName}
-      </h4>
 
-      <div
-  className={`fp-stock-chip ${
-    p.stockStatus === "AVAILABLE"
-      ? "available"
-      : p.stockStatus === "LIMITED_STOCK"
-      ? "limited"
-      : "out-stock"
-  }`}
->
-  {p.stockStatus === "AVAILABLE" && "🟢 In Stock"}
-
-  {p.stockStatus === "LIMITED_STOCK" &&
-    "🟠 Limited Stock"}
-
-  {p.stockStatus === "OUT_OFF_STOCK" &&
-    "🔴 Out of Stock"}
+{relatedProducts.length > 0 && (
+  <>
+    <div className="fp-section-divider">
+  Customers also bought
 </div>
-    </div>
+    <h2
+      className="fp-title"
+      style={{
+        marginTop: "60px",
+      }}
+    >
+      Related Products
+    </h2>
 
-    <div className="fp-meta-row">
-      <span className="fp-brand">
-        {p.brand?.name || "Brand"}
-      </span>
-
-      <span className="fp-rating">
-        ⭐ {(p.averageRating || 4.5).toFixed(1)}
-      </span>
-    </div>
-
-    <div className="fp-price-row">
-      <span className="fp-final-price">
-        ₹{finalPrice.toLocaleString()}
-      </span>
-
-      {mrpPrice > finalPrice && (
-        <span className="fp-mrp-price">
-          ₹{mrpPrice.toLocaleString()}
-        </span>
+    <div className="fp-grid">
+      {relatedProducts.map(
+        renderProductCard
       )}
     </div>
-
-    {mrpPrice > finalPrice && (
-      <div className="fp-savings">
-        Save ₹
-        {(
-          mrpPrice - finalPrice
-        ).toLocaleString()}
-      </div>
-    )}
-  </div>
-
-  {/* Actions */}
-  {(!user || isCustomer) && (
-    <div className="fp-card-actions">
-      <button
-  className="fp-cart-btn"
-  onClick={() => handleAddToCart(p)}
-  disabled={
-    addingProductId === productId ||
-    p.stockStatus === "OUT_OFF_STOCK"
-  }
->
-  {p.stockStatus === "OUT_OFF_STOCK"
-    ? "Out of Stock"
-    : addingProductId === productId
-    ? "🛒 Adding..."
-    : "🛒 Cart"}
-</button>
-    </div>
-  )}
-</div>
-            );
-          })
-        ) : (
-          <p className="fp-empty">
-            No festival products found.
-          </p>
-        )}
-      </div>
+  </>
+)}
 <WishlistModal
   show={showWishlistModal}
   onClose={() =>

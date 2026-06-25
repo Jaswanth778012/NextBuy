@@ -127,3 +127,25 @@ export const deleteFestivalBanner = (
     `/festival-banner/delete/${id}`
   );
 };
+
+/* ==========================================
+   GET FESTIVAL PRODUCTS
+========================================== */
+
+export const getFestivalProducts = (id) => {
+  return API.get(
+    `/festival-banner/festivalProducts/${id}`
+  );
+};
+
+/* ==========================================
+   GET RELATED FESTIVAL PRODUCTS
+========================================== */
+
+export const getRelatedFestivalProducts = (
+  bannerId
+) => {
+  return API.get(
+    `/festival-banner/relatedProducts/${bannerId}`
+  );
+};
