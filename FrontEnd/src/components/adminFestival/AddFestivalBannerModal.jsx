@@ -19,6 +19,8 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
   const [categories, setCategories] = useState([]);
 
   const [subCategories, setSubCategories] = useState([]);
+
+  const [relatedSubCategories, setRelatedSubCategories] = useState([]);
   
 
   const [products, setProducts] = useState([]);
@@ -35,6 +37,8 @@ function AddFestivalBannerModal({ showModal, setShowModal, fetchBanners }) {
 
   categories: [],
   subCategories: [],
+  relatedCategories: [],
+  relatedSubCategories: [],
   productIds: [],
 });
   useEffect(() => {
@@ -108,10 +112,55 @@ const handleChange = (e) => {
   setSubCategories(uniqueSubs);
 };
 
+const handleRelatedCategoryChange = async (
+  selectedOptions
+) => {
+  const selectedCategories =
+    selectedOptions?.map((item) => item.label) || [];
+
+  setFormData((prev) => ({
+    ...prev,
+    relatedCategories: selectedCategories,
+    relatedSubCategories: [],
+  }));
+
+  if (!selectedOptions || selectedOptions.length === 0) {
+    setRelatedSubCategories([]);
+    return;
+  }
+
+  let allSubs = [];
+
+  for (const item of selectedOptions) {
+    const response =
+      await getSubCategoriesByCategory(item.value);
+
+    allSubs.push(...response);
+  }
+
+  const uniqueSubs = [
+    ...new Map(
+      allSubs.map((sub) => [sub.id, sub])
+    ).values(),
+  ];
+
+  setRelatedSubCategories(uniqueSubs);
+};
+
 const handleSubCategoryChange = (selectedOptions) => {
   setFormData((prev) => ({
     ...prev,
     subCategories:
+      selectedOptions?.map((item) => item.label) || [],
+  }));
+};
+
+const handleRelatedSubCategoryChange = (
+  selectedOptions
+) => {
+  setFormData((prev) => ({
+    ...prev,
+    relatedSubCategories:
       selectedOptions?.map((item) => item.label) || [],
   }));
 };
@@ -166,6 +215,11 @@ const payload = {
 
   categories: formData.categories,
   subCategories: formData.subCategories,
+  relatedCategories:
+    formData.relatedCategories,
+
+  relatedSubCategories:
+    formData.relatedSubCategories,
   productIds: formData.productIds,
 };
 
@@ -189,6 +243,8 @@ const payload = {
       active: true,
       categories: [],
       subCategories: [],
+        relatedCategories: [],
+  relatedSubCategories: [],
       productIds: [],
     });
 
@@ -331,6 +387,51 @@ const payload = {
     }))}
     onChange={handleSubCategoryChange}
   />
+
+  <h4 style={{ marginTop: "15px" }}>
+  Related Categories
+</h4>
+
+<Select
+  isMulti
+  value={categories
+    .filter((cat) =>
+      formData.relatedCategories.includes(cat.name)
+    )
+    .map((cat) => ({
+      value: cat.id,
+      label: cat.name,
+    }))
+  }
+  options={categories.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }))}
+  onChange={handleRelatedCategoryChange}
+/>
+<h4 style={{ marginTop: "15px" }}>
+  Related Sub Categories
+</h4>
+
+<Select
+  isMulti
+  value={relatedSubCategories
+    .filter((sub) =>
+      formData.relatedSubCategories.includes(
+        sub.name
+      )
+    )
+    .map((sub) => ({
+      value: sub.id,
+      label: sub.name,
+    }))
+  }
+  options={relatedSubCategories.map((sub) => ({
+    value: sub.id,
+    label: sub.name,
+  }))}
+  onChange={handleRelatedSubCategoryChange}
+/>
 
   <h4 style={{ marginTop: "15px" }}>
     Products

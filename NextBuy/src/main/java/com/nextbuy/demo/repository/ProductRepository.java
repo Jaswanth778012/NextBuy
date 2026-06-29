@@ -55,5 +55,25 @@ public interface ProductRepository  extends JpaRepository<Product, Long>, JpaSpe
 	     List<Product> multisearchProducts(
 	             @Param("categories") List<String> categories,
 	             @Param("subCategories") List<String> subCategories);
+	     
+	     @Query("""
+	    		 SELECT DISTINCT p
+	    		 FROM Product p
+	    		 WHERE
+	    		 (
+	    		     (:categories IS NULL OR p.category.name IN :categories)
+	    		     OR
+	    		     (:subCategories IS NULL OR p.subCategory.name IN :subCategories)
+	    		 )
+	    		 AND p.productStatus =
+	    		 com.nextbuy.demo.enums.ProductStatus.ACTIVE
+	    		 """)
+	    		 List<Product> findRelatedFestivalProducts(
+	    		         @Param("categories")
+	    		         List<String> categories,
+
+	    		         @Param("subCategories")
+	    		         List<String> subCategories
+	    		 );
 	 
 }
