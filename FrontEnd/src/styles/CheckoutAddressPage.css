@@ -1,0 +1,1132 @@
+/* ==========================================
+CHECKOUT ADDRESS PAGE
+========================================== */
+
+.checkout-address-page {
+max-width: 1450px;
+margin: 30px auto;
+padding: 20px;
+display: grid;
+grid-template-columns: 2fr 1fr;
+gap: 28px;
+}
+
+/* ==========================================
+LEFT SECTION
+========================================== */
+
+.address-section {
+display: flex;
+flex-direction: column;
+gap: 22px;
+}
+
+/* ==========================================
+STEP BOX
+========================================== */
+
+.checkout-step-box {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-badge {
+display: inline-block;
+background: #3d74e0;
+color: white;
+font-weight: 700;
+padding: 8px 16px;
+border-radius: 999px;
+font-size: 13px;
+margin-bottom: 15px;
+}
+
+.checkout-step-box h2 {
+margin: 0 0 10px;
+font-size: 20px;
+font-weight: 800;
+color: #111827;
+}
+
+.checkout-step-box p {
+margin: 0;
+color: #6b7280;
+line-height: 1.7;
+font-size: 15px;
+}
+
+/* ==========================================
+ADDRESS HEADER
+========================================== */
+
+.address-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.address-header h2 {
+margin: 0;
+font-size: 34px;
+font-weight: 800;
+color: #111827;
+}
+
+.add-address-btn {
+border: none;
+padding: 14px 24px;
+border-radius: 16px;
+background: linear-gradient(
+135deg,
+#3d74e0,
+#49a6f8
+);
+color: white;
+font-size: 15px;
+font-weight: 700;
+cursor: pointer;
+box-shadow: 0 8px 20px rgba(61,116,224,0.25);
+transition: all .3s ease;
+}
+
+.add-address-btn:hover {
+transform: translateY(-3px);
+}
+
+/* ==========================================
+ADDRESS LIST
+========================================== */
+
+.address-list {
+display: flex;
+flex-direction: column;
+gap: 18px;
+}
+
+/* ==========================================
+ADDRESS CARD
+========================================== */
+
+.address-card {
+position: relative;
+display: flex;
+padding: 16px;
+  gap: 12px;
+  border-radius: 16px;
+
+background: rgba(
+255,
+255,
+255,
+0.88
+);
+
+backdrop-filter: blur(12px);
+
+border: 2px solid #edf2f7;
+
+cursor: pointer;
+
+transition: all .35s ease;
+
+box-shadow:
+0 8px 25px
+rgba(0,0,0,0.06);
+}
+
+.address-card:hover {
+transform: translateY(-4px);
+border-color: #3d74e0;
+box-shadow:
+0 12px 30px
+rgba(0,0,0,0.10);
+}
+
+.selected-address {
+border-color: #3d74e0;
+
+background:
+linear-gradient(
+135deg,
+#ffffff,
+#f5f9ff
+);
+
+box-shadow:
+0 12px 35px
+rgba(
+61,
+116,
+224,
+0.20
+);
+}
+.selected-address {
+  border-color: #3d74e0;
+  transform: scale(1.01);
+  box-shadow: 0 14px 40px rgba(61,116,224,0.25);
+}
+.radio-section {
+display: flex;
+align-items: flex-start;
+padding-top: 8px;
+}
+
+.address-card input[type="radio"] {
+transform: scale(1.4);
+accent-color: #3d74e0;
+pointer-events: none;
+}
+
+.address-info {
+flex: 1;
+}
+
+.address-info h4 {
+margin: 0;
+}
+
+.address-info p {
+margin: 10px 0;
+display: flex;
+align-items: center;
+gap: 10px;
+color: #4b5563;
+}
+
+.card-icon {
+color: #3d74e0;
+min-width: 18px;
+}
+
+.address-type {
+display: inline-block;
+margin-top: 14px;
+padding: 7px 16px;
+
+border-radius: 999px;
+
+background:
+linear-gradient(
+135deg,
+#e5c7f7,
+#dbeafe
+);
+
+color: #3d74e0;
+
+font-size: 12px;
+font-weight: 700;
+}
+
+.edit-address-btn {
+position: absolute;
+right: 18px;
+top: 18px;
+
+width: 42px;
+height: 42px;
+
+border: none;
+border-radius: 50%;
+
+background:
+linear-gradient(
+135deg,
+#3d74e0,
+#49a6f8
+);
+
+color: white;
+
+display: flex;
+align-items: center;
+justify-content: center;
+
+cursor: pointer;
+
+transition: .3s;
+}
+
+.edit-address-btn:hover {
+transform: scale(1.1);
+}
+
+/* ==========================================
+INFO BOX
+========================================== */
+
+.delivery-info-box {
+background: rgba(255,255,255,0.85);
+backdrop-filter: blur(12px);
+border-radius: 22px;
+padding: 22px;
+box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.delivery-info-box h3 {
+margin-bottom: 16px;
+}
+
+.delivery-points {
+display: grid;
+grid-template-columns: repeat(5,1fr);
+gap: 15px;
+}
+
+.delivery-points div {
+font-size: 14px;
+color: #374151;
+}
+
+/* ==========================================
+SUMMARY CARD
+========================================== */
+
+.summary-card {
+  background: rgba(255,255,255,0.95);
+
+  backdrop-filter: blur(12px);
+
+  border-radius: 24px;
+
+  padding: 24px;
+
+  position: sticky;
+  top: 80px;
+
+  box-shadow:
+    0 8px 25px
+    rgba(0,0,0,0.06);
+
+  height: fit-content;
+}
+
+.summary-card h3 {
+margin-top: 0;
+margin-bottom: 28px;
+
+font-size: 36px;
+font-weight: 800;
+}
+
+.summary-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+
+margin: 14px 0;
+
+font-size: 17px;
+}
+
+.summary-card hr {
+margin: 25px 0;
+border: none;
+border-top: 1px solid #e5e7eb;
+}
+
+.total {
+font-size: 32px;
+font-weight: 800;
+color: #2563eb;
+}
+
+/* ==========================================
+MESSAGE BOXES
+========================================== */
+
+.payment-message {
+margin-top: 18px;
+  padding: 14px;
+
+background: #f5f9ff;
+
+border: 1px solid #dbeafe;
+
+border-radius: 18px;
+
+
+}
+
+.next-step-box {
+margin-top: 18px;
+
+background: #fff8eb;
+
+border: 1px solid #fde68a;
+
+border-radius: 18px;
+
+padding: 18px;
+}
+
+.payment-message h4,
+.next-step-box h4 {
+margin-bottom: 8px;
+}
+
+/* ==========================================
+CONTINUE BUTTON
+========================================== */
+
+.continue-btn {
+width: 100%;
+
+
+border: none;
+
+ margin-top: 18px;
+  padding: 16px;
+
+border-radius: 18px;
+
+background:
+linear-gradient(
+135deg,
+#3d74e0,
+#9b5cf6
+);
+
+color: white;
+
+font-size: 18px;
+font-weight: 800;
+
+cursor: pointer;
+
+transition: .3s;
+}
+
+.continue-btn:hover:not(:disabled) {
+transform: translateY(-3px);
+}
+
+.continue-btn:disabled {
+opacity: .6;
+cursor: not-allowed;
+}
+
+/* ==========================================
+MODAL
+========================================== */
+
+.address-modal {
+position: fixed;
+inset: 0;
+
+background:
+rgba(
+0,
+0,
+0,
+.55
+);
+
+display: flex;
+justify-content: center;
+align-items: center;
+
+z-index: 999;
+}
+
+.address-modal-content {
+width: 700px;
+max-width: 95%;
+
+background: white;
+
+border-radius: 24px;
+
+padding: 30px;
+
+max-height: 90vh;
+
+overflow-y: auto;
+
+position: relative;
+}
+
+.close-btn {
+position: absolute;
+top: 16px;
+right: 20px;
+
+border: none;
+background: none;
+
+cursor: pointer;
+
+font-size: 24px;
+}
+
+/* ==========================================
+FORM
+========================================== */
+
+.address-form {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+
+.address-form input,
+.address-form select {
+width: 100%;
+padding: 14px 16px;
+
+border: 1px solid #d1d5db;
+
+border-radius: 14px;
+
+font-size: 15px;
+}
+
+.address-form input:focus,
+.address-form select:focus {
+outline: none;
+border-color: #3d74e0;
+box-shadow:
+0 0 0 4px
+rgba(
+61,
+116,
+224,
+.15
+);
+}
+
+.address-form button {
+border: none;
+
+padding: 15px;
+
+border-radius: 14px;
+
+background:
+linear-gradient(
+135deg,
+#3d74e0,
+#49a6f8
+);
+
+color: white;
+
+font-weight: 700;
+
+cursor: pointer;
+}
+
+/* ==========================================
+RESPONSIVE
+========================================== */
+
+@media (max-width: 992px) {
+.checkout-address-page {
+grid-template-columns: 1fr;
+}
+
+.summary-card {
+position: static;
+}
+
+.delivery-points {
+grid-template-columns: repeat(2,1fr);
+}
+}
+
+@media (max-width: 768px) {
+
+.checkout-step-box h2 {
+font-size: 30px;
+}
+
+.address-header {
+flex-direction: column;
+align-items: flex-start;
+gap: 12px;
+}
+
+.delivery-points {
+grid-template-columns: 1fr;
+}
+
+.summary-card h3 {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+}
+.checkout-step-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hero-text {
+  max-width: 550px;
+}
+
+.hero-illustration {
+  position: relative;
+
+ width: 220px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.location-pin {
+  font-size: 90px;
+
+  color: #3d74e0;
+
+  z-index: 2;
+
+  opacity: 0.9;
+
+  filter:
+    drop-shadow(
+      0 12px 20px
+      rgba(
+        61,
+        116,
+        224,
+        0.15
+      )
+    );
+
+  animation:
+    floatPin 4s ease-in-out infinite;
+}
+
+.map-grid {
+  position: absolute;
+
+  width: 220px;
+  height: 120px;
+
+  bottom: 20px;
+
+  border-radius: 12px;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(61,116,224,0.08),
+      rgba(61,116,224,0.08) 15px,
+      transparent 15px,
+      transparent 30px
+    );
+
+  transform:
+    perspective(500px)
+    rotateX(65deg);
+
+  opacity: 0.7;
+}
+
+.cloud {
+  position: absolute;
+
+  width: 45px;
+  height: 18px;
+
+  border-radius: 30px;
+
+  background:
+    rgba(
+      61,
+      116,
+      224,
+      0.08
+    );
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      61,
+      116,
+      224,
+      0.08
+    );
+}
+
+.cloud::before {
+  width: 20px;
+  height: 20px;
+
+  left: 5px;
+  top: -10px;
+}
+
+.cloud::after {
+  width: 24px;
+  height: 24px;
+
+  right: 5px;
+  top: -12px;
+}
+
+.cloud1 {
+  top: 20px;
+  left: 20px;
+}
+
+.cloud2 {
+  top: 25px;
+  right: 20px;
+}
+
+@keyframes floatPin {
+
+  0% {
+    transform:
+      translateY(0px);
+  }
+
+  50% {
+    transform:
+      translateY(-10px);
+  }
+
+  100% {
+    transform:
+      translateY(0px);
+  }
+}
+
+@media (max-width: 768px) {
+
+  .hero-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .hero-illustration {
+    width: 100%;
+  }
+
+  .location-pin {
+    font-size: 70px;
+  }
+}
+.secure-payment-footer {
+  text-align: center;
+
+  margin-top: 14px;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+  font-weight: 500;
+}
+
+
+
+.default-address-box {
+  background: linear-gradient(
+    135deg,
+    #eff6ff,
+    #ffffff
+  );
+
+  border: 1px solid #bfdbfe;
+
+  border-radius: 18px;
+
+  padding: 18px;
+
+  box-shadow:
+    0 4px 12px
+    rgba(
+      61,
+      116,
+      224,
+      0.08
+    );
+}
+
+.default-address-box h3 {
+  margin-bottom: 10px;
+  color: #2563eb;
+}
+
+.default-address-box p {
+  margin: 4px 0;
+}
+.default-address-card {
+  background: #fff;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 18px;
+
+  padding: 20px 24px;
+
+  box-shadow:
+    0 2px 10px
+    rgba(0,0,0,0.05);
+
+  transition: .3s;
+}
+
+.default-address-card:hover {
+  box-shadow:
+    0 8px 24px
+    rgba(0,0,0,0.08);
+}
+
+.default-address-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  margin-bottom: 14px;
+}
+
+.delivery-title-wrap {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.delivery-title-wrap svg {
+  font-size: 22px;
+
+  color: #3d74e0;
+}
+
+.delivery-title {
+  display: block;
+
+  font-size: 13px;
+
+  color: #6b7280;
+
+  margin-bottom: 3px;
+
+  font-weight: 600;
+}
+
+.delivery-title-wrap h4 {
+  margin: 0;
+
+  font-size: 18px;
+
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.default-tag {
+  background: #ecfdf5;
+
+  color: #059669;
+
+  border: 1px solid #a7f3d0;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.default-address-body p {
+  margin: 0;
+
+  line-height: 1.7;
+
+  color: #4b5563;
+
+  font-size: 14px;
+}
+
+.mobile-number {
+  display: inline-block;
+
+  margin-top: 12px;
+
+  font-weight: 600;
+
+  color: #111827;
+}
+
+/* ==========================================
+   DELETE ADDRESS MODAL
+========================================== */
+
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(
+    0,
+    0,
+    0,
+    0.55
+  );
+
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+
+  animation: fadeIn .25s ease;
+}
+
+.delete-modal {
+  width: 420px;
+  max-width: 92%;
+
+  background: rgba(
+    255,
+    255,
+    255,
+    0.95
+  );
+
+  backdrop-filter: blur(18px);
+
+  border-radius: 24px;
+
+  padding: 28px;
+
+  text-align: center;
+
+  box-shadow:
+    0 25px 60px
+    rgba(
+      0,
+      0,
+      0,
+      0.18
+    );
+
+  animation:
+    modalPop .3s ease;
+}
+
+.delete-icon {
+  width: 72px;
+  height: 72px;
+ 
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  background: #fee2e2;
+
+  color: #dc2626;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 30px;
+}
+
+.delete-modal h3 {
+  margin: 0;
+
+  font-size: 24px;
+  font-weight: 800;
+
+  color: #111827;
+}
+
+.delete-modal p {
+  margin-top: 12px;
+
+  color: #6b7280;
+
+  line-height: 1.6;
+
+  font-size: 15px;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 12px;
+
+  margin-top: 24px;
+}
+
+.cancel-btn {
+  flex: 1;
+
+  border: none;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  background: #f3f4f6;
+
+  color: #374151;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.cancel-btn:hover {
+  background: #e5e7eb;
+}
+
+.delete-btn {
+  flex: 1;
+
+  border: none;
+ 
+  padding: 14px;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+
+  color: white;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 20px
+    rgba(
+      239,
+      68,
+      68,
+      0.3
+    );
+}
+
+@keyframes modalPop {
+
+  from {
+    opacity: 0;
+    transform:
+      scale(0.9)
+      translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      scale(1)
+      translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+.delete-address-btn {
+  width: 40px;
+  height: 40px;
+  padding-top: 20%;
+  border: none;
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #ef4444,
+    #dc2626
+  );
+
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: all .3s ease;
+}
+
+.delete-address-btn:hover {
+  transform: scale(1.1);
+}
+
+.address-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.delete-modal {
+  width: 420px;
+  max-width: 92%;
+
+  background: rgba(255,255,255,0.95);
+  border-radius: 24px;
+
+  padding: 28px;
+  text-align: center;
+
+  box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+
+  animation: modalPop .3s ease;
+}
+.delete-modal p {
+  color: white;
+}

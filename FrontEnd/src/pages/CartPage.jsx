@@ -329,7 +329,7 @@ function CartPage() {
                         onClick={() => handleRemoveItem(item)}
                         disabled={isLoading}
                       >
-                        {isLoading ? "Please wait..." : "Remove"}
+                        {isLoading ? "Please wait..." : ""}
                       </button>
                     </div>
                   </div>
@@ -372,7 +372,7 @@ function CartPage() {
                 <div className="applied-coupon">
                   <div>
                     <strong>{appliedCouponCode}</strong>
-                    <p>
+                    <p id ="coupon-message">
                       Coupon applied
                       {cartSummary.couponDiscountPercent
                         ? ` (${cartSummary.couponDiscountPercent}% OFF)`
@@ -380,7 +380,7 @@ function CartPage() {
                     </p>
                   </div>
 
-                  <button
+                  <button id = "copen-remove-btn"
                     onClick={handleRemoveCoupon}
                     disabled={couponLoading}
                   >
@@ -431,29 +431,26 @@ function CartPage() {
               </p>
             )}
 
-            <button
-              className="checkout-btn"
-              onClick={() =>
-                navigate("/checkout", {
-                  state: {
-                    cartItems,
-                    cartSummary,
-                    subtotal,
-                    priceLabel,
-                    cartDiscountAmount,
-                    couponDiscount: visibleCouponDiscount,
-                    appliedCouponCode,
-                    deliveryCharge,
-                    grandTotal,
-                    savedAfterDiscount,
-                    hasCouponApplied,
-                  },
-                })
-              }
-            >
-              Proceed to Checkout
-            </button>
-
+           <button
+  className="checkout-btn"
+  onClick={() =>
+    navigate("/checkout/address", {
+      state: {
+        cartItems,
+        cartSummary,
+        subtotal,
+        priceLabel,
+        cartDiscountAmount,
+        couponDiscount: visibleCouponDiscount,
+        appliedCouponCode,
+        deliveryCharge,
+        grandTotal,
+      },
+    })
+  }
+>
+  Proceed to Checkout
+</button>
             <button
               className="continue-btn"
               onClick={() => navigate("/")}

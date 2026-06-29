@@ -21,7 +21,7 @@ import CartPage from "./pages/CartPage";
 import WishlistPage from "./pages/WishlistPage";
 import WishlistDetailsPage from "./pages/WishlistDetailsPage";
 import WishlistAlertsPage from "./pages/WishlistAlertsPage";
-
+import CheckoutAddressPage from "./pages/CheckoutAddressPage";
 import UserProfile from "./pages/UserProfile";
 
 // =========================
@@ -198,6 +198,14 @@ function App() {
               </UserRoute>
             }
           />
+          <Route
+  path="/checkout/address"
+  element={
+    <UserRoute>
+      <CheckoutAddressPage />
+    </UserRoute>
+  }
+/>
 
           <Route
             path="/profile"
