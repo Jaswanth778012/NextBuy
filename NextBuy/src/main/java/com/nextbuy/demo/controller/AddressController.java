@@ -61,4 +61,10 @@ public class AddressController {
 	{
 		return ResponseEntity.ok(addressService.setDefaultAddress(principal.getName(), id));
 	}
+	
+	@GetMapping("/defaultAddress")
+	public Address showDefaultAddress(Principal principal) {
+		 String username = principal.getName();
+		 return addressService.showDefaultAddress(username);
+	}
 }

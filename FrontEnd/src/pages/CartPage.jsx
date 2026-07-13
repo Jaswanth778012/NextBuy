@@ -472,7 +472,7 @@ function CartPage() {
                         onClick={() => handleRemoveItem(item)}
                         disabled={isLoading}
                       >
-                        {isLoading ? "Please wait..." : "Remove"}
+                        {isLoading ? "Please wait..." : ""}
                       </button>
                     </div>
                   </div>
@@ -515,7 +515,7 @@ function CartPage() {
                 <div className="applied-coupon">
                   <div>
                     <strong>{appliedCouponCode}</strong>
-                    <p>
+                    <p id ="coupon-message">
                       Coupon applied
                       {safeCartSummary.couponDiscountPercent
                         ? ` (${safeCartSummary.couponDiscountPercent}% OFF)`
@@ -523,7 +523,7 @@ function CartPage() {
                     </p>
                   </div>
 
-                  <button
+                  <button id = "copen-remove-btn"
                     onClick={handleRemoveCoupon}
                     disabled={couponLoading}
                   >

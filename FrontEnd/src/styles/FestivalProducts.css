@@ -546,3 +546,13 @@ cursor: not-allowed;
     height: 240px;
   }
 }
+
+.fp-section-divider {
+  margin: 50px 0 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}

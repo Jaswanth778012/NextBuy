@@ -4,6 +4,7 @@ const API = axios.create({
   baseURL: "http://localhost:9090",
 });
 
+// Request Interceptor
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -22,6 +23,7 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Response Interceptor
 API.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -29,33 +31,21 @@ API.interceptors.response.use(
     const requestUrl = (error?.config?.url || "").toLowerCase();
     const currentPath = window.location.pathname;
 
+    // Ignore auth endpoint errors
     if (requestUrl.includes("/auth/")) {
       return Promise.reject(error);
     }
 
+    // Don't redirect if already on login/register page
     if (currentPath === "/login" || currentPath === "/register") {
       return Promise.reject(error);
     }
 
-    if (status === 401) {
+    // Handle expired/invalid session for USER and ADMIN
+    if (status === 401 || status === 403) {
       const token = localStorage.getItem("token");
 
-      if (!token) {
-        return Promise.reject(error);
-      }
-
-      const isProtectedEndpoint =
-        requestUrl.includes("/user/") ||
-        requestUrl.includes("/orders/") ||
-        requestUrl.includes("/cart/") ||
-        requestUrl.includes("/wishlist/") ||
-        requestUrl.includes("/address/") ||
-        requestUrl.includes("/payments/verify/") ||
-        requestUrl.includes("/wishlist-alerts/") ||
-        requestUrl.includes("/cupon/") ||
-        requestUrl.includes("/admin/");
-
-      if (isProtectedEndpoint) {
+      if (token) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("role");
@@ -65,7 +55,7 @@ API.interceptors.response.use(
           "Your session has expired. Please login again."
         );
 
-        window.location.href = "/login";
+        window.location.replace("/login");
       }
     }
 

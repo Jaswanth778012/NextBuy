@@ -24,6 +24,9 @@ function EditFestivalBannerModal({
 
   const [subCategories, setSubCategories] = useState([]);
 
+  const [relatedSubCategories, setRelatedSubCategories] =
+  useState([]);
+
   const [products, setProducts] = useState([]);
 const [formData, setFormData] = useState({
   festivalName: "",
@@ -37,6 +40,9 @@ const [formData, setFormData] = useState({
 
   categories: [],
   subCategories: [],
+  relatedCategories: [],
+  relatedSubCategories: [],
+
   productIds: [],
 });
 
@@ -74,6 +80,11 @@ endDate: banner.endDate
 
   categories: banner.categories || [],
   subCategories: banner.subCategories || [],
+    relatedCategories:
+    banner.relatedCategories || [],
+
+  relatedSubCategories:
+    banner.relatedSubCategories || [],
 
   productIds:
     banner.products?.map((product) => product.id) || [],
@@ -87,7 +98,7 @@ if (banner.categories?.length > 0) {
       const response =
         await getSubCategoriesByCategory(category.id);
 
-      allSubs.push(...response);
+      allSubs.push(...response.data);
     }
   }
 
@@ -98,6 +109,38 @@ if (banner.categories?.length > 0) {
   ];
 
   setSubCategories(uniqueSubs);
+}
+
+if (banner.relatedCategories?.length > 0) {
+  let allRelatedSubs = [];
+
+  for (const category of categoryRes) {
+    if (
+      banner.relatedCategories.includes(
+        category.name
+      )
+    ) {
+      const response =
+        await getSubCategoriesByCategory(
+          category.id
+        );
+
+      allRelatedSubs.push(...response.data);
+    }
+  }
+
+  const uniqueRelatedSubs = [
+    ...new Map(
+      allRelatedSubs.map((sub) => [
+        sub.id,
+        sub,
+      ])
+    ).values(),
+  ];
+
+  setRelatedSubCategories(
+    uniqueRelatedSubs
+  );
 }
     } catch (error) {
       console.error(error);
@@ -142,7 +185,7 @@ const handleCategoryChange = async (selectedOptions) => {
     const response =
       await getSubCategoriesByCategory(item.value);
 
-    allSubs.push(...response);
+    allSubs.push(...response.data);
   }
 
   const uniqueSubs = [
@@ -154,12 +197,67 @@ const handleCategoryChange = async (selectedOptions) => {
   setSubCategories(uniqueSubs);
 };
 
+const handleRelatedCategoryChange = async (
+  selectedOptions
+) => {
+  const selectedCategories =
+    selectedOptions?.map(
+      (item) => item.label
+    ) || [];
+
+  setFormData((prev) => ({
+    ...prev,
+    relatedCategories:
+      selectedCategories,
+    relatedSubCategories: [],
+  }));
+
+  if (!selectedOptions?.length) {
+    setRelatedSubCategories([]);
+    return;
+  }
+
+  let allSubs = [];
+
+  for (const item of selectedOptions) {
+    const response =
+      await getSubCategoriesByCategory(
+        item.value
+      );
+
+    allSubs.push(...response.data);
+  }
+
+  const uniqueSubs = [
+    ...new Map(
+      allSubs.map((sub) => [
+        sub.id,
+        sub,
+      ])
+    ).values(),
+  ];
+
+  setRelatedSubCategories(uniqueSubs);
+};
+
  const handleSubCategoryChange = (selectedOptions) => {
   setFormData((prev) => ({
     ...prev,
     subCategories:
       selectedOptions?.map((item) => item.label) || [],
     productIds: [],
+  }));
+};
+
+const handleRelatedSubCategoryChange = (
+  selectedOptions
+) => {
+  setFormData((prev) => ({
+    ...prev,
+    relatedSubCategories:
+      selectedOptions?.map(
+        (item) => item.label
+      ) || [],
   }));
 };
 
@@ -192,6 +290,12 @@ const handleProductChange = (selectedOptions) => {
 
   categories: formData.categories,
   subCategories: formData.subCategories,
+    relatedCategories:
+    formData.relatedCategories,
+
+  relatedSubCategories:
+    formData.relatedSubCategories,
+
   productIds: formData.productIds,
 };
 
@@ -205,6 +309,7 @@ toast.success("Festival banner updated successfully");
 
       await fetchBanners();
 
+      setImage(null);
       setShowModal(false);
     } catch (error) {
       console.error("Update Banner Error", error);
@@ -348,6 +453,57 @@ toast.success("Festival banner updated successfully");
   onChange={handleSubCategoryChange}
 />
 
+  <h4 style={{ marginTop: "15px" }}>
+  Related Categories
+</h4>
+
+<Select
+  isMulti
+  value={categories
+    .filter((cat) =>
+      formData.relatedCategories.includes(
+        cat.name
+      )
+    )
+    .map((cat) => ({
+      value: cat.id,
+      label: cat.name,
+    }))
+  }
+  options={categories.map((cat) => ({
+    value: cat.id,
+    label: cat.name,
+  }))}
+  onChange={handleRelatedCategoryChange}
+/>
+
+<h4 style={{ marginTop: "15px" }}>
+  Related Sub Categories
+</h4>
+
+<Select
+  isMulti
+  value={relatedSubCategories
+    .filter((sub) =>
+      formData.relatedSubCategories.includes(
+        sub.name
+      )
+    )
+    .map((sub) => ({
+      value: sub.id,
+      label: sub.name,
+    }))
+  }
+  options={relatedSubCategories.map(
+    (sub) => ({
+      value: sub.id,
+      label: sub.name,
+    })
+  )}
+  onChange={
+    handleRelatedSubCategoryChange
+  }
+/>
           {/* PRODUCT */}
 
           <h4 style={{ marginTop: "15px" }}>

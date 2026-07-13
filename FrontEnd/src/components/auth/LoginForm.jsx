@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash, FaUser } from "react-icons/fa";
 import { GiThink } from "react-icons/gi";
 import { RiLockPasswordFill } from "react-icons/ri";
+
 
 import { loginUser } from "../../services/authService";
 import {
@@ -99,6 +100,15 @@ function LoginForm({ setShowForgot }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+  const message = sessionStorage.getItem("sessionExpired");
+
+  if (message) {
+    toast.error(message);
+    sessionStorage.removeItem("sessionExpired");
+  }
+}, []);
 
   return (
     <>

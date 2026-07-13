@@ -1,6 +1,8 @@
 package com.nextbuy.demo.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -66,14 +68,16 @@ public class AddressService {
 		address.setCity(updateAddress.getCity());
 		address.setCountry(updateAddress.getCountry());
 		address.setAddressType(updateAddress.getAddressType());
-		
+		address.setState(updateAddress.getState());
 		return addressRepo.save(address);
 	}
 	
 	public String deleteAddress(String username, Long addressId)
 	{
 		Address address = getAddressById(username, addressId);
-		
+		if(Boolean.TRUE.equals(address.getDefaultAddress())) {
+			return "Default address cannot be deleted. You can update it if needed.";
+		}
 		addressRepo.delete(address);
 		
 		return "Address Deleted SucessFully";
@@ -97,6 +101,23 @@ public class AddressService {
 		addressRepo.saveAll(addresses);
 		
 		return "Default Address Set Successfull";
-		
+	
+	} 
+	public Address showDefaultAddress(String username) {
+
+	    User user = userRepo.findByUsername(username)
+	            .orElseThrow(() -> new RuntimeException("User not found"));
+
+	    List<Address> addresses = addressRepo.findByUser(user);
+
+	    if (addresses == null || addresses.isEmpty()) {
+	        return null;
+	    }
+
+	    Optional<Address> defaultAddress = addresses.stream()
+	            .filter(a -> Boolean.TRUE.equals(a.getDefaultAddress()))
+	            .findFirst();
+
+	    return defaultAddress.orElse(null);
 	}
 }
