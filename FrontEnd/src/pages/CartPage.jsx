@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import { useCart } from "../context/CartContext";
+import CheckoutSteps from "../components/checkout/CheckoutSteps";
+import CouponCelebration from "../components/celebration/CouponCelebration";
+
 import {
   applyCuponFetch,
   removeCuponFetch,
 } from "../services/cuponFetchService";
+
 import "../styles/CartPage.css";
 
 function CartPage() {
@@ -22,10 +27,16 @@ function CartPage() {
     loadCart,
   } = useCart();
 
+  // change by Gowtham: added safe cart summary to avoid errors when cartSummary is null or undefined
+  const safeCartSummary = cartSummary || {};
+
   const [couponCode, setCouponCode] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [clearLoading, setClearLoading] = useState(false);
+
+  const [showCouponCelebration, setShowCouponCelebration] = useState(false);
+  const [celebrationMessage, setCelebrationMessage] = useState("");
 
   const getImage = (item) => {
     return (
@@ -53,11 +64,17 @@ function CartPage() {
     0
   );
 
-  const subtotal = Number(cartSummary.totalPrice || 0);
-  const deliveryCharge = Number(cartSummary.shippingCharges || 0);
-  const couponDiscount = Number(cartSummary.cuponDiscount || 0);
-  const cartDiscountPercent = Number(cartSummary.discount || 0);
-  const appliedCouponCode = cartSummary.appliedCouponCode;
+  const subtotal = Number(safeCartSummary.totalPrice || 0);
+
+  const deliveryCharge = Number(
+    safeCartSummary.shippingCharges ||
+      safeCartSummary.shipingCharges ||
+      0
+  );
+
+  const couponDiscount = Number(safeCartSummary.cuponDiscount || 0);
+  const cartDiscountPercent = Number(safeCartSummary.discount || 0);
+  const appliedCouponCode = safeCartSummary.appliedCouponCode;
 
   const hasCouponApplied =
     appliedCouponCode !== null &&
@@ -66,11 +83,9 @@ function CartPage() {
 
   const cartDiscountAmount = hasCouponApplied
     ? 0
-    : subtotal * cartDiscountPercent / 100;
+    : (subtotal * cartDiscountPercent) / 100;
 
-  const visibleCouponDiscount = hasCouponApplied
-    ? couponDiscount
-    : 0;
+  const visibleCouponDiscount = hasCouponApplied ? couponDiscount : 0;
 
   const grandTotal = Math.max(
     subtotal + deliveryCharge - cartDiscountAmount - visibleCouponDiscount,
@@ -83,6 +98,58 @@ function CartPage() {
   );
 
   const priceLabel = totalItems > 1 ? "Total Price" : "Selling Price";
+
+  const handleProceedToAddress = () => {
+    navigate("/address", {
+      state: {
+        cartItems,
+        cartSummary: safeCartSummary,
+        subtotal,
+        priceLabel,
+        cartDiscountAmount,
+        couponDiscount: visibleCouponDiscount,
+        appliedCouponCode,
+        deliveryCharge,
+        grandTotal,
+        savedAfterDiscount,
+        hasCouponApplied,
+      },
+    });
+  };
+
+  // change by Gowtham:
+  // This function fixes the coupon issue.
+  // Problem: coupon was still applied after user removed/decreased cart items below minimum amount.
+  // Fix: after cart item changes, this function checks the coupon again.
+  // If coupon is no longer valid, it automatically removes the coupon and reloads the cart.
+  const revalidateCouponAfterCartChange = async (couponCodeToCheck) => {
+    if (!couponCodeToCheck) {
+      await loadCart();
+      return;
+    }
+
+    try {
+      // change by Gowtham: re-apply same coupon to check whether it is still valid after cart changes
+      await applyCuponFetch(couponCodeToCheck);
+
+      // change by Gowtham: reload cart after coupon revalidation success
+      await loadCart();
+    } catch (error) {
+      try {
+        // change by Gowtham: if coupon becomes invalid, remove coupon automatically
+        await removeCuponFetch();
+      } catch (removeError) {
+        console.log("Auto remove coupon error:", removeError);
+      }
+
+      // change by Gowtham: reload cart after automatic coupon removal
+      await loadCart();
+
+      toast.info(
+        "Coupon removed because your cart amount is below the minimum amount"
+      );
+    }
+  };
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
@@ -104,10 +171,26 @@ function CartPage() {
 
       await loadCart();
 
-      toast.success(message || "Cupon applied successfully");
+      const successMessage = message || "Coupon applied successfully";
+
+      // change by Gowtham: added coupon celebration popup when coupon applied successfully
+      setCelebrationMessage(successMessage);
+      setShowCouponCelebration(true);
+
+      setTimeout(() => {
+        setShowCouponCelebration(false);
+      }, 2400);
+
+      toast.success(successMessage);
     } catch (error) {
       console.log("Apply coupon error:", error);
-      toast.error(error.message || "Unable to apply coupon");
+
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "Unable to apply coupon"
+      );
     } finally {
       setCouponLoading(false);
     }
@@ -123,10 +206,16 @@ function CartPage() {
 
       await loadCart();
 
-      toast.info(message || "Cupon removed successfully");
+      toast.info(message || "Coupon removed successfully");
     } catch (error) {
       console.log("Remove coupon error:", error);
-      toast.error(error.message || "Unable to remove coupon");
+
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "Unable to remove coupon"
+      );
     } finally {
       setCouponLoading(false);
     }
@@ -135,7 +224,18 @@ function CartPage() {
   const handleIncrease = async (item) => {
     try {
       setActionLoadingId(item.cartItemId);
+
       await increaseQty(item.cartItemId);
+
+      // change by Gowtham:
+      // After quantity increase, check coupon again.
+      // If coupon is still valid, keep it.
+      // If coupon is invalid, remove it automatically.
+      if (hasCouponApplied) {
+        await revalidateCouponAfterCartChange(appliedCouponCode);
+      } else {
+        await loadCart();
+      }
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -151,7 +251,17 @@ function CartPage() {
   const handleDecrease = async (item) => {
     try {
       setActionLoadingId(item.cartItemId);
+
       await decreaseQty(item.cartItemId);
+
+      // change by Gowtham:
+      // After quantity decrease, cart amount may go below coupon minimum amount.
+      // So coupon must be checked again.
+      if (hasCouponApplied) {
+        await revalidateCouponAfterCartChange(appliedCouponCode);
+      } else {
+        await loadCart();
+      }
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
@@ -167,7 +277,18 @@ function CartPage() {
   const handleRemoveItem = async (item) => {
     try {
       setActionLoadingId(item.cartItemId);
+
       await removeFromCart(item.cartItemId);
+
+      // change by Gowtham:
+      // After removing item, cart amount may become less than coupon minimum amount.
+      // So applied coupon is revalidated and removed automatically if invalid.
+      if (hasCouponApplied) {
+        await revalidateCouponAfterCartChange(appliedCouponCode);
+      } else {
+        await loadCart();
+      }
+
       toast.info("Item removed from cart");
     } catch (error) {
       toast.error(
@@ -184,8 +305,25 @@ function CartPage() {
   const handleClearCart = async () => {
     try {
       setClearLoading(true);
+
       await clearCart();
+
+      // change by Gowtham:
+      // When cart is cleared, applied coupon must also be removed.
+      // Otherwise coupon discount can still remain in price details.
+      if (hasCouponApplied) {
+        try {
+          await removeCuponFetch();
+        } catch (removeError) {
+          console.log("Remove coupon after clear cart error:", removeError);
+        }
+      }
+
       setCouponCode("");
+
+      // change by Gowtham: reload cart after clear cart and coupon removal
+      await loadCart();
+
       toast.info("Cart cleared");
     } catch (error) {
       toast.error(
@@ -218,9 +356,7 @@ function CartPage() {
 
           <h2>Your cart is empty</h2>
 
-          <p>
-            Looks like you have not added anything to your cart yet.
-          </p>
+          <p>Looks like you have not added anything to your cart yet.</p>
 
           <button
             className="continue-shopping-btn"
@@ -235,6 +371,13 @@ function CartPage() {
 
   return (
     <div className="cart-page">
+      <CouponCelebration
+        show={showCouponCelebration}
+        message={celebrationMessage}
+      />
+
+      <CheckoutSteps currentStep={1} />
+
       <div className="cart-container">
         <div className="cart-left">
           <div className="cart-header">
@@ -374,8 +517,8 @@ function CartPage() {
                     <strong>{appliedCouponCode}</strong>
                     <p>
                       Coupon applied
-                      {cartSummary.couponDiscountPercent
-                        ? ` (${cartSummary.couponDiscountPercent}% OFF)`
+                      {safeCartSummary.couponDiscountPercent
+                        ? ` (${safeCartSummary.couponDiscountPercent}% OFF)`
                         : ""}
                     </p>
                   </div>
@@ -433,25 +576,9 @@ function CartPage() {
 
             <button
               className="checkout-btn"
-              onClick={() =>
-                navigate("/checkout", {
-                  state: {
-                    cartItems,
-                    cartSummary,
-                    subtotal,
-                    priceLabel,
-                    cartDiscountAmount,
-                    couponDiscount: visibleCouponDiscount,
-                    appliedCouponCode,
-                    deliveryCharge,
-                    grandTotal,
-                    savedAfterDiscount,
-                    hasCouponApplied,
-                  },
-                })
-              }
+              onClick={handleProceedToAddress}
             >
-              Proceed to Checkout
+              Proceed to Address
             </button>
 
             <button

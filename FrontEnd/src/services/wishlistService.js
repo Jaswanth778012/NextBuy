@@ -10,6 +10,7 @@ export const createWishlist = async (wishlistData) => {
     "/Wishlist/create",
     wishlistData
   );
+
   return response.data;
 };
 
@@ -17,6 +18,7 @@ export const deleteWishlist = async (wishlistId) => {
   const response = await API.delete(
     `/Wishlist/removeWishlist/${wishlistId}`
   );
+
   return response.data;
 };
 
@@ -42,9 +44,7 @@ export const removeProductFromWishlist = async (
   return response.data;
 };
 
-export const getWishlistProducts = async (
-  wishlistId
-) => {
+export const getWishlistProducts = async (wishlistId) => {
   const response = await API.get(
     `/Wishlist/getWishListProducts/${wishlistId}`
   );
@@ -52,12 +52,15 @@ export const getWishlistProducts = async (
   return response.data;
 };
 
-export const addWishlistToCart = async (
-  wishlistId
-) => {
+export const addWishlistToCart = async (wishlistId) => {
+  // change by Gowtham:
+  // this endpoint should add all products from selected wishlist to user's cart.
+  // If button shows success but cart is empty, backend endpoint should be checked.
   const response = await API.post(
     `/Wishlist/addWishlistToCart/${wishlistId}`
   );
 
+  // change by Gowtham:
+  // returning response so WishlistPage can handle success/error properly.
   return response.data;
 };

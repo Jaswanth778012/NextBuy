@@ -16,20 +16,24 @@ import {
 
 import { toast } from "react-toastify";
 
+// change by Gowtham: imported useCart to refresh cart count and cart data after wishlist items are added to cart
+import { useCart } from "../context/CartContext";
+
 import WishlistCard from "../components/wishlist/WishlistCard";
 import WishlistCreateForm from "../components/wishlist/WishlistCreateForm";
 
 import "../styles/Wishlist.css";
 
 function WishlistPage() {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const [wishlists, setWishlists] =
-    useState([]);
+  // change by Gowtham:
+  // added loadCart from CartContext.
+  // Reason: after clicking Add to Cart from wishlist, cart data was not refreshing immediately.
+  const { loadCart } = useCart();
 
-  const [search, setSearch] =
-    useState("");
+  const [wishlists, setWishlists] = useState([]);
+  const [search, setSearch] = useState("");
 
   const [
     showCreateModal,
@@ -41,17 +45,23 @@ function WishlistPage() {
     setCurrentPage,
   ] = useState(1);
 
+  // change by Gowtham:
+  // added loading state for only the clicked wishlist Add to Cart button.
+  // Reason: user should know which wishlist is currently adding to cart.
+  const [
+    addToCartLoadingId,
+    setAddToCartLoadingId,
+  ] = useState(null);
+
   const itemsPerPage = 5;
 
   useEffect(() => {
     fetchWishlists();
   }, []);
 
-const fetchWishlists =
-  async () => {
+  const fetchWishlists = async () => {
     try {
-      const data =
-        await getWishlists();
+      const data = await getWishlists();
 
       console.log(
         "Wishlist Response:",
@@ -61,78 +71,109 @@ const fetchWishlists =
       setWishlists(data);
     } catch (error) {
       console.log(error);
+
+      // change by Gowtham: added error toast when wishlist loading fails
+      toast.error(
+        "Failed to load wishlists"
+      );
     }
   };
-  const handleCreate =
-    async (data) => {
-      try {
-        await createWishlist(data);
 
-await fetchWishlists();
+  const handleCreate = async (data) => {
+    try {
+      await createWishlist(data);
 
-toast.success(
-  "Wishlist created"
-);
+      // change by Gowtham: added await before fetchWishlists to reload wishlist after create
+      await fetchWishlists();
 
-setShowCreateModal(false);
-      } catch (error) {
-        toast.error(
-          "Failed to create wishlist"
-        );
-      }
-    };
+      toast.success(
+        "Wishlist created"
+      );
 
-  const handleDelete =
-    async (id) => {
-      try {
-        await deleteWishlist(id);
+      setShowCreateModal(false);
+    } catch (error) {
+      toast.error(
+        "Failed to create wishlist"
+      );
+    }
+  };
 
-        toast.success(
-          "Wishlist deleted"
-        );
+  const handleDelete = async (id) => {
+    try {
+      await deleteWishlist(id);
 
-        fetchWishlists();
-      } catch (error) {
-        toast.error(
-          "Failed to delete wishlist"
-        );
-      }
-    };
+      toast.success(
+        "Wishlist deleted"
+      );
 
-  const handleAddToCart =
-    async (wishlistId) => {
-      try {
-        await addWishlistToCart(
-          wishlistId
-        );
+      // change by Gowtham: added await before fetchWishlists to reload wishlist after delete
+      await fetchWishlists();
+    } catch (error) {
+      toast.error(
+        "Failed to delete wishlist"
+      );
+    }
+  };
 
-        toast.success(
-          "Wishlist added to cart"
-        );
-      } catch (error) {
-        toast.error(
+  const handleAddToCart = async (wishlistId) => {
+    try {
+      // change by Gowtham:
+      // setting loading id before API call.
+      // This helps to show loading only for the clicked wishlist.
+      setAddToCartLoadingId(wishlistId);
+
+      // change by Gowtham:
+      // this API should add all products from selected wishlist to cart.
+      await addWishlistToCart(wishlistId);
+
+      // change by Gowtham:
+      // after wishlist products are added, reload cart data.
+      // This updates cart count in header and cart page data.
+      await loadCart();
+
+      toast.success(
+        "Wishlist products added to cart"
+      );
+
+      // change by Gowtham:
+      // redirecting to cart page after success.
+      // User can immediately verify the products added in cart.
+      navigate("/cart");
+    } catch (error) {
+      console.log(
+        "Wishlist add to cart error:",
+        error
+      );
+
+      // change by Gowtham:
+      // improved error message handling to show backend error if available.
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
           "Failed to add wishlist to cart"
-        );
-      }
-    };
+      );
+    } finally {
+      // change by Gowtham: stop loading after success or failure
+      setAddToCartLoadingId(null);
+    }
+  };
 
-const filteredWishlists =
-  wishlists.filter(
-    (wishlist) =>
-      wishlist.wishListName
-        ?.toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
+  const filteredWishlists =
+    wishlists.filter(
+      (wishlist) =>
+        wishlist.wishListName
+          ?.toLowerCase()
+          .includes(
+            search.toLowerCase()
+          )
     );
 
   const lastIndex =
-    currentPage *
-    itemsPerPage;
+    currentPage * itemsPerPage;
 
   const firstIndex =
-    lastIndex -
-    itemsPerPage;
+    lastIndex - itemsPerPage;
 
   const currentWishlists =
     filteredWishlists.slice(
@@ -148,23 +189,17 @@ const filteredWishlists =
 
   return (
     <div className="wishlist-page">
-
       <div className="wishlist-header">
-
         <h1>
           ❤️ My Wishlists
         </h1>
 
         <p>
-          Organize products you
-          love and move them to
-          cart anytime.
+          Organize products you love and move them to cart anytime.
         </p>
-
       </div>
 
       <div className="wishlist-toolbar">
-
         <input
           type="text"
           placeholder="Search wishlist..."
@@ -179,60 +214,62 @@ const filteredWishlists =
         <button
           className="create-wishlist-btn"
           onClick={() =>
-            setShowCreateModal(
-              true
-            )
+            setShowCreateModal(true)
           }
         >
           + Create Wishlist
         </button>
-
       </div>
 
       {showCreateModal && (
         <WishlistCreateForm
-          onCreate={
-            handleCreate
-          }
+          onCreate={handleCreate}
           onClose={() =>
-            setShowCreateModal(
-              false
-            )
+            setShowCreateModal(false)
           }
         />
       )}
 
       <div className="wishlist-grid">
-
         {currentWishlists.map(
           (wishlist) => (
             <WishlistCard
               key={wishlist.id}
               wishlist={wishlist}
-              onDelete={
-                handleDelete
-              }
-              onAddToCart={
-                handleAddToCart
-              }
+              onDelete={handleDelete}
+              onAddToCart={handleAddToCart}
               onOpen={(id) =>
                 navigate(
                   `/wishlist/${id}`
                 )
               }
+
+              // change by Gowtham:
+              // passing loading status to WishlistCard.
+              // In WishlistCard button, use this to show "Adding..." and disable button.
+              addToCartLoading={
+                Number(addToCartLoadingId) ===
+                Number(wishlist.id)
+              }
             />
           )
         )}
-
       </div>
+
+      {/* change by Gowtham: added empty wishlist message when search/result list is empty */}
+      {currentWishlists.length === 0 && (
+        <div className="empty-wishlist-box">
+          <h2>No wishlist found</h2>
+          <p>
+            Create your first wishlist and save your favorite products.
+          </p>
+        </div>
+      )}
 
       {totalPages > 1 && (
         <div className="pagination">
-
           <button
-            disabled={
-              currentPage === 1
-            }
+            disabled={currentPage === 1}
             onClick={() =>
               setCurrentPage(
                 currentPage - 1
@@ -243,34 +280,28 @@ const filteredWishlists =
           </button>
 
           {[
-            ...Array(
-              totalPages
-            ),
-          ].map(
-            (_, index) => (
-              <button
-                key={index}
-                className={
-                  currentPage ===
+            ...Array(totalPages),
+          ].map((_, index) => (
+            <button
+              key={index}
+              className={
+                currentPage === index + 1
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setCurrentPage(
                   index + 1
-                    ? "active"
-                    : ""
-                }
-                onClick={() =>
-                  setCurrentPage(
-                    index + 1
-                  )
-                }
-              >
-                {index + 1}
-              </button>
-            )
-          )}
+                )
+              }
+            >
+              {index + 1}
+            </button>
+          ))}
 
           <button
             disabled={
-              currentPage ===
-              totalPages
+              currentPage === totalPages
             }
             onClick={() =>
               setCurrentPage(
@@ -280,10 +311,8 @@ const filteredWishlists =
           >
             Next
           </button>
-
         </div>
       )}
-
     </div>
   );
 }

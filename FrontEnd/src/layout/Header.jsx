@@ -324,7 +324,9 @@ const Header = () => {
             aria-label="Cart"
           >
             <div className="icon-btn cart-btn">
+              {/* Cart symbol is same, only count badge changed */}
               <svg
+                className="cart-icon-svg"
                 width="18"
                 height="18"
                 viewBox="0 0 24 24"

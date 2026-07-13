@@ -21,6 +21,7 @@ import CartPage from "./pages/CartPage";
 import WishlistPage from "./pages/WishlistPage";
 import WishlistDetailsPage from "./pages/WishlistDetailsPage";
 import WishlistAlertsPage from "./pages/WishlistAlertsPage";
+import BillingPage from "./pages/BillingPage";
 
 import UserProfile from "./pages/UserProfile";
 
@@ -234,6 +235,22 @@ function App() {
               </UserRoute>
             }
           />
+
+            {/* change by gowtham: added direct /billing route for Step-3 Billing page because AddressPage navigates to /billing */}
+            <Route
+              path="/billing"
+              element={
+                <UserRoute>
+                  <BillingPage />
+                </UserRoute>
+              }
+            />
+            
+            {/* change by gowtham: kept old /checkout/billing route and redirecting it to /billing to avoid page not found */}
+            <Route
+              path="/checkout/billing"
+              element={<Navigate to="/billing" replace />}
+            />
 
         </Route>
 

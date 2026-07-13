@@ -121,13 +121,28 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = async (product, quantity = 1) => {
-    const productId = product?.id || product?.productId;
+    // change by Gowtham:
+    // This is the main fix for wishlist details cart issue.
+    // Earlier addToCart accepted only product object like product.id.
+    // But some pages pass only productId number.
+    // Now it supports both:
+    // 1. addToCart(productObject)
+    // 2. addToCart(productId)
+    const productId =
+      typeof product === "object"
+        ? product?.id || product?.productId
+        : product;
 
     if (!productId) {
       throw new Error("Product id not found");
     }
 
-    const message = await addCartItem(productId, quantity);
+    // change by Gowtham:
+    // quantity is safely converted to number.
+    // If quantity is missing, default quantity will be 1.
+    const safeQuantity = Number(quantity || 1);
+
+    const message = await addCartItem(productId, safeQuantity);
 
     if (
       typeof message === "string" &&
@@ -136,6 +151,9 @@ export const CartProvider = ({ children }) => {
       throw new Error(message);
     }
 
+    // change by Gowtham:
+    // reload cart after adding product.
+    // This updates cart page and cart count in header immediately.
     await loadCart();
 
     return message;
